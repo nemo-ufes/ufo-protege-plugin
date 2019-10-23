@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse version="3.0"?>
+
+<!--
+    See  https://protegewiki.stanford.edu/wiki/PluginAnatomy
+-->
+<plugin name="UFO Protégé Plugin" version="1.0.0">
+    <!--
+        View component. A view component is visual interface element
+        implemented by specified class.
+
+        @id: unique id of extension
+        label/@value: label to be shown in view's header
+        class/@value: full name of class implementing view
+        category/@value: submenu item to place view menu item
+    <extension id="ufopp.view"
+               point="org.protege.editor.core.application.ViewComponent">
+        <label value="UFO Validation"/>
+        <class value="br.ufes.inf.nemo.ufo.protege.View"/>
+        <category value="@org.protege.ontologycategory"/>
+    </extension>
+    -->
+    <extension id="ufopp.hierarchy.view"
+               point="org.protege.editor.core.application.ViewComponent">
+        <label value="UFO Hierarchy"/>
+        <class value="org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent"/>
+        <category value="@org.protege.ontologycategory"/>
+    </extension>
+
+    <!--
+        Tab component. The following tab is just a default layout of views,
+        defined by file tab.layout.xml
+
+        @id: unique id of extension
+        label/@value: label to be shown in tab's header
+        class/@value: full name of class implementing tab (using
+            protégé's internal class))
+        index/@value: ?
+        editorKitId/@value: ?
+        defaultViewConfigFileName/@value: File containing default tab layout
+    -->
+    <extension id="ufopp.tab"
+               point="org.protege.editor.core.application.WorkspaceTab">
+        <label value="UFO Validation Tab"/>
+        <class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
+        <index value="X"/>
+        <editorKitId value="OWLEditorKit"/>
+        <defaultViewConfigFileName value="tab.layout.xml"/>
+    </extension>
+
+
+    <!--
+        Menu item component.
+
+        @id: unique id of extension
+        name/@value: label to be shown in menu item
+        class/@value: Full name of class implementing menu item behavior
+        toolTip/@value: Tool tip to be shown for the menu item
+        path/@value: Exact placement of menu item. The prefix
+            'org.protege.editor.core.application' is the id of a plugin,
+            'menu.FileMenu' is the id of menu item defined in that plugin,
+            SlotAA is the name of the group to put the menu item in, and Z
+            is the key to be used to compare menu items and sort them.
+        editorKitId/@value: The 'OWLEditorKit' value tells that the menu is to
+            be used in the context of the OWL editor
+    <extension id="ufopp.menuItem"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="Do something"/>
+        <class value="br.ufes.inf.nemo.ufo.protege.Command"/>
+        <toolTip value="Just that. Do something"/>
+        <path value="org.protege.editor.core.application.menu.FileMenu/SlotAA-Z"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
+    -->
+</plugin>

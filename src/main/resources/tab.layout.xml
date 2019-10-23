@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <VSNode splits="1.0">
+        <CNode>
+            <Component label="UFO Validation">
+                <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.view"/>
+            </Component>
+        </CNode>
+    </VSNode>
+</layout>
