@@ -39,8 +39,13 @@ public class UFOConfig extends EditorKitHook {
         }
     }
 
-    public static Optional<UFOConfig> getHook(ModelManager modelManager) {
-        return Optional.ofNullable(modelManager.get(UFOConfig.class));
+    public static UFOConfig get(ModelManager modelManager) {
+        final UFOConfig result = modelManager.get(UFOConfig.class);
+        if (result == null) {
+            throw new RuntimeException(
+                "Unexpected error. UFOConfig object not found");
+        }
+        return result;
     }
 
 

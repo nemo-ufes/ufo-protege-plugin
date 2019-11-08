@@ -71,11 +71,7 @@ public class View extends AbstractOWLViewComponent {
     @Override
     protected void initialiseOWLView() throws Exception {
 
-        java.util.Optional<UFOConfig> optUfo = UFOConfig.getHook(getOWLModelManager());
-        if (!optUfo.isPresent()) {
-            throw new RuntimeException("Could not find UFO configuration.");
-        }
-        ufo = optUfo.get();
+        ufo = UFOConfig.get(getOWLModelManager());
 
         setLayout(new BorderLayout());
         textArea = new JTextArea("OK");
