@@ -6,11 +6,12 @@
 package br.ufes.inf.nemo.ufo.protege;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import org.protege.editor.core.ModelManager;
 import org.protege.editor.core.editorkit.plugin.EditorKitHook;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  *
@@ -72,8 +73,24 @@ public class UFOConfig extends EditorKitHook {
         publicUFOClasses.add("http://purl.org/nemo/ufo#Mixin");
     }
 
-    public boolean isPublicUFOCLass(OWLClass owlSubClass) {
-        return !owlSubClass.isAnonymous() &&
-                publicUFOClasses.contains(owlSubClass.getIRI().toString());
+    public boolean isPublicUFOCLass(OWLClassExpression owlClass) {
+        return !owlClass.isAnonymous() &&
+                publicUFOClasses.contains(
+                        owlClass.asOWLClass().getIRI().toString());
+    }
+
+    public Set<OWLClass> extractUFOClasses(OWLOntology ontology) {
+        return extractUFOClasses(ontology, new HashSet<>());
+    }
+
+    public Set<OWLClass> extractUFOClasses(
+            OWLOntology ontology, Set<OWLClass> result) {
+        ontology
+                .getNestedClassExpressions()
+                .stream()
+                .filter(this::isPublicUFOCLass)
+                .map(OWLClassExpression::asOWLClass)
+                .forEach(result::add);
+        return result;
     }
 }
