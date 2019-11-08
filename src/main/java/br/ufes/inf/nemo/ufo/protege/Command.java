@@ -17,7 +17,6 @@ import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
  */
 @EditorKitMenuAction(
         id = "ufopp.menuItem",
-        editorKitId = "OWLEditorKit",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
         name = "Do something, please!"
 )
