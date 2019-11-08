@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
-import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
@@ -68,41 +66,16 @@ public class View extends AbstractOWLViewComponent {
     private JTextArea textArea;
     private OWLOntology ufoOntology;
     private Set<OWLClass> leafClasses;
-    private Set<String> publicUFOClasses;
-
-    private void initializePublicUFOClassesSet() {
-        publicUFOClasses = new HashSet<>();
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Collection");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Event");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Participation");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Category");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#QualityValueAttributionSituation");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Role");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Phase");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#TemporaryParthoodSituation");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#FunctionalComplex");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#EventType");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Mode");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#SubKind");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#QuaIndividual");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Quantity");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#PhaseMixin");
-        publicUFOClasses.add("http://www.w3.org/2006/time#Instant");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#ContingentInstantiationSituation");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Quality");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#QualityValue");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#RoleMixin");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Kind");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Relator");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#AbstractIndividualType");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#SituationType");
-        publicUFOClasses.add("http://purl.org/nemo/ufo#Mixin");
-    }
-
-
+    private UFOConfig ufo;
 
     @Override
     protected void initialiseOWLView() throws Exception {
+
+        java.util.Optional<UFOConfig> optUfo = UFOConfig.getHook(getOWLModelManager());
+        if (!optUfo.isPresent()) {
+            throw new RuntimeException("Could not find UFO configuration.");
+        }
+        ufo = optUfo.get();
 
         setLayout(new BorderLayout());
         textArea = new JTextArea("OK");
@@ -139,7 +112,6 @@ public class View extends AbstractOWLViewComponent {
         if (!"http://purl.org/nemo/ufo#".equals(ontologyIRI.get().toString())) {
             return;
         }
-        initializePublicUFOClassesSet();
         ufoOntology = ontology;
         leafClasses = findLeafClasses(ufoOntology);
     }
@@ -187,11 +159,6 @@ public class View extends AbstractOWLViewComponent {
         textArea.setText(builder.toString());
     }
 
-    private boolean isPublicUFOCLass(OWLClass owlSubClass) {
-        return !owlSubClass.isAnonymous() &&
-                publicUFOClasses.contains(owlSubClass.getIRI().toString());
-    }
-
     private void checkLeafInheritance(OWLOntology ontology) {
         if (leafClasses == null) {
             return;
@@ -230,9 +197,9 @@ public class View extends AbstractOWLViewComponent {
                     }
                     final OWLClass owlSuperClass = superClass.asOWLClass();
                     final OWLClass owlSubClass = subClass.asOWLClass();
-                    if (isPublicUFOCLass(owlSuperClass)) {
+                    if (ufo.isPublicUFOCLass(owlSuperClass)) {
                         ufoDirectSubclasses.add(owlSubClass);
-                    } else if (!isPublicUFOCLass(owlSubClass)) {
+                    } else if (!ufo.isPublicUFOCLass(owlSubClass)) {
                         subClasses.put(owlSuperClass, owlSubClass);
                     }
                 }
