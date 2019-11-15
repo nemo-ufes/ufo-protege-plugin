@@ -1,0 +1,40 @@
+-- Prefixes
+
+@prefix ufo: <http://purl.org/nemo/ufo#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+
+-- Public UFO Classes
+
+ufo:Collection
+ufo:Event
+ufo:Participation
+ufo:Category
+ufo:QualityValueAttributionSituation
+ufo:Role
+ufo:Phase
+ufo:TemporaryParthoodSituation
+ufo:FunctionalComplex
+ufo:EventType
+ufo:Mode
+ufo:SubKind
+ufo:QuaIndividual
+ufo:Quantity
+ufo:PhaseMixin
+time:Instant
+ufo:ContingentInstantiationSituation
+ufo:Quality
+ufo:QualityValue
+ufo:RoleMixin
+ufo:Kind
+ufo:Relator
+ufo:AbstractIndividualType
+ufo:SituationType
+ufo:Mixin
+
+-- Hierarchy
+
+ufo:Collection
+    ufo:Event
+    ufo:Participation
+ufo:Category
+    ufo:Kind
