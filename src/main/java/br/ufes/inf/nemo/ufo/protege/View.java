@@ -193,9 +193,9 @@ public class View extends AbstractOWLViewComponent {
                     }
                     final OWLClass owlSuperClass = superClass.asOWLClass();
                     final OWLClass owlSubClass = subClass.asOWLClass();
-                    if (ufo.isPublicUFOCLass(owlSuperClass)) {
+                    if (ufo.isPublicUFOClass(owlSuperClass)) {
                         ufoDirectSubclasses.add(owlSubClass);
-                    } else if (!ufo.isPublicUFOCLass(owlSubClass)) {
+                    } else if (!ufo.isPublicUFOClass(owlSubClass)) {
                         subClasses.put(owlSuperClass, owlSubClass);
                     }
                 }
