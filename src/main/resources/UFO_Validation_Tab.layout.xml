@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+    <VSNode splits="0.010154668667039617 0.008580590766922646">
+        <CNode>
+            <Component label="UFO Validation">
+                <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.view"/>
+            </Component>
+        </CNode>
+        <HSNode splits="0.0037207058464707402 0.004859884920451906">
+            <CNode>
+                <Component label="UFO Tree">
+                    <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.tree"/>
+                </Component>
+            </CNode>
+            <CNode>
+                <Component label="UFO Class View">
+                    <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.classView"/>
+                </Component>
+            </CNode>
+        </HSNode>
+    </VSNode>
+</layout>
