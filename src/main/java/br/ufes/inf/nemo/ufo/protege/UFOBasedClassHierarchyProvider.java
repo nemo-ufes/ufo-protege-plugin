@@ -7,19 +7,14 @@ package br.ufes.inf.nemo.ufo.protege;
 
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.hierarchy.AbstractOWLObjectHierarchyProvider;
+import org.protege.editor.owl.model.hierarchy.OWLObjectHierarchyProvider;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-import org.semanticweb.owlapi.model.parameters.Imports;
-import org.semanticweb.owlapi.model.parameters.Navigation;
 
 /**
  *
@@ -29,9 +24,11 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
 
     private List<OWLOntology> ontologies;
     private final UFOConfig ufo;
+    private final OWLModelManager owlModelManager;
 
     UFOBasedClassHierarchyProvider(OWLModelManager owlModelManager) {
         super(owlModelManager.getOWLOntologyManager());
+        this.owlModelManager = owlModelManager;
         this.ufo = UFOConfig.get(owlModelManager);
     }
 
@@ -47,7 +44,6 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
                 getManager().getOWLDataFactory().getOWLThing());
 
         return (ontologies == null) ? owlThing :
-
             ontologies
                 .stream()
                 .flatMap(ufo::ufoViewRootClasses)
@@ -55,61 +51,31 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
                 ;
     }
 
+    protected OWLObjectHierarchyProvider<OWLClass> getOWLClassHierarchyProvider() {
+        return owlModelManager
+                .getOWLHierarchyManager()
+                .getOWLClassHierarchyProvider();
+    }
+
     @Override
     public Set<OWLClass> getParents(OWLClass n) {
-
-        return ontologies
-                .stream()
-                .flatMap(ontology ->
-                    ontology.getAxioms(
-                            OWLSubClassOfAxiom.class, n,
-                            Imports.INCLUDED, Navigation.IN_SUB_POSITION)
-                        .stream()
-                )
-                .map(OWLSubClassOfAxiom::getSuperClass)
-                .filter(OWLClassExpression::isNamed)
-                .map(OWLClassExpression::asOWLClass)
-                .collect(Collectors.toCollection(HashSet::new))
-                ;
-
+        return getOWLClassHierarchyProvider().getParents(n);
     }
 
     @Override
     public Set<OWLClass> getEquivalents(OWLClass n) {
-        return Sets.newHashSet(n);
+        return getOWLClassHierarchyProvider().getEquivalents(n);
     }
 
     @Override
     public boolean containsReference(OWLClass n) {
-        return ontologies
-                .stream()
-                .anyMatch(ontology ->
-                    !ontology.getAxioms(n, Imports.INCLUDED).isEmpty()
-                )
-                ;
+        return getOWLClassHierarchyProvider().containsReference(n);
     }
 
     @Override
-    protected Collection<OWLClass> getUnfilteredChildren(OWLClass owlClass) {
-
+    public Set<OWLClass> getChildren(OWLClass owlClass) {
         return ufo.isNonLeafUFOViewClass(owlClass) ?
-
-            ufo.getUFOViewChildren(ontologies, owlClass)
-
-                :
-
-            ontologies
-                .stream()
-                .flatMap(ontology ->
-                    ontology.getAxioms(
-                            OWLSubClassOfAxiom.class, owlClass,
-                            Imports.INCLUDED, Navigation.IN_SUPER_POSITION)
-                        .stream()
-                )
-                .map(axiom -> axiom.getSubClass())
-                .filter(expr -> !expr.isAnonymous() && !expr.equals(owlClass))
-                .map(expr -> expr.asOWLClass())
-                .collect(Collectors.toCollection(HashSet::new))
-                ;
+            ufo.getUFOViewChildren(ontologies, owlClass) :
+            getOWLClassHierarchyProvider().getChildren(owlClass);
     }
 }
