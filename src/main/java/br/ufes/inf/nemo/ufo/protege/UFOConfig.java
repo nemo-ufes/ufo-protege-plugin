@@ -56,9 +56,7 @@ public class UFOConfig extends EditorKitHook {
 
     @Override
     public void dispose() throws Exception {
-        if (modelManager.get(getClass()) == this) {
-            modelManager.put(getClass(), null);
-        }
+
     }
 
     public static UFOConfig get(ModelManager modelManager) {
