@@ -9,6 +9,11 @@
 
     <name>UFO Protégé Plugin</name>
     <description>Plugin for UFO semantic rules validation</description>
+    <scm>
+        <url>https://github.com/nemo-ufes/ufo-protege-plugin</url>
+        <connection>scm:git:https://github.com/nemo-ufes/ufo-protege-plugin.git</connection>
+        <developerConnection>scm:git:ssh://github.com/nemo-ufes/ufo-protege-plugin.git</developerConnection>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
