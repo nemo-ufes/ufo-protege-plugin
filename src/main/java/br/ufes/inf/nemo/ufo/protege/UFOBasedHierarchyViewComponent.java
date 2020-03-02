@@ -6,11 +6,13 @@
 package br.ufes.inf.nemo.ufo.protege;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
+import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.hierarchy.OWLObjectHierarchyProvider;
 import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLObject;
 
 /**
  *
@@ -43,10 +45,23 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
         super.performExtraInitialisation();
 
         initializeCellRenderer();
+        initializeComparator();
     }
 
     protected void initializeCellRenderer() {
         getTree().setCellRenderer(
                 new UFOViewTreeNodeRenderer(getOWLEditorKit()));
+    }
+
+    private void initializeComparator() {
+        final OWLModelManager owlModelManager
+                = getOWLEditorKit().getOWLModelManager();
+        final Comparator<OWLObject> original
+                = owlModelManager.getOWLObjectComparator();
+        final UFOConfig ufo = UFOConfig.get(owlModelManager);
+        getTree().setOWLObjectComparator((a, b) -> {
+            int result = ufo.compareOWLObjects(a, b);
+            return result != 0 ? result : original.compare(a, b);
+        });
     }
 }

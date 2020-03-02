@@ -30,6 +30,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.parameters.Imports;
@@ -252,7 +253,7 @@ public class UFOConfig extends EditorKitHook {
         return node != null && !node.getChildren().isEmpty();
     }
 
-    Collection<OWLClass> getUFOViewChildren(
+    Set<OWLClass> getUFOViewChildren(
             Collection<OWLOntology> ontologies, OWLClass owlClass) {
         return ufoHierarchyView.get(owlClass.getIRI().toString())
             .getChildren()
@@ -268,5 +269,17 @@ public class UFOConfig extends EditorKitHook {
             .map(OWLEntity::asOWLClass)
             .collect(Collectors.toCollection(HashSet::new))
             ;
+    }
+
+    int compareOWLObjects(OWLObject a, OWLObject b) {
+        HierarchyNode nodeA = getHierarchyNode(a);
+        HierarchyNode nodeB = getHierarchyNode(b);
+        return nodeA == null ? (nodeB == null ? 0 : 1) : nodeA.compareTo(nodeB);
+    }
+
+    private HierarchyNode getHierarchyNode(OWLObject object) {
+        return !(object instanceof OWLClass) ? null :
+                ufoHierarchyView.get(((OWLClass)object).getIRI().toString())
+                ;
     }
 }

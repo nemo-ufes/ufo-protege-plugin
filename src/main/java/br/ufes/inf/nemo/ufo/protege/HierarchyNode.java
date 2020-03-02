@@ -7,7 +7,6 @@ package br.ufes.inf.nemo.ufo.protege;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.semanticweb.owlapi.model.OWLClass;
 
 /**
  *
@@ -44,5 +43,9 @@ public class HierarchyNode {
 
     public boolean contains(String iri) {
         return children.contains(iri);
+    }
+
+    public int compareTo(HierarchyNode other) {
+        return other == null ? -1 : Integer.signum(index - other.index);
     }
 }
