@@ -5,36 +5,83 @@
 
 -- Public UFO Classes
 
-ufo:Collection
-ufo:Event
-ufo:Participation
-ufo:Category
-ufo:QualityValueAttributionSituation
-ufo:Role
-ufo:Phase
-ufo:TemporaryParthoodSituation
-ufo:FunctionalComplex
-ufo:EventType
 ufo:Mode
-ufo:SubKind
 ufo:QuaIndividual
-ufo:Quantity
-ufo:PhaseMixin
 time:Instant
-ufo:ContingentInstantiationSituation
+
+# ufo:Object
+ufo:Collection
+ufo:FunctionalComplex
+ufo:Quantity
+
 ufo:Quality
 ufo:QualityValue
-ufo:RoleMixin
-ufo:Kind
+ufo:IntrinsicMode
 ufo:Relator
-ufo:AbstractIndividualType
-ufo:SituationType
+ufo:ExtrinsicMode
+
+ufo:Event
+ufo:Participation
+
+# ufo:Situation
+ufo:QualityValueAttributionSituation
+ufo:ContingentInstantiationSituation
+ufo:VariableRelationshipSituation
+ufo:TemporaryParthoodSituation
+ufo:TemporaryConstitutionSituation
+
+# ufo:Type
+ufo:Kind
+ufo:SubKind
+ufo:Category
+ufo:Role
+ufo:RoleMixin
+ufo:Phase
+ufo:PhaseMixin
 ufo:Mixin
+ufo:EventType
+ufo:SituationType
+ufo:AbstractIndividualType
 
 -- Hierarchy
 
-ufo:Collection
-    ufo:Event
+ufo:Object
+    ufo:FunctionalComplex
+    ufo:Collection
+    ufo:Quantity
+
+ufo:Aspect
+    ufo:Quality
+    ufo:IntrinsicMode
+    ufo:Relator
+    ufo:ExtrinsicMode
+
+ufo:AbstractIndividual
+    ufo:QualityValue
+    time:Instant
+
+ufo:Event
     ufo:Participation
-ufo:Category
-    ufo:Kind
+
+ufo:Situation
+    ufo:QualityValueAttributionSituation
+    ufo:ContingentInstantiationSituation
+    ufo:VariableRelationshipSituation
+    ufo:TemporaryParthoodSituation
+    ufo:TemporaryConstitutionSituation
+
+ufo:Type
+
+    ufo:EndurantType
+        ufo:Kind
+        ufo:SubKind
+        ufo:Category
+        ufo:Role
+        ufo:RoleMixin
+        ufo:Phase
+        ufo:PhaseMixin
+        ufo:Mixin
+    ufo:EventType
+    ufo:SituationType
+    ufo:AbstractIndividualType
+    ufo:RelationshipType
