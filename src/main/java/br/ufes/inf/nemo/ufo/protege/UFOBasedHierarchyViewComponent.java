@@ -36,4 +36,17 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
         result.setOntologies(owlModelManager.getActiveOntologies());
         return result;
     }
+
+    @Override
+    public void performExtraInitialisation() throws Exception {
+
+        super.performExtraInitialisation();
+
+        initializeCellRenderer();
+    }
+
+    protected void initializeCellRenderer() {
+        getTree().setCellRenderer(
+                new UFOViewTreeNodeRenderer(getOWLEditorKit()));
+    }
 }
