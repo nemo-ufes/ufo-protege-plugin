@@ -24,6 +24,7 @@
         <protege.launcher></protege.launcher>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <ufo-protege-plugin.update-url>https://raw.githubusercontent.com/nemo-ufes/ufo-protege-plugin/release/update.properties</ufo-protege-plugin.update-url>
     </properties>
 
     <dependencies>
@@ -92,6 +93,7 @@
                         </Include-Resource>
                         <Export-Package/>
                         <Embed-Dependency>rsyntaxtextarea,rhino</Embed-Dependency>
+                        <Update-Url>${ufo-protege-plugin.update-url}</Update-Url>
                     </instructions>
                 </configuration>
             </plugin>
