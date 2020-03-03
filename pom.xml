@@ -189,9 +189,12 @@
                                 </goals>
                                 <configuration>
                                     <target>
+                                        <!-- Delete other versions of plugin -->
                                         <delete>
-                                            <fileset dir="${protege.home}/plugins" includes="${project.groupId}.*.jar"/>
+                                            <fileset dir="${protege.home}/plugins"
+                                                     includes="${project.groupId}.${project.artifactId}-*.jar"/>
                                         </delete>
+                                        <!-- Copy current version to Protégé plugin directory -->
                                         <copy file="${project.build.directory}/${project.build.finalName}.jar"
                                               tofile="${protege.home}/plugins/${project.groupId}.${project.build.finalName}.jar"/>
                                     </target>
