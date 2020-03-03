@@ -182,7 +182,7 @@
                         <version>1.6</version>
                         <executions>
                             <execution>
-                                <id>remove-other-versions</id>
+                                <id>install-plugin-on-protege</id>
                                 <phase>package</phase>
                                 <goals>
                                     <goal>run</goal>
@@ -192,25 +192,9 @@
                                         <delete>
                                             <fileset dir="${protege.home}/plugins" includes="${project.groupId}.*.jar"/>
                                         </delete>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                              tofile="${protege.home}/plugins/${project.groupId}.${project.build.finalName}.jar"/>
                                     </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.coderplus.maven.plugins</groupId>
-                        <artifactId>copy-rename-maven-plugin</artifactId>
-                        <version>1.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>copy-file</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-                                    <destinationFile>${protege.home}/plugins/${project.groupId}.${project.build.finalName}.jar</destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
