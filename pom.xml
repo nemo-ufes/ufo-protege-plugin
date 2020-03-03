@@ -4,21 +4,30 @@
 
     <groupId>br.ufes.inf.nemo</groupId>
     <artifactId>ufo-protege-plugin</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>bundle</packaging>
 
     <name>UFO Protégé Plugin</name>
     <description>Plugin for UFO semantic rules validation</description>
+    <scm>
+        <url>https://github.com/${github.repo.folder}</url>
+        <connection>scm:git:https://github.com/${github.repo.folder}.git</connection>
+        <developerConnection>scm:git:ssh://github.com/${github.repo.folder}.git</developerConnection>
+    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <github.organization>nemo-ufes</github.organization>
+        <github.repo.name>ufo-protege-plugin</github.repo.name>
+        <github.repo.folder>${github.organization}/${github.repo.name}</github.repo.folder>
 
         <protege.run.config>${protege.home}/config.xml</protege.run.config>
         <protege.osgi></protege.osgi>
         <protege.launcher></protege.launcher>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <ufo-protege-plugin.update-url>https://raw.githubusercontent.com/nemo-ufes/ufo-protege-plugin/update/update.properties</ufo-protege-plugin.update-url>
     </properties>
 
     <dependencies>
@@ -87,8 +96,59 @@
                         </Include-Resource>
                         <Export-Package/>
                         <Embed-Dependency>rsyntaxtextarea,rhino</Embed-Dependency>
+                        <Update-Url>${ufo-protege-plugin.update-url}</Update-Url>
                     </instructions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-update-files</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/update</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/scripts</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>release.sh</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>restore-permission</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <chmod file="${project.build.directory}/update/release.sh" perm="755"/>
+                                <propertyfile file="${project.build.directory}/update/update.properties">
+                                    <entry key="id" value="${project.groupId}.${project.artifactId}"/>
+                                    <entry key="version" value="${project.version}"/>
+                                    <entry key="download" value="https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar"/>
+                                    <entry key="name" value="${project.name}"/>
+                                </propertyfile>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -117,26 +177,40 @@
             <build>
                 <plugins>
                     <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>remove-other-versions</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete>
+                                            <fileset dir="${protege.home}/plugins" includes="${project.groupId}.*.jar"/>
+                                        </delete>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.coderplus.maven.plugins</groupId>
+                        <artifactId>copy-rename-maven-plugin</artifactId>
+                        <version>1.0.1</version>
                         <executions>
                             <execution>
                                 <id>copy-file</id>
                                 <phase>package</phase>
                                 <goals>
-                                    <goal>copy-resources</goal>
+                                    <goal>copy</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${protege.home}/plugins</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>${project.build.directory}</directory>
-                                            <filtering>false</filtering>
-                                            <includes>
-                                                <include>${project.build.finalName}.jar</include>
-                                            </includes>
-                                        </resource>
-                                    </resources>
+                                    <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
+                                    <destinationFile>${protege.home}/plugins/${project.groupId}.${project.build.finalName}.jar</destinationFile>
                                 </configuration>
                             </execution>
                         </executions>
