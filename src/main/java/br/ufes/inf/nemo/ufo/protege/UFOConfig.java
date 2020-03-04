@@ -136,12 +136,13 @@ public class UFOConfig extends EditorKitHook {
                         HierarchyNode parent = ufoHierarchyView.get(parentIRI);
                         Set<String> children = parent.getChildren();
                         int index = children.size();
-                        if (!children.add(thisIRI)) {
+                        children.add(thisIRI);
+                        HierarchyNode previous = ufoHierarchyView.put(thisIRI,
+                                new HierarchyNode(thisIRI, parentIRI, index));
+                        if (previous != null) {
                             throw new RuntimeException(
                                     "Internal error. Class is being declared in more than one place in hierarchy view.");
                         }
-                        ufoHierarchyView.put(thisIRI,
-                                new HierarchyNode(thisIRI, parentIRI, index));
                         lastIRI = thisIRI;
                     });
                 })
