@@ -1,87 +1,169 @@
+
+
+
+
+
 -- Prefixes
 
-@prefix ufo: <http://purl.org/nemo/ufo#> .
+@prefix gufo: <http://purl.org/nemo/gufo#> .
 @prefix time: <http://www.w3.org/2006/time#> .
 
--- Public UFO Classes
 
-ufo:Mode
-ufo:QuaIndividual
-time:Instant
 
-# ufo:Object
-ufo:Collection
-ufo:FunctionalComplex
-ufo:Quantity
 
-ufo:Quality
-ufo:QualityValue
-ufo:IntrinsicMode
-ufo:Relator
-ufo:ExtrinsicMode
 
-ufo:Event
-ufo:Participation
 
-# ufo:Situation
-ufo:QualityValueAttributionSituation
-ufo:ContingentInstantiationSituation
-ufo:VariableRelationshipSituation
-ufo:TemporaryParthoodSituation
-ufo:TemporaryConstitutionSituation
 
-# ufo:Type
-ufo:Kind
-ufo:SubKind
-ufo:Category
-ufo:Role
-ufo:RoleMixin
-ufo:Phase
-ufo:PhaseMixin
-ufo:Mixin
-ufo:EventType
-ufo:SituationType
-ufo:AbstractIndividualType
+
+
+-- Public Classes
+
+# What we call "Public classes" in this plugin are those types from
+# gUFO Ontology which are expected to be directly instantiated or
+# specialized in UFO-based Ontologies.
+# In this section of config file, lines must start with '-' or '+',
+# followed by an IRI in the form of 'prefix:name'. Indentation and/or
+# blanks are ignored.
+# Lines starting with '+' contain the IRIs of public classes.
+# Lines starting with '-' declare "non public classes" and are allowed for
+# representing gUFO hierarchy in this config file, and it should help the
+# developer reading or editing this config file. The list of class IRI's
+# declared "non public" is discarded at the end of internal plugin setup,
+# but this setup will be aborted if a class if declared both as public and
+# non public.
+
+- gufo:Individual
+
+    - gufo:AbstractIndividual
+        + gufo:QualityValue
+        + time:Instant
+
+    - gufo:ConcreteIndividual
+
+        - gufo:Endurant
+            - gufo:Aspect
+                - gufo:ExtrinsicAspect
+                    + gufo:ExtrinsicMode
+                    + gufo:Relator
+                - gufo:IntrinsicAspect
+                    + gufo:IntrinsicMode
+                    + gufo:Quality
+
+        - gufo:Object
+            - gufo:Collection
+                + gufo:FixedCollection
+                + gufo:VariableCollection
+            + gufo:FunctionalComplex
+            + gufo:Quantity
+
+        + gufo:Event
+            + gufo:Participation
+
+        - gufo:Situation
+            + gufo:QualityValueAttributionSituation
+            + gufo:TemporaryConstitutionSituation
+            + gufo:TemporaryInstantiationSituation
+            + gufo:TemporaryParthoodSituation
+            + gufo:TemporaryRelationshipSituation
+
+- gufo:Type
+
+    + gufo:AbstractIndividualType
+
+    - gufo:ConcreteIndividualType
+
+        - gufo:EndurantType
+
+            - gufo:NonRigidType
+                - gufo:AntiRigidType
+                    + gufo:Phase
+                    + gufo:PhaseMixin
+                    + gufo:Role
+                    + gufo:RoleMixin
+                - gufo:SemiRigidType
+                    + gufo:Mixin
+
+            - gufo:NonSortal
+                + gufo:Category
+                + gufo:Mixin
+                + gufo:PhaseMixin
+                + gufo:RoleMixin
+
+            - gufo:RigidType
+                + gufo:Category
+                + gufo:Kind
+                + gufo:SubKind
+
+            - gufo:Sortal
+                + gufo:Kind
+                + gufo:Phase
+                + gufo:Role
+                + gufo:SubKind
+
+            + gufo:EventType
+            + gufo:SituationType
+
+        - gufo:RelationshipType
+            + gufo:ComparativeRelationshipType
+            + gufo:MaterialRelationshipType
+
+
+
+
+
+
+
+
+
 
 -- Hierarchy
 
-ufo:Object
-    ufo:FunctionalComplex
-    ufo:Collection
-    ufo:Quantity
+# This section of config file defines the hierarchy as shown by UFO Tree
+# View. This hierarchy is a simplified view, intended to give quick access
+# to classes and does not reflect the real hierarchy in gUFO ontology.
+# In this section, the indentation stablishes the hierarchy levels.
 
-ufo:Aspect
-    ufo:Quality
-    ufo:IntrinsicMode
-    ufo:Relator
-    ufo:ExtrinsicMode
+gufo:Object
+    gufo:FunctionalComplex
+    gufo:FixedCollection
+    gufo:VariableCollection
+    gufo:Quantity
 
-ufo:AbstractIndividual
-    ufo:QualityValue
+gufo:Aspect
+    gufo:Quality
+    gufo:IntrinsicMode
+    gufo:Relator
+    gufo:ExtrinsicMode
+
+gufo:AbstractIndividual
+    gufo:QualityValue
     time:Instant
 
-ufo:Event
-    ufo:Participation
+gufo:Event
+    gufo:Participation
 
-ufo:Situation
-    ufo:QualityValueAttributionSituation
-    ufo:ContingentInstantiationSituation
-    ufo:VariableRelationshipSituation
-    ufo:TemporaryParthoodSituation
-    ufo:TemporaryConstitutionSituation
+gufo:Situation
+    gufo:QualityValueAttributionSituation
+    gufo:TemporaryConstitutionSituation
+    gufo:TemporaryInstantiationSituation
+    gufo:TemporaryParthoodSituation
+    gufo:TemporaryRelationshipSituation
 
-ufo:Type
+gufo:Type
 
-    ufo:EndurantType
-        ufo:Kind
-        ufo:SubKind
-        ufo:Category
-        ufo:Role
-        ufo:RoleMixin
-        ufo:Phase
-        ufo:PhaseMixin
-        ufo:Mixin
-    ufo:EventType
-    ufo:SituationType
-    ufo:AbstractIndividualType
-    ufo:RelationshipType
+    gufo:EndurantType
+        gufo:Kind
+        gufo:SubKind
+        gufo:Category
+        gufo:Role
+        gufo:RoleMixin
+        gufo:Phase
+        gufo:PhaseMixin
+        gufo:Mixin
+
+    gufo:EventType
+    gufo:SituationType
+    gufo:AbstractIndividualType
+    gufo:RelationshipType
+        gufo:ComparativeRelationshipType
+        gufo:MaterialRelationshipType

@@ -87,6 +87,8 @@ public class UFOConfig extends EditorKitHook {
 
             String lastIRI = "";
 
+            Set<String> nonPublicUFOClasses = new HashSet<>();
+
             private void pattern(String pattern) {
                 this.pattern = Pattern.compile(pattern);
             }
@@ -103,11 +105,26 @@ public class UFOConfig extends EditorKitHook {
                     });
                 }),
                 (Runnable) (() -> {
-                    pattern("(.*?):(.*?)\\s*");
+                    pattern("\\s*(-|\\+)\\s+(.*?):(.*?)\\s*");
                     onMatch((Matcher matcher) -> {
-                        String namespace = prefixes.get(matcher.group(1));
-                        String suffix = matcher.group(2);
-                        publicUFOClasses.add(namespace + suffix);
+                        boolean isPublic = matcher.group(1).equals("+");
+                        String namespace = prefixes.get(matcher.group(2));
+                        String suffix = matcher.group(3);
+                        String iri = namespace + suffix;
+
+                        Set<String> targetSet, otherSet;
+                        if (isPublic) {
+                            targetSet = publicUFOClasses;
+                            otherSet = nonPublicUFOClasses;
+                        } else {
+                            targetSet = nonPublicUFOClasses;
+                            otherSet = publicUFOClasses;
+                        }
+                        if (otherSet.contains(iri)) {
+                            throw new RuntimeException(
+                                String.format("Unexpected internal error. IRI '%s' is being declared inconsistently as public and non public gUFO class in ufo-config file", iri));
+                        }
+                        targetSet.add(iri);
                     });
                 }),
                 (Runnable) (() -> {
@@ -173,29 +190,17 @@ public class UFOConfig extends EditorKitHook {
                             // Skip comment, blank and state changing lines
                             .filter(skipLine.negate())
                             // Process lines
-                            .map(line -> pattern.matcher(line))
-                            .filter(matcher -> matcher.matches())
+                            .map(line -> {
+                                Matcher matcher = pattern.matcher(line);
+                                if (!matcher.matches()) {
+                                    throw new RuntimeException(
+                                            String.format("Unexpected internal error. gufo-config file error. Line with error follows.\n%s\n", line));
+                                }
+                                return matcher;
+                            })
                             .forEach(matcher -> onMatch.accept(matcher))
                             ;
                 }
-                System.out.println("==== UFO HIERARCHY VIEW ===========");
-                System.out.println(UFOConfig.this.hashCode());
-                System.out.println("");
-                for (Map.Entry<String, HierarchyNode> entry : ufoHierarchyView.entrySet()) {
-                    System.out.print(" * ");
-                    System.out.println(entry.getKey());
-                    HierarchyNode node = entry.getValue();
-                    System.out.print("      - Parent: ");
-                    System.out.println(node.getParentIri());
-                    System.out.print("      - Index: ");
-                    System.out.println(node.getIndex());
-                    System.out.println("      - Children: ");
-                    for (String string : node.getChildren()) {
-                        System.out.print("          ");
-                        System.out.println(string);
-                    }
-                }
-                System.out.println("==== /UFO HIERARCHY VIEW ===========");
             }
         }.run();
     }
