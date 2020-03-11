@@ -218,7 +218,7 @@ public class UFOConfig extends EditorKitHook {
     }
 
     public boolean isUFOViewRootClass(OWLClass owlClass) {
-        return ufoHierarchyView.get("").contains(owlClass.getIRI().toString());
+        return ufoHierarchyView.get("").isParentOf(owlClass.getIRI().toString());
     }
 
     public Stream<OWLClass> owlClasses(OWLOntology ontology) {

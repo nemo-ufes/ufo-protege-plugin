@@ -17,6 +17,15 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
+ * Hierarchy Provider used by {@link UFOBasedHierarchyViewComponent
+ * UFO Tree View}.
+ * <p>
+ * This class mostly delegates methods to implementations provided by
+ * {@link OWLObjectHierarchyProvider} and provides some specializations by
+ * using {@link UFOConfig} class functionality.
+ * <p>
+ * The nodes at the top of hierarchy are defined by UFOConfig, and the remaining
+ * of hierarchy is just the same as that provided by OWLObjectHierarchyProvider.
  *
  * @author luciano
  */

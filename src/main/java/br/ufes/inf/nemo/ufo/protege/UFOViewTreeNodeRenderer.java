@@ -15,6 +15,10 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
+ * Renderer for tree nodes in UFO Tree View.
+ * <p>
+ * This renderer by now only changes the tree node color for nodes representing
+ * public UFO types.
  *
  * @author luciano
  */
