@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.sandbox;
 
 import java.io.BufferedReader;
 import java.io.File;

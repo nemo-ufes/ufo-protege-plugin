@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.treeview;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
+import br.ufes.inf.nemo.ufo.protege.UFOConfig;
 import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;

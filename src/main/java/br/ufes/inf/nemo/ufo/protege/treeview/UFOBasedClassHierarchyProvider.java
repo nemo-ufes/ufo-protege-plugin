@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.treeview;
 
+import br.ufes.inf.nemo.ufo.protege.UFOConfig;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;

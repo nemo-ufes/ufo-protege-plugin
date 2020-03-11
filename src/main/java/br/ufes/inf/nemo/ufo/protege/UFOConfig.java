@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege;
 
+import br.ufes.inf.nemo.ufo.protege.treeview.HierarchyNode;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -238,11 +239,12 @@ public class UFOConfig extends EditorKitHook {
         return owlClasses(ontology).filter(this::isUFOViewRootClass);
     }
 
-    boolean isUFOViewClass(OWLClass n) {
+    public boolean isUFOViewClass(OWLClass n) {
         return ufoHierarchyView.containsKey(n.getIRI().toString());
     }
 
-    void getUFOViewParents(OWLOntology ontology, OWLClass n, Set<OWLClass> result) {
+    public void getUFOViewParents(OWLOntology ontology,
+            OWLClass n, Set<OWLClass> result) {
         HierarchyNode node = ufoHierarchyView.get(n.getIRI().toString());
         IRI iri = IRI.create(node.getParentIri());
         ontology
@@ -254,12 +256,12 @@ public class UFOConfig extends EditorKitHook {
                 ;
     }
 
-    boolean isNonLeafUFOViewClass(OWLClass owlClass) {
+    public boolean isNonLeafUFOViewClass(OWLClass owlClass) {
         HierarchyNode node = ufoHierarchyView.get(owlClass.getIRI().toString());
         return node != null && !node.getChildren().isEmpty();
     }
 
-    Set<OWLClass> getUFOViewChildren(
+    public Set<OWLClass> getUFOViewChildren(
             Collection<OWLOntology> ontologies, OWLClass owlClass) {
         return ufoHierarchyView.get(owlClass.getIRI().toString())
             .getChildren()
@@ -277,7 +279,7 @@ public class UFOConfig extends EditorKitHook {
             ;
     }
 
-    int compareOWLObjects(OWLObject a, OWLObject b) {
+    public int compareOWLObjects(OWLObject a, OWLObject b) {
         HierarchyNode nodeA = getHierarchyNode(a);
         HierarchyNode nodeB = getHierarchyNode(b);
         return nodeA == null ? (nodeB == null ? 0 : 1) : nodeA.compareTo(nodeB);
