@@ -44,11 +44,11 @@ import org.semanticweb.owlapi.util.OWLAxiomVisitorAdapter;
  *
  * @author luciano
  */
-@ViewComponent(
-        id = "ufopp.view",
-        label = "UFO Validation",
-        category = "@org.protege.ontologycategory"
-)
+//@ViewComponent(
+//        id = "ufopp.view",
+//        label = "UFO Validation",
+//        category = "@org.protege.ontologycategory"
+//)
 public class View extends AbstractOWLViewComponent {
 
     private static final long serialVersionUID = -4515710047558710080L;

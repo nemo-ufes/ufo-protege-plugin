@@ -20,12 +20,6 @@
         <category value="@org.protege.ontologycategory"/>
     </extension>
     -->
-    <extension id="ufopp.hierarchy.view"
-               point="org.protege.editor.core.application.ViewComponent">
-        <label value="UFO Hierarchy"/>
-        <class value="org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent"/>
-        <category value="@org.protege.ontologycategory"/>
-    </extension>
 
     <!--
         Tab component. The following tab is just a default layout of views,

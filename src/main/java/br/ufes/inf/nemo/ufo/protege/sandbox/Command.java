@@ -15,11 +15,11 @@ import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
  *
  * @author luciano
  */
-@EditorKitMenuAction(
-        id = "ufopp.menuItem",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Do something, please!"
-)
+//@EditorKitMenuAction(
+//        id = "ufopp.menuItem",
+//        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
+//        name = "Do something, please!"
+//)
 public class Command extends ProtegeOWLAction {
 
     ToldOWLClassHierarchyViewComponent test;
