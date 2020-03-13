@@ -5,13 +5,9 @@
  */
 package br.ufes.inf.nemo.ufo.protege;
 
+import br.ufes.inf.nemo.protege.annotations.EditorKitHook;
 import br.ufes.inf.nemo.ufo.protege.treeview.HierarchyNode;
 import com.google.common.collect.Lists;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,64 +15,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.protege.editor.core.ModelManager;
-import org.protege.editor.core.editorkit.plugin.EditorKitHook;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
 /**
  *
  * @author luciano
  */
-@br.ufes.inf.nemo.protege.annotations.EditorKitHook(
-        id = "ufopp.hook"
-)
-public class UFOConfig extends EditorKitHook {
+@EditorKitHook(id = "ufopp.hook")
+public class UFOConfig extends AbstractEditorKitHook {
 
-    private ModelManager modelManager;
     private Set<String> publicUFOClasses;
     private Map<String, HierarchyNode> ufoHierarchyView;
 
     @Override
     public void initialise() throws Exception {
-        modelManager = getEditorKit().getModelManager();
-        modelManager.put(getClass(), this);
+        super.initialise();
         initializePublicUFOClassesSet();
     }
 
-    @Override
-    public void dispose() throws Exception {
-
-    }
-
     public static UFOConfig get(ModelManager modelManager) {
-        final UFOConfig result = modelManager.get(UFOConfig.class);
-        if (result == null) {
-            throw new RuntimeException(
-                    "Unexpected error. UFOConfig object not found");
-        }
-        return result;
+        return AbstractEditorKitHook.get(modelManager, UFOConfig.class);
     }
 
-    private void initializePublicUFOClassesSet()
-            throws IOException, OWLOntologyCreationException {
+    private void initializePublicUFOClassesSet() throws Exception {
 
         publicUFOClasses = new HashSet<>();
         ufoHierarchyView = new HashMap<>();
 
-        new Object() {
+        new Util() {
 
             Pattern pattern;
             Consumer<Matcher> onMatch;
@@ -166,22 +144,13 @@ public class UFOConfig extends EditorKitHook {
                 })
             };
 
-            public void run() throws IOException {
+            public void run() throws Exception {
 
                 ufoHierarchyView.put("", new HierarchyNode("", "", 0));
-                try (
-                        InputStream inputStream
-                            = getClass().getResourceAsStream("ufo-config");
-                        InputStreamReader unbuf
-                            = new InputStreamReader(inputStream);
-                        BufferedReader reader = new LineNumberReader(unbuf);
-                ) {
-                    Predicate<String> skipLine
-                            = Pattern.compile("^\\s*(--|#|$)").asPredicate();
-
-                    Function<String, Consumer<Object>> print = (prefix) ->
-                            (o) -> System.out.append(prefix).append(": ").println(o);
-                    reader.lines()
+                Predicate<String> skipLine
+                        = Pattern.compile("^\\s*(--|#|$)").asPredicate();
+                readLines("ufo-config", lines -> {
+                    lines
                             // Check for state change
                             .peek(line -> {
                                 if (line.startsWith("--")) {
@@ -201,7 +170,8 @@ public class UFOConfig extends EditorKitHook {
                             })
                             .forEach(matcher -> onMatch.accept(matcher))
                             ;
-                }
+
+                });
             }
         }.run();
     }
