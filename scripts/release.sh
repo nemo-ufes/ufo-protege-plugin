@@ -38,6 +38,8 @@ upload_file() {
 push_update() {
 
     local WORKTREE="update-worktree"
+    local BRANCH="${autoupdate.branch}"
+    local FILE="${autoupdate.file}"
 
     cd "$( dirname "$0" )"
     if [ -d "$WORKTREE" ]
@@ -46,17 +48,18 @@ push_update() {
     fi
     git clone \
         --no-tags \
-        --branch update \
-        --single-branch "${basedir}" \
+        --branch "$BRANCH" \
+        --single-branch \
+        "${basedir}" \
         "${WORKTREE}"
-    cp update.properties "${WORKTREE}"
+    cp "$FILE" "${WORKTREE}"
     cd "${WORKTREE}"
 
-    git add update.properties
+    git add "$FILE
     git commit -m "Set update file to version ${project.version}"
     git remote add github git@github.com:${github.repo.folder}.git
-    git push origin update:update
-    git push github update:update
+    git push origin "$BRANCH":"$BRANCH"
+    git push github "$BRANCH":"$BRANCH"
 }
 
 run_command() {

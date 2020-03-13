@@ -25,9 +25,13 @@
         <protege.run.config>${protege.home}/config.xml</protege.run.config>
         <protege.osgi></protege.osgi>
         <protege.launcher></protege.launcher>
+
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <ufo-protege-plugin.update-url>https://raw.githubusercontent.com/nemo-ufes/ufo-protege-plugin/update/update.properties</ufo-protege-plugin.update-url>
+
+        <autoupdate.branch>update</autoupdate.branch>
+        <autoupdate.file>update.properties</autoupdate.file>
+        <autoupdate.url>https://raw.githubusercontent.com/${github.repo.folder}/${autoupdate.branch}/${autoupdate.file}</autoupdate.url>
     </properties>
 
     <dependencies>
@@ -96,7 +100,7 @@
                         </Include-Resource>
                         <Export-Package/>
                         <Embed-Dependency>rsyntaxtextarea,rhino</Embed-Dependency>
-                        <Update-Url>${ufo-protege-plugin.update-url}</Update-Url>
+                        <Update-Url>${autoupdate.url}</Update-Url>
                     </instructions>
                 </configuration>
             </plugin>
@@ -138,8 +142,10 @@
                         </goals>
                         <configuration>
                             <target>
+                                <!-- Set permissions on release.sh script -->
                                 <chmod file="${project.build.directory}/update/release.sh" perm="755"/>
-                                <propertyfile file="${project.build.directory}/update/update.properties">
+                                <!-- Generate update property file -->
+                                <propertyfile file="${project.build.directory}/update/${autoupdate.file}">
                                     <entry key="id" value="${project.groupId}.${project.artifactId}"/>
                                     <entry key="version" value="${project.version}"/>
                                     <entry key="download" value="https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar"/>
