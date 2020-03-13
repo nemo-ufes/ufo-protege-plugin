@@ -32,6 +32,11 @@
         <autoupdate.branch>update</autoupdate.branch>
         <autoupdate.file>update.properties</autoupdate.file>
         <autoupdate.url>https://raw.githubusercontent.com/${github.repo.folder}/${autoupdate.branch}/${autoupdate.file}</autoupdate.url>
+
+        <validation.main.package>br.ufes.inf.nemo.ufo.protege.validation</validation.main.package>
+        <validation.rules.package>${validation.main.package}.rules</validation.rules.package>
+        <validation.rules.resource.name>rules.list</validation.rules.resource.name>
+        <antrun.generated.resources>${project.build.directory}/generated-resources/antrun</antrun.generated.resources>
     </properties>
 
     <dependencies>
@@ -110,7 +115,7 @@
                 <executions>
                     <execution>
                         <id>copy-update-files</id>
-                        <phase>package</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -136,7 +141,7 @@
                 <executions>
                     <execution>
                         <id>restore-permission</id>
-                        <phase>package</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -151,7 +156,68 @@
                                     <entry key="download" value="https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar"/>
                                     <entry key="name" value="${project.name}"/>
                                 </propertyfile>
+
+                                <!-- Property used in following tasks -->
+                                <property name="java.sources.directory">${basedir}/src/main/java</property>
+
+                                <!-- Generate directory from package name -->
+                                <pathconvert property="validation.rules.directory">
+                                    <resources><string value="${validation.rules.package}"/></resources>
+                                    <chainedmapper>
+                                        <unpackagemapper from="*" to="*"/>
+                                        <globmapper from="*" to="${java.sources.directory}/*"/>
+                                    </chainedmapper>
+                                </pathconvert>
+                                <!-- Generate list of files in directory -->
+                                <fileset
+                                        id="validation.rules.files"
+                                        dir="${validation.rules.directory}" />
+                                <!-- Remove leading directory and convert file names to class names -->
+                                <pathconvert
+                                        dirsep="."
+                                        pathsep="${line.separator}"
+                                        property="validation.rules.classes"
+                                        refid="validation.rules.files">
+                                    <packagemapper
+                                        from="${basedir}/src/main/java/*.java"
+                                        to="*" />
+                                </pathconvert>
+
+                                <!-- Convert package name to output file name -->
+                                <pathconvert property="validation.rules.list.file">
+                                    <resources><string value="${validation.main.package}"/></resources>
+                                    <chainedmapper>
+                                        <unpackagemapper from="*" to="*"/>
+                                        <globmapper from="*" to="${antrun.generated.resources}/*"/>
+                                        <globmapper from="*" to="*/${validation.rules.resource.name}"/>
+                                    </chainedmapper>
+                                </pathconvert>
+
+                                <!-- Output class list to file -->
+                                <echo file="${validation.rules.list.file}">${validation.rules.classes}</echo>
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>add-annotation-list</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${antrun.generated.resources}</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
