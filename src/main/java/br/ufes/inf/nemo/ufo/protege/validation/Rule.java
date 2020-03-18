@@ -26,8 +26,7 @@ import org.semanticweb.owlapi.model.OWLObject;
  * 
  * @author luciano
  */
-public abstract class Rule {
-    
+public abstract class Rule extends GufoIris {
     protected ModelManager modelManager;
     
     public void initialize(ModelManager modelManager) throws Exception {

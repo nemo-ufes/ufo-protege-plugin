@@ -22,6 +22,8 @@
         <github.repo.name>ufo-protege-plugin</github.repo.name>
         <github.repo.folder>${github.organization}/${github.repo.name}</github.repo.folder>
 
+        <gufo.iri>http://purl.org/nemo/gufo#</gufo.iri>
+
         <protege.run.config>${protege.home}/config.xml</protege.run.config>
         <protege.osgi></protege.osgi>
         <protege.launcher></protege.launcher>
@@ -37,6 +39,8 @@
         <validation.rules.package>${validation.main.package}.rules</validation.rules.package>
         <validation.rules.resource.name>rules.list</validation.rules.resource.name>
         <antrun.generated.resources>${project.build.directory}/generated-resources/antrun</antrun.generated.resources>
+
+        <js.generated.sources>${project.build.directory}/generated-sources/rhino</js.generated.sources>
     </properties>
 
     <dependencies>
@@ -84,7 +88,7 @@
         <dependency>
             <groupId>org.mozilla</groupId>
             <artifactId>rhino</artifactId>
-            <version>1.7.11</version>
+            <version>1.7.12</version>
         </dependency>
     </dependencies>
 
@@ -114,25 +118,55 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>copy-update-files</id>
-                        <phase>generate-resources</phase>
+                        <id>copy-script-files</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/update</outputDirectory>
+                            <outputDirectory>${project.build.directory}/scripts</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/scripts</directory>
                                     <filtering>true</filtering>
-                                    <includes>
-                                        <include>release.sh</include>
-                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>org.mozilla.javascript.tools.shell.Main</mainClass>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <includeProjectDependencies>true</includeProjectDependencies>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <arguments>
+                                <argument>-opt</argument>
+                                <argument>-1</argument>
+                                <argument>${project.build.directory}/scripts/generate-gufo-iris.js</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.owlapi</groupId>
+                        <artifactId>owlapi-osgidistribution</artifactId>
+                        <version>4.5.9</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -148,7 +182,7 @@
                         <configuration>
                             <target>
                                 <!-- Set permissions on release.sh script -->
-                                <chmod file="${project.build.directory}/update/release.sh" perm="755"/>
+                                <chmod file="${project.build.directory}/scripts/release.sh" perm="755"/>
                                 <!-- Generate update property file -->
                                 <propertyfile file="${project.build.directory}/update/${autoupdate.file}">
                                     <entry key="id" value="${project.groupId}.${project.artifactId}"/>
@@ -205,6 +239,18 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${js.generated.sources}</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>add-annotation-list</id>
                         <phase>generate-resources</phase>
