@@ -40,7 +40,7 @@ var
         ).join("${file.separator}") + ".java"
     );
 
-    if (true || !targetFile.exists()) {
+    if (!targetFile.exists()) {
         ontologyManager = OWLManager.createOWLOntologyManager();
         gufoLocalFile = new File(options.gufo.localFile);
         gufo = !gufoLocalFile.exists() ?
@@ -81,4 +81,13 @@ var
         outputWriter.close();
         outputStream.close();
     }
-}) ()
+}) ();
+
+(function changeReleaseScriptFilePermissions() {
+    var
+        File = java.io.File,
+        directory = new File("${scripts.target.directory}"),
+        file = new File(directory, "release.sh")
+        ;
+    file.setExecutable(true);
+}) ();

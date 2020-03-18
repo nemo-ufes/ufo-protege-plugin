@@ -34,12 +34,15 @@
         <autoupdate.branch>update</autoupdate.branch>
         <autoupdate.file>update.properties</autoupdate.file>
         <autoupdate.url>https://raw.githubusercontent.com/${github.repo.folder}/${autoupdate.branch}/${autoupdate.file}</autoupdate.url>
+        <autoupdate.download.url>https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar</autoupdate.download.url>
+
 
         <validation.main.package>br.ufes.inf.nemo.ufo.protege.validation</validation.main.package>
         <validation.rules.package>${validation.main.package}.rules</validation.rules.package>
         <validation.rules.resource.name>rules.list</validation.rules.resource.name>
         <antrun.generated.resources>${project.build.directory}/generated-resources/antrun</antrun.generated.resources>
 
+        <scripts.target.directory>${project.build.directory}/scripts</scripts.target.directory>
         <js.generated.sources>${project.build.directory}/generated-sources/rhino</js.generated.sources>
     </properties>
 
@@ -124,7 +127,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/scripts</outputDirectory>
+                            <outputDirectory>${scripts.target.directory}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/scripts</directory>
@@ -155,7 +158,7 @@
                             <arguments>
                                 <argument>-opt</argument>
                                 <argument>-1</argument>
-                                <argument>${project.build.directory}/scripts/generate-gufo-iris.js</argument>
+                                <argument>${project.build.directory}/scripts/build.js</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -181,15 +184,6 @@
                         </goals>
                         <configuration>
                             <target>
-                                <!-- Set permissions on release.sh script -->
-                                <chmod file="${project.build.directory}/scripts/release.sh" perm="755"/>
-                                <!-- Generate update property file -->
-                                <propertyfile file="${project.build.directory}/update/${autoupdate.file}">
-                                    <entry key="id" value="${project.groupId}.${project.artifactId}"/>
-                                    <entry key="version" value="${project.version}"/>
-                                    <entry key="download" value="https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar"/>
-                                    <entry key="name" value="${project.name}"/>
-                                </propertyfile>
 
                                 <!-- Property used in following tasks -->
                                 <property name="java.sources.directory">${basedir}/src/main/java</property>
