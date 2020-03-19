@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.treeview;
+package br.ufes.inf.nemo.ufo.protege;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.semanticweb.owlapi.model.IRI;
 
 /**
  * A node in hierarchy presented by UFO Tree View component. The
@@ -19,12 +20,12 @@ import java.util.Set;
  */
 public class HierarchyNode {
 
-    private final String iri;
-    private final String parentIri;
+    private final IRI iri;
+    private final IRI parentIri;
     private final int index;
-    private final Set<String> children = new HashSet<>();
+    private final Set<IRI> children = new HashSet<>();
 
-    public HierarchyNode(String iri, String parentIri, int index) {
+    public HierarchyNode(IRI iri, IRI parentIri, int index) {
         this.iri = iri;
         this.parentIri = parentIri;
         this.index = index;
@@ -33,14 +34,14 @@ public class HierarchyNode {
     /**
      * @return IRI of the class corresponding to node.
      */
-    public String getIri() {
+    public IRI getIri() {
         return iri;
     }
 
     /**
      * @return IRI of the class in the parent node.
      */
-    public String getParentIri() {
+    public IRI getParentIri() {
         return parentIri;
     }
 
@@ -54,7 +55,7 @@ public class HierarchyNode {
     /**
      * @return Set of children nodes.
      */
-    public Set<String> getChildren() {
+    public Set<IRI> getChildren() {
         return children;
     }
 
@@ -64,7 +65,7 @@ public class HierarchyNode {
      * @param iri IRI to be checked.
      * @return true, if IRI correponds to one of children nodes.
      */
-    public boolean isParentOf(String iri) {
+    public boolean isParentOf(IRI iri) {
         return children.contains(iri);
     }
 

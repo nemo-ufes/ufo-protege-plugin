@@ -1,0 +1,72 @@
+
+-- Prefixes
+
+@prefix gufo: <http://purl.org/nemo/gufo#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+
+
+
+
+-- Hierarchy and  Public Classes
+
+# This section of config file defines the hierarchy as shown by UFO Tree
+# View. This hierarchy is a simplified view, intended to give quick access
+# to classes and does not reflect the real hierarchy in gUFO ontology.
+# In this section, the indentation stablishes the hierarchy levels.
+#
+# Also, here the public classes are declared along with hierarchy.
+#
+# What we call "Public classes" in this plugin are those types from
+# gUFO Ontology which are expected to be directly instantiated or
+# specialized in UFO-based Ontologies.
+#
+# Apart from indentation, which defines hierarchy, and extra blanks, which are
+# ignored, lines must start with '-' or '+', followed by an IRI in the form of
+# 'prefix:name'.
+#
+# Lines starting with '+' contain the IRIs of public classes.
+
+- gufo:Object
+    + gufo:FunctionalComplex
+    + gufo:FixedCollection
+    + gufo:VariableCollection
+    + gufo:Quantity
+
+- gufo:Aspect
+    + gufo:Quality
+    + gufo:IntrinsicMode
+    + gufo:Relator
+    + gufo:ExtrinsicMode
+
+- gufo:AbstractIndividual
+    + gufo:QualityValue
+    + time:Instant
+
++ gufo:Event
+    + gufo:Participation
+
+- gufo:Situation
+    + gufo:QualityValueAttributionSituation
+    + gufo:TemporaryConstitutionSituation
+    + gufo:TemporaryInstantiationSituation
+    + gufo:TemporaryParthoodSituation
+    + gufo:TemporaryRelationshipSituation
+
+- gufo:Type
+
+    - gufo:EndurantType
+        + gufo:Kind
+        + gufo:SubKind
+        + gufo:Category
+        + gufo:Role
+        + gufo:RoleMixin
+        + gufo:Phase
+        + gufo:PhaseMixin
+        + gufo:Mixin
+
+    + gufo:EventType
+    + gufo:SituationType
+    + gufo:AbstractIndividualType
+    - gufo:RelationshipType
+        + gufo:ComparativeRelationshipType
+        + gufo:MaterialRelationshipType

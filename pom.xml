@@ -37,7 +37,9 @@
         <autoupdate.download.url>https://github.com/${github.repo.folder}/releases/download/v${project.version}/${project.build.finalName}.jar</autoupdate.download.url>
 
 
-        <validation.main.package>br.ufes.inf.nemo.ufo.protege.validation</validation.main.package>
+        <plugin.main.package>br.ufes.inf.nemo.ufo.protege</plugin.main.package>
+
+        <validation.main.package>${plugin.main.package}.validation</validation.main.package>
         <validation.rules.package>${validation.main.package}.rules</validation.rules.package>
         <validation.rules.resource.name>rules.list</validation.rules.resource.name>
 
