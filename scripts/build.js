@@ -20,14 +20,33 @@ var
     java, Packages, arguments
     ;
 
-(function generateGufoIriClass() {
+function fileWriter(file) {
+    var
+        File = java.io.File,
+        outputStream, outputWriter,
+        result
+        ;
+    if (!(file instanceof File)) {
+        file = new File(file);
+    }
+    file.parentFile.mkdirs();
+    outputStream = new java.io.FileOutputStream(file);
+    outputWriter = new java.io.OutputStreamWriter(outputStream);
+
+    return result = {
+        append: (data) => (outputWriter.append(data), result),
+        close: ()=> (outputWriter.close(), outputStream.close())
+    };
+}
+
+(steps => steps.forEach(step => (print(step.name), step())))([
+
+function generateGufoIriClass() {
     var
         targetFile,
         classList = [],
         ontologyManager,
         gufo, gufoLocalFile,
-        outputStream,
-        outputWriter,
 
         OWLManager = Packages.org.semanticweb.owlapi.apibinding.OWLManager,
         IRI = Packages.org.semanticweb.owlapi.model.IRI,
@@ -53,10 +72,8 @@ var
                 .forEach(iri => classList.push(iri.shortForm))
         ;
 
-        targetFile.parentFile.mkdirs();
-        outputStream = new java.io.FileOutputStream(targetFile);
-        outputWriter = new java.io.OutputStreamWriter(outputStream);
-        outputWriter.append(
+        fileWriter(targetFile)
+        .append(
             [
                 "package options.validation.package;",
                 "",
@@ -77,17 +94,57 @@ var
             ].join("\n")
             .replace(/options\.([a-zA-Z.]+)/g, (fullStr, group) =>
                 group.split(".").reduce((prev, step)=> prev[step], options))
-        );
-        outputWriter.close();
-        outputStream.close();
+        )
+        .close();
     }
-}) ();
+},
 
-(function changeReleaseScriptFilePermissions() {
+function generateRuleListResource() {
+    var
+        File = java.io.File,
+        javaSources = new File("${basedir}/src/main/java"),
+        writer = fileWriter(
+            [ options.generated.resources ].concat(
+                options.validation.package.split("."),
+                options.validation.ruleList
+            ).join("${file.separator}")
+        ),
+        rulesDirectory = new File(javaSources,
+            "${validation.rules.package}".replace(/\./g, "${file.separator}")),
+        visited = {}
+        ;
+
+    function listFiles(parent, prefix) {
+        if (visited[parent.canonicalPath]) {
+            return;
+        }
+        visited[parent.canonicalPath] = true;
+        parent.listFiles().forEach(file => {
+            var
+                fileName = String(file.name)
+                ;
+            if (file.isDirectory()) {
+                listFiles(file, prefix + "." + fileName);
+            } else if (fileName.endsWith(".java")) {
+                writer.append(prefix)
+                        .append(".")
+                        .append(fileName.replace(/.java$/, ""))
+                        .append("\n");
+            }
+        });
+    }
+
+    listFiles(rulesDirectory, "${validation.rules.package}");
+    writer.close();
+},
+
+function changeReleaseScriptFilePermissions() {
     var
         File = java.io.File,
         directory = new File("${scripts.target.directory}"),
         file = new File(directory, "release.sh")
         ;
     file.setExecutable(true);
-}) ();
+}
+
+]);
