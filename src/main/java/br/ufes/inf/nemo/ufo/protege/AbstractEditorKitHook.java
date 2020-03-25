@@ -19,7 +19,7 @@ import org.protege.editor.core.editorkit.plugin.EditorKitHook;
  */
 public abstract class AbstractEditorKitHook extends EditorKitHook {
 
-    static <T> T get(ModelManager modelManager, Class<T> aClass) {
+    public static <T> T get(ModelManager modelManager, Class<T> aClass) {
         final T result = (T) modelManager.get(aClass);
         if (result == null) {
             throw new RuntimeException(String.format(
@@ -27,7 +27,6 @@ public abstract class AbstractEditorKitHook extends EditorKitHook {
                     aClass.getSimpleName()));
         }
         return result;
-
     }
 
     protected ModelManager modelManager;

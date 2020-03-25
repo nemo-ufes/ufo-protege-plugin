@@ -15,11 +15,11 @@ import java.lang.annotation.Target;
  * <p>
  * This annotation should be used in subclasses of {@link Rule} to give the
  * system some information to be shown to the user.
- * 
+ *
  * @author luciano
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RuleInfo {    
+public @interface RuleInfo {
     String label();
 }

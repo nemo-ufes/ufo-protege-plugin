@@ -7,9 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitHook;
 import br.ufes.inf.nemo.ufo.protege.AbstractEditorKitHook;
+import br.ufes.inf.nemo.ufo.protege.validation.Validation.Result;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import org.semanticweb.owlapi.model.OWLOntology;
+import java.util.stream.Stream;
+import org.protege.editor.core.ModelManager;
 
 /**
  *
@@ -17,21 +20,29 @@ import org.semanticweb.owlapi.model.OWLOntology;
  */
 @EditorKitHook(id = "ufopp.validator")
 public class Validator extends AbstractEditorKitHook {
-    
-    private final List<Rule> rules = new ArrayList<>();
-    
+
+    private final List<Constructor<? extends Rule>> ruleConstructors = new ArrayList<>();
+
+    public static Validator get(ModelManager modelManager) {
+        return AbstractEditorKitHook.get(modelManager, Validator.class);
+    }
+
+    public Result validate() {
+        return Validation.on(modelManager);
+    }
+
+    Stream<Constructor<? extends Rule>> ruleConstructors() {
+        return ruleConstructors.stream();
+    }
+
     @Override
     public void initialise() throws Exception {
         super.initialise();
-        initializeRules();
+        initializeRuleConstructors();
     }
 
-    private void initializeRules() throws Exception {
-        RuleLoader ruleLoader = new RuleLoader(modelManager);        
-        ruleLoader.loadRules(rules);
-    }
-    
-    Validation validate(OWLOntology ontology) throws Exception {
-        return null;
+    private void initializeRuleConstructors() throws Exception {
+        RuleLoader ruleLoader = new RuleLoader();
+        ruleLoader.loadRuleClasses(ruleConstructors);
     }
 }
