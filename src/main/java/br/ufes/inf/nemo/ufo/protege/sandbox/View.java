@@ -102,7 +102,7 @@ public class View extends AbstractOWLViewComponent {
         if (!ontologyIRI.isPresent()) {
             return;
         }
-        if (!"http://purl.org/nemo/ufo#".equals(ontologyIRI.get().toString())) {
+        if (!"http://purl.org/nemo/gufo#".equals(ontologyIRI.get().toString())) {
             return;
         }
         ufoOntology = ontology;
@@ -190,9 +190,9 @@ public class View extends AbstractOWLViewComponent {
                     }
                     final OWLClass owlSuperClass = superClass.asOWLClass();
                     final OWLClass owlSubClass = subClass.asOWLClass();
-                    if (isPublicUFOClass(owlSuperClass)) {
+                    if (ufo.isPublicUFOClass(owlSuperClass)) {
                         ufoDirectSubclasses.add(owlSubClass);
-                    } else if (!isPublicUFOClass(owlSubClass)) {
+                    } else if (!ufo.isPublicUFOClass(owlSubClass)) {
                         subClasses.put(owlSuperClass, owlSubClass);
                     }
                 }
