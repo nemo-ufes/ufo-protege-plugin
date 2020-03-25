@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.sandbox;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
+import br.ufes.inf.nemo.ufo.protege.UFOConfig;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -43,11 +44,11 @@ import org.semanticweb.owlapi.util.OWLAxiomVisitorAdapter;
  *
  * @author luciano
  */
-@ViewComponent(
-        id = "ufopp.view",
-        label = "UFO Validation",
-        category = "@org.protege.ontologycategory"
-)
+//@ViewComponent(
+//        id = "ufopp.view",
+//        label = "UFO Validation",
+//        category = "@org.protege.ontologycategory"
+//)
 public class View extends AbstractOWLViewComponent {
 
     private static final long serialVersionUID = -4515710047558710080L;

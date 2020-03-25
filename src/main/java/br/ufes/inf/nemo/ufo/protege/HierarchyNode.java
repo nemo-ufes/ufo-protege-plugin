@@ -7,44 +7,74 @@ package br.ufes.inf.nemo.ufo.protege;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.semanticweb.owlapi.model.IRI;
 
 /**
+ * A node in hierarchy presented by UFO Tree View component. The
+ * {@link UFOBasedHierarchyViewComponent UFO Tree View} component presents
+ * a hierarchy targeted at organizing the classes by . IRI's
+ * captured by instances of this class are to be part of a subtree placed
+ * in top of hierarchy.
  *
  * @author luciano
  */
 public class HierarchyNode {
 
-    private final String iri;
-    private final String parentIri;
+    private final IRI iri;
+    private final IRI parentIri;
     private final int index;
-    private final Set<String> children = new HashSet<>();
+    private final Set<IRI> children = new HashSet<>();
 
-    public HierarchyNode(String iri, String parentIri, int index) {
+    public HierarchyNode(IRI iri, IRI parentIri, int index) {
         this.iri = iri;
         this.parentIri = parentIri;
         this.index = index;
     }
 
-    public String getIri() {
+    /**
+     * @return IRI of the class corresponding to node.
+     */
+    public IRI getIri() {
         return iri;
     }
 
-    public String getParentIri() {
+    /**
+     * @return IRI of the class in the parent node.
+     */
+    public IRI getParentIri() {
         return parentIri;
     }
 
+    /**
+     * @return Index of node in its parent's children list.
+     */
     public int getIndex() {
         return index;
     }
 
-    public Set<String> getChildren() {
+    /**
+     * @return Set of children nodes.
+     */
+    public Set<IRI> getChildren() {
         return children;
     }
 
-    public boolean contains(String iri) {
+    /**
+     * Check for parenthood relationship.
+     *
+     * @param iri IRI to be checked.
+     * @return true, if IRI correponds to one of children nodes.
+     */
+    public boolean isParentOf(IRI iri) {
         return children.contains(iri);
     }
 
+    /**
+     * Compare to other node for sorting siblings.
+     *
+     * @param other Sibling node to be checked.
+     * @return -1, if the other node should come later in tree. +1, otherwise.
+     */
     public int compareTo(HierarchyNode other) {
         return other == null ? -1 : Integer.signum(index - other.index);
     }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.treeview;
 
+import br.ufes.inf.nemo.ufo.protege.UFOConfig;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTree;
@@ -15,6 +16,10 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
+ * Renderer for tree nodes in UFO Tree View.
+ * <p>
+ * This renderer by now only changes the tree node color for nodes representing
+ * public UFO types.
  *
  * @author luciano
  */

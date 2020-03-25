@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege;
+package br.ufes.inf.nemo.ufo.protege.treeview;
 
+import br.ufes.inf.nemo.ufo.protege.UFOConfig;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,15 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
+ * Hierarchy Provider used by {@link UFOBasedHierarchyViewComponent
+ * UFO Tree View}.
+ * <p>
+ * This class mostly delegates methods to implementations provided by
+ * {@link OWLObjectHierarchyProvider} and provides some specializations by
+ * using {@link UFOConfig} class functionality.
+ * <p>
+ * The nodes at the top of hierarchy are defined by UFOConfig, and the remaining
+ * of hierarchy is just the same as that provided by OWLObjectHierarchyProvider.
  *
  * @author luciano
  */
