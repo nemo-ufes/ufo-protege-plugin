@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout>
-    <VSNode splits="1.0">
+    <VSNode splits="0.5 0.5">
         <CNode>
             <Component label="UFO Tree">
                 <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.tree"/>
             </Component>
         </CNode>
+        <HSNode splits="0.25">
+            <CNode>
+                <Component label="GUFO validation result text">
+                    <Property id="pluginId" value="br.ufes.inf.nemo.ufo-protege-plugin.ufopp.validation.result.text"/>
+                </Component>
+            </CNode>
+        </HSNode>
     </VSNode>
 </layout>
