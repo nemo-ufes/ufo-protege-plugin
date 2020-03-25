@@ -55,7 +55,7 @@ push_update() {
     cp "$FILE" "${WORKTREE}"
     cd "${WORKTREE}"
 
-    git add "$FILE
+    git add "$FILE"
     git commit -m "Set update file to version ${project.version}"
     git remote add github git@github.com:${github.repo.folder}.git
     git push origin "$BRANCH":"$BRANCH"
