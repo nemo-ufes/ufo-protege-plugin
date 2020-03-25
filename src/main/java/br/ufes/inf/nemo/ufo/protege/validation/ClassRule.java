@@ -5,6 +5,8 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation;
 
+import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraph;
+import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
 import org.semanticweb.owlapi.model.OWLClass;
 
 /**
@@ -13,4 +15,7 @@ import org.semanticweb.owlapi.model.OWLClass;
  */
 public abstract class ClassRule extends Rule<OWLClass> {
 
+    protected ObjectGraphNode classNode() {
+        return get(ObjectGraph.class).getNode(target);
+    }
 }

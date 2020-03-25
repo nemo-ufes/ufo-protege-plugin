@@ -5,11 +5,8 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
-import br.ufes.inf.nemo.ufo.protege.validation.Rule;
+import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
-import br.ufes.inf.nemo.ufo.protege.validation.Validation;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  *
@@ -18,10 +15,11 @@ import java.util.Set;
 @RuleInfo(
         label="Extending internal UFO type"
 )
-public class OnlyPublicClassRule extends Rule {
+public class OnlyPublicClassRule extends ClassRule {
 
     @Override
-    public Set<Violation> validate(Validation ontology) {
-        return Collections.EMPTY_SET;
+    public void validate() {
+        when(classNode().isDirectSubclassOfAny(nonPublicClasses))
+        .registerViolation();
     }
 }
