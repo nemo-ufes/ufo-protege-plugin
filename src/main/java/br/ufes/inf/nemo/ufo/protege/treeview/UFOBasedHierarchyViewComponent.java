@@ -6,7 +6,7 @@
 package br.ufes.inf.nemo.ufo.protege.treeview;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
-import br.ufes.inf.nemo.ufo.protege.UFOConfig;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.compareOWLObjects;
 import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;
@@ -73,9 +73,8 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
                 = getOWLEditorKit().getOWLModelManager();
         final Comparator<OWLObject> original
                 = owlModelManager.getOWLObjectComparator();
-        final UFOConfig ufo = UFOConfig.get(owlModelManager);
         getTree().setOWLObjectComparator((a, b) -> {
-            int result = ufo.compareOWLObjects(a, b);
+            int result = compareOWLObjects(a, b);
             return result != 0 ? result : original.compare(a, b);
         });
     }

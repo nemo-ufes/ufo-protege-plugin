@@ -5,7 +5,9 @@
  */
 package br.ufes.inf.nemo.ufo.protege.treeview;
 
-import br.ufes.inf.nemo.ufo.protege.UFOConfig;
+import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.getUFOViewChildren;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.isNonLeafUFOViewClass;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,11 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyProvider<OWLClass> {
 
     private List<OWLOntology> ontologies;
-    private final UFOConfig ufo;
     private final OWLModelManager owlModelManager;
 
     UFOBasedClassHierarchyProvider(OWLModelManager owlModelManager) {
         super(owlModelManager.getOWLOntologyManager());
         this.owlModelManager = owlModelManager;
-        this.ufo = UFOConfig.get(owlModelManager);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
         return (ontologies == null) ? owlThing :
             ontologies
                 .stream()
-                .flatMap(ufo::ufoViewRootClasses)
+                .flatMap(GufoIris::ufoViewRootClasses)
                 .collect(Collectors.toCollection(() -> owlThing))
                 ;
     }
@@ -84,8 +84,8 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
 
     @Override
     public Set<OWLClass> getChildren(OWLClass owlClass) {
-        return ufo.isNonLeafUFOViewClass(owlClass) ?
-            ufo.getUFOViewChildren(ontologies, owlClass) :
+        return isNonLeafUFOViewClass(owlClass) ?
+            getUFOViewChildren(ontologies, owlClass) :
             getOWLClassHierarchyProvider().getChildren(owlClass);
     }
 }

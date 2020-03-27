@@ -5,7 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.treeview;
 
-import br.ufes.inf.nemo.ufo.protege.UFOConfig;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.isPublicUFOClass;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTree;
@@ -43,17 +43,15 @@ public class UFOViewTreeNodeRenderer extends ProtegeTreeNodeRenderer {
             OWLObjectTreeNode<?> node = (OWLObjectTreeNode<?>) value;
             OWLObject object = node.getOWLObject();
             if (object instanceof OWLClass) {
-                return editComponent(result, (OWLClass) object,
-                        UFOConfig.get(editorKit.getModelManager()));
+                return editComponent(result, (OWLClass) object);
             }
         }
         return result;
     }
 
-    protected Component editComponent(
-            Component component, OWLClass owlClass, UFOConfig ufo) {
+    protected Component editComponent(Component component, OWLClass owlClass) {
 
-        if (ufo.isPublicUFOClass(owlClass)) {
+        if (isPublicUFOClass(owlClass)) {
             component.setForeground(Color.blue);
         }
         return component;

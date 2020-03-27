@@ -5,8 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.sandbox;
 
-import br.ufes.inf.nemo.protege.annotations.ViewComponent;
-import br.ufes.inf.nemo.ufo.protege.UFOConfig;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.isPublicUFOClass;
 import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -67,12 +66,9 @@ public class View extends AbstractOWLViewComponent {
     private JTextArea textArea;
     private OWLOntology ufoOntology;
     private Set<OWLClass> leafClasses;
-    private UFOConfig ufo;
 
     @Override
     protected void initialiseOWLView() throws Exception {
-
-        ufo = UFOConfig.get(getOWLModelManager());
 
         setLayout(new BorderLayout());
         textArea = new JTextArea("OK");
@@ -194,9 +190,9 @@ public class View extends AbstractOWLViewComponent {
                     }
                     final OWLClass owlSuperClass = superClass.asOWLClass();
                     final OWLClass owlSubClass = subClass.asOWLClass();
-                    if (ufo.isPublicUFOClass(owlSuperClass)) {
+                    if (isPublicUFOClass(owlSuperClass)) {
                         ufoDirectSubclasses.add(owlSubClass);
-                    } else if (!ufo.isPublicUFOClass(owlSubClass)) {
+                    } else if (!isPublicUFOClass(owlSubClass)) {
                         subClasses.put(owlSuperClass, owlSubClass);
                     }
                 }
