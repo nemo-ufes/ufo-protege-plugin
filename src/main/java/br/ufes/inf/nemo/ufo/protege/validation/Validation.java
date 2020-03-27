@@ -113,8 +113,7 @@ public class Validation {
         // Validate ontology level rules
         rules
                 .stream()
-                .filter(rule -> rule.isAppliableTo(targetOntology))
-                .forEach(rule -> validate(rule, targetOntology))
+                .forEach(rule -> rule.validate(targetOntology))
                 ;
 
         // Validate entity level rules
@@ -125,20 +124,10 @@ public class Validation {
                 .forEach(entity ->
                     rules
                             .stream()
-                            .filter(rule -> rule.isAppliableTo(entity))
-                            .forEach(rule -> validate(rule, entity))
+                            .forEach(rule -> rule.validate(entity))
                 )
                 ;
         return new Result(targetOntology, allOntologies, violations);
-    }
-
-    private <T extends OWLObject> void validate(Rule<T> rule, T target) {
-        try {
-            rule.setTarget(target);
-            rule.validate();
-        } catch (Exception ex) {
-            log.error("Exception thrown when applying rule.", ex);
-        }
     }
 
     void addViolation(Rule.Violation violation) {

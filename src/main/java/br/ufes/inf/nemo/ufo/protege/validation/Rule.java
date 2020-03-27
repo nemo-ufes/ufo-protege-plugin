@@ -59,28 +59,63 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     }
 
     /**
-     * Validate given subject.
+     * Test whether this rule is apppliable to given subject.
      * <p>
+     * Before calling {@link #validate} the validation process checks whether
+     * this rule is appliable to given subject. It does this checking the
+     * whether the subject class matches the target type of the rule and then
+     * calling this method.
+     * <p>
+     * The subject is referenced by the <i>target</i> field, and when this
+     * method is called, it is already known that the subject is an instance of
+     * target type.
+     * <p>
+     * The target type is given by the value of the generic type argument
+     * specified when subclassing this class, while the aplicability of the rule
+     * may be changed by overriding this method.
+     * <p>
+     * For example, a rule may want to check whether a NonSortal class is
+     * specializing a Sortal one. The target type is {@link OWLClass}, and the
+     * rule is appliable when the subject is instance of NonSortal. So this
+     * method would be overriden and return true only when the subject is
+     * instance of NonSortal. The {@link #validate} method whould
+     * <p>
+     * The default implementation of this method returns true.
      *
-     * @param context Subject being validated
-     * @return Set of violations of this rule
-     *
-     * @see RuleSubject
-     * @see Violation
+     * @return true, if the subject, referenced by the <i>target</i> field,
+     * should be validated by this rule
      */
-    public boolean isAppliableTo(T subject) {
-        return getTargetType().isInstance(subject);
+    public boolean isAppliable() {
+        return true;
     }
 
     /**
      * Validate given subject.
      * <p>
+     * If the subject is of type targeted by this rule, the <i>target</i> field
+     * is updated to reference the subject and a check is done, bycalling
+     * {@link #isAppliable() } to ensure that the subject should be validated
+     * by this rule. If the call returns true, the method {@link #validate} is
+     * called to effectively validate the subject.
      *
      * @param context Subject being validated
-     * @return Set of violations of this rule
+     */
+    void validate(OWLObject subject) {
+        if (getTargetType().isInstance(subject)) {
+            this.target = (T) subject;
+            if (isAppliable()) validate();
+        }
+    }
+
+    /**
+     * Validate subject referenced by <i>target</i> field.
+     * <p>
      *
-     * @see RuleSubject
-     * @see Violation
+     * Implementations of this method validade the subject (referenced by the
+     * <i>target</i> field) and put the result of validation in the object
+     * referenced by the <i>validation</i> field. The class
+     * {@link ResultBuilder}, instantiated by calling {@link #when(boolean)},
+     * can be used in this task.
      */
     public abstract void validate();
 
@@ -98,10 +133,6 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
 
     public <T> T get(Class<T> helperClass) {
         return validation.get(helperClass);
-    }
-
-    void setTarget(T target) {
-        this.target = target;
     }
 
     protected Violation newViolation(OWLObject... arguments) {
