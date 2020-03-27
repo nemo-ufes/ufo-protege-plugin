@@ -13,11 +13,7 @@ import java.util.stream.Stream;
 import org.semanticweb.owlapi.model.HasIRI;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLNamedObject;
 import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
 
 /**
  *
@@ -32,6 +28,13 @@ public class ObjectGraphNode {
 //    private static final int INSTANCES = ;
     private static final int ARRAY_SIZE = 3;
 
+    public boolean isIRI() {
+        return this.owlObject.isIRI();
+    }
+
+    public IRI getIRI() {
+        return this.owlObject.isIRI() ? (IRI) owlObject : null;
+    }
 
     private final OWLObject owlObject;
     private Set<ObjectGraphNode>[] relata = new Set[5];
@@ -86,10 +89,6 @@ public class ObjectGraphNode {
 
     public Stream<ObjectGraphNode> types() {
         return getStream(TYPES);
-    }
-
-    public boolean isOWLClass() {
-        return this.owlObject instanceof OWLClass;
     }
 
     public void addEquivalent(ObjectGraphNode equivalent) {
