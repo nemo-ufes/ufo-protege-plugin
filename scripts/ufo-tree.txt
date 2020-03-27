@@ -64,9 +64,9 @@
         + gufo:PhaseMixin
         + gufo:Mixin
 
+    + gufo:AbstractIndividualType
     + gufo:EventType
     + gufo:SituationType
-    + gufo:AbstractIndividualType
     - gufo:RelationshipType
         + gufo:ComparativeRelationshipType
         + gufo:MaterialRelationshipType
