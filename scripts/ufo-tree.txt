@@ -26,7 +26,7 @@
 #
 # Lines starting with '+' contain the IRIs of public classes.
 
-- gufo:Object
++ gufo:Object
     + gufo:FunctionalComplex
     + gufo:FixedCollection
     + gufo:VariableCollection
