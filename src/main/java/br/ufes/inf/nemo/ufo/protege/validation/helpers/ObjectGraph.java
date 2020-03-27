@@ -17,7 +17,6 @@ import org.semanticweb.owlapi.model.OWLAxiomVisitor;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -39,12 +38,7 @@ public class ObjectGraph implements Validation.Initializable {
 
     private ObjectGraphNode of(OWLObject owlObject) {
         owlObject = toIRIWhenHasIRI(owlObject);
-        ObjectGraphNode result = nodes.get(owlObject);
-        if (result == null) {
-            result = new ObjectGraphNode(owlObject);
-            nodes.put(owlObject, result);
-        }
-        return result;
+        return nodes.computeIfAbsent(owlObject, ObjectGraphNode::new);
     }
 
     public ObjectGraphNode getNode(String name) {

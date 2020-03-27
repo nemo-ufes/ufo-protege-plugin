@@ -80,32 +80,31 @@ public class Validation {
     }
 
 
-    public <T> T get(Class<T> helperClass)  {
-        try {
-            Disposable object = modelManager.get(helperClass);
-            if (helperClass.isInstance(object)) {
-                return (T) object;
-            }
-            T result = (T) helpers.get(helperClass);
-            if (result == null) {
-                Constructor<T> constructor = helperClass.getConstructor();
-                result = constructor.newInstance();
+    public <T> T get(Class<T> helperClass) {
+
+        Disposable object = modelManager.get(helperClass);
+        if (helperClass.isInstance(object)) {
+            return (T) object;
+        }
+        return (T) helpers.computeIfAbsent(helperClass, clazz -> {
+            try {
+                Constructor<T> constructor = ((Class<T>)clazz).getConstructor();
+                T result = constructor.newInstance();
                 if (result instanceof Initializable) {
                     ((Initializable) result).initialize(this);
                 }
-                helpers.put(helperClass, result);
+                return result;
+            } catch (IllegalAccessException |
+                    IllegalArgumentException |
+                    InstantiationException |
+                    NoSuchMethodException |
+                    SecurityException |
+                    InvocationTargetException ex) {
+                throw new RuntimeException(String.format(
+                        "Exception thrown on getting helper for class %s.",
+                        helperClass.getName()), ex);
             }
-            return result;
-        } catch (IllegalAccessException |
-                IllegalArgumentException |
-                InstantiationException |
-                NoSuchMethodException |
-                SecurityException |
-                InvocationTargetException ex) {
-            throw new RuntimeException(String.format(
-                    "Exception thrown on getting helper for class %s.",
-                    helperClass.getName()), ex);
-        }
+        });
     }
 
     public Result validate() {
