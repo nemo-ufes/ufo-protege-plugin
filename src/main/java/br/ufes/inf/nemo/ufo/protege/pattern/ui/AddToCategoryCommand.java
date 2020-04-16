@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItem9",
+        id = "ufopp.menuItem11",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "New kind"
+        name = "Add to category"
 )
-public class KindCommand extends PatternCommand {
+public class AddToCategoryCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,21 +31,17 @@ public class KindCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI kind = IRI.create(getOntologyPrefix(), names[1]);
+        IRI category = IRI.create(getOntologyPrefix(), names[0]);
+        IRI rigidType = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
-                applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(kind);
-                applier.makeInstanceOf(GufoIris.Kind, kind);
-                applier.createClass(kind);
-                applier.makeSubClassOf(endurantClass, kind);
+            if (applier.isInstanceOf(GufoIris.Category, category) &&
+                applier.isInstanceOf(GufoIris.RigidType, rigidType)) {
+                applier.detachSubClass(rigidType);
+                applier.makeSubClassOf(category, rigidType);
             } else {
-                showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
-                        + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
-                        + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
+                showMessage("You must select a category and a rigid type!");
             }
         } catch (Exception ex) {
             Logger.getLogger(SubClassCommand.class.getName()).log(Level.SEVERE, null, ex);

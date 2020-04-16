@@ -23,7 +23,7 @@ public abstract class PatternCommand extends ProtegeOWLAction {
         return ontologyPrefix;
     }
     
-    public void showError(String msg) {
+    public void showMessage(String msg) {
         JOptionPane.showMessageDialog(getOWLWorkspace(), msg);
     }
 }

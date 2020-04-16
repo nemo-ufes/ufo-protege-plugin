@@ -36,14 +36,14 @@ public class SubKindCommand extends PatternCommand {
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isDirectInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isDirectInstanceOf(GufoIris.SubKind, parent)) {
+            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
+                applier.isInstanceOf(GufoIris.SubKind, parent)) {
                 applier.createNamedIndividual(child);
                 applier.makeInstanceOf(GufoIris.SubKind, child);
                 applier.createClass(child);
                 applier.makeSubClassOf(parent, child);
             } else {
-                showError("There are only subkinds of kinds or other subkinds!");
+                showMessage("There are only subkinds of kinds or other subkinds!");
             }
         } catch (Exception ex) {
             Logger.getLogger(SubClassCommand.class.getName()).log(Level.SEVERE, null, ex);

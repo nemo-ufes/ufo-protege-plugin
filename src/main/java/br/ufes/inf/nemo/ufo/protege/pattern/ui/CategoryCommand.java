@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItem9",
+        id = "ufopp.menuItem10",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "New kind"
+        name = "New category"
 )
-public class KindCommand extends PatternCommand {
+public class CategoryCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,18 +32,18 @@ public class KindCommand extends PatternCommand {
                 .trim();
         String[] names = input.split(" ");
         IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI kind = IRI.create(getOntologyPrefix(), names[1]);
+        IRI category = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
                 applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(kind);
-                applier.makeInstanceOf(GufoIris.Kind, kind);
-                applier.createClass(kind);
-                applier.makeSubClassOf(endurantClass, kind);
+                applier.createNamedIndividual(category);
+                applier.makeInstanceOf(GufoIris.Category, category);
+                applier.createClass(category);
+                applier.makeSubClassOf(endurantClass, category);
             } else {
-                showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
+                showMessage("A category must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
                         + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
             }
