@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemSubKind",
+        id = "ufopp.menuItemRole",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subkind"
+        name = "Add role"
 )
-public class SubKindCommand extends PatternCommand {
+public class RoleCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,22 +31,21 @@ public class SubKindCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
+        IRI role = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isInstanceOf(GufoIris.Sortal, sortal)) {
+                applier.createNamedIndividual(role);
+                applier.makeInstanceOf(GufoIris.Role, role);
+                applier.createClass(role);
+                applier.addSubClassTo(sortal, role);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                showMessage("You must select a sortal to be specialized in a role!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoleCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

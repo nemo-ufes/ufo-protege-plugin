@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemSubKind",
+        id = "ufopp.menuItemPhaseMixin",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subkind"
+        name = "Add phasemixin"
 )
-public class SubKindCommand extends PatternCommand {
+public class PhaseMixinCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,22 +31,21 @@ public class SubKindCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI nonsortal = IRI.create(getOntologyPrefix(), names[0]);
+        IRI phasemixin = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isInstanceOf(GufoIris.NonSortal, nonsortal)) {
+                applier.createNamedIndividual(phasemixin);
+                applier.makeInstanceOf(GufoIris.PhaseMixin, phasemixin);
+                applier.createClass(phasemixin);
+                applier.addSubClassTo(nonsortal, phasemixin);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                showMessage("There are only phasemixins of non-sortals!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PhaseMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

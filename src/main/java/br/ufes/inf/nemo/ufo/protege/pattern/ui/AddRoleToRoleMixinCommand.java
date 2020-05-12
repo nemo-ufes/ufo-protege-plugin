@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemSubKind",
+        id = "ufopp.menuItemAddRoleToRoleMixin",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subkind"
+        name = "Add role to rolemixin"
 )
-public class SubKindCommand extends PatternCommand {
+public class AddRoleToRoleMixinCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,22 +31,19 @@ public class SubKindCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI rolemixin = IRI.create(getOntologyPrefix(), names[0]);
+        IRI role = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isInstanceOf(GufoIris.RoleMixin, rolemixin) &&
+                applier.isInstanceOf(GufoIris.Role, role)) {
+                applier.addSubClassTo(rolemixin, role);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                showMessage("You must select a rolemixin and a role!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddRoleToRoleMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

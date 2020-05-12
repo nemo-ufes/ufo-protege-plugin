@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemSubKind",
+        id = "ufopp.menuItemRoleMixinOfRoleMixin",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subkind"
+        name = "Add rolemixin of rolemixin"
 )
-public class SubKindCommand extends PatternCommand {
+public class RoleMixinOfRoleMixinCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -36,17 +36,16 @@ public class SubKindCommand extends PatternCommand {
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
+            if (applier.isInstanceOf(GufoIris.RoleMixin, parent)) {
                 applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
+                applier.makeInstanceOf(GufoIris.RoleMixin, child);
                 applier.createClass(child);
                 applier.addSubClassTo(parent, child);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                showMessage("You must select a rolemixin to be specialized in a rolemixin!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoleMixinOfRoleMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -6,6 +6,7 @@
 package br.ufes.inf.nemo.ufo.protege.pattern.ui;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
+import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
@@ -18,27 +19,36 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItem7",
+        id = "ufopp.menuItemMixin",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subclass"
+        name = "New mixin"
 )
-public class SubClassCommand extends PatternCommand {
-    
+public class MixinCommand extends PatternCommand {
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
+        IRI mixin = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            applier.detachSubClass(child);
-            applier.makeSubClassOf(parent, child);
+            if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
+                applier.isPublicGufoClass(endurantClass)) {
+                applier.createNamedIndividual(mixin);
+                applier.makeInstanceOf(GufoIris.Mixin, mixin);
+                applier.createClass(mixin);
+                applier.addSubClassTo(endurantClass, mixin);
+            } else {
+                showMessage("A mixin must be subclass of FunctionalComplex, " + System.lineSeparator()
+                        + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
+                        + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
+            }
         } catch (Exception ex) {
-            Logger.getLogger(SubClassCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MixinCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

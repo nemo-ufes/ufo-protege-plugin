@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItem11",
+        id = "ufopp.menuItemAddToCategory",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
         name = "Add to category"
 )
@@ -38,13 +38,12 @@ public class AddToCategoryCommand extends PatternCommand {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Category, category) &&
                 applier.isInstanceOf(GufoIris.RigidType, rigidType)) {
-                applier.detachSubClass(rigidType);
                 applier.makeSubClassOf(category, rigidType);
             } else {
                 showMessage("You must select a category and a rigid type!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubClassCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddToCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

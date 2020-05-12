@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItem9",
+        id = "ufopp.menuItemKind",
         path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
         name = "New kind"
 )
@@ -41,14 +41,14 @@ public class KindCommand extends PatternCommand {
                 applier.createNamedIndividual(kind);
                 applier.makeInstanceOf(GufoIris.Kind, kind);
                 applier.createClass(kind);
-                applier.makeSubClassOf(endurantClass, kind);
+                applier.addSubClassTo(endurantClass, kind);
             } else {
                 showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
                         + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubClassCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KindCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

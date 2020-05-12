@@ -14,10 +14,12 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.RemoveAxiom;
 
 /**
@@ -84,20 +86,33 @@ public final class PatternApplier {
         return GufoIris.publicClasses.contains(classIRI);
     }
     
-    public void detachSubClass(IRI subClassIRI) {
+    public void makeSubClassOf(IRI classIRI, IRI subClassIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
         
+        OWLClass parent = dataFactory.getOWLClass(classIRI);
         OWLClass child = dataFactory.getOWLClass(subClassIRI);
         
-        // Delete current subClassOf axioms of child
-        ontology.getSubClassAxiomsForSubClass(child).stream()
-                .forEach(axiom -> {
-                    RemoveAxiom removeAxiom = new RemoveAxiom(ontology, axiom);
-                    modelManager.applyChange(removeAxiom);
-                });
+        // Delete subClass axioms of child that are found (even indirectly) in parent
+        getSuperClasses(parent).stream()
+            .map(owlClass -> owlClass.getIRI())
+            .forEach(superClassIRI -> {
+                ontology.getSubClassAxiomsForSubClass(child).stream()
+                    .filter(axiom -> axiom.getSuperClass().isNamed())
+                    .filter(axiom ->
+                            axiom.getSuperClass().asOWLClass()
+                                .getIRI()
+                                .toString()
+                                .contentEquals(superClassIRI.toString()))
+                    .forEach(axiom -> {
+                        RemoveAxiom removeAxiom = new RemoveAxiom(ontology, axiom);
+                        modelManager.applyChange(removeAxiom);
+                    });
+            });
+        
+        addSubClassTo(classIRI, subClassIRI);
     }
     
-    public void makeSubClassOf(IRI classIRI, IRI subClassIRI) {
+    public void addSubClassTo(IRI classIRI, IRI subClassIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
         
         OWLClass parent = dataFactory.getOWLClass(classIRI);
@@ -112,13 +127,21 @@ public final class PatternApplier {
     public boolean isDirectSubClassOf(IRI classIRI, IRI anotherClassIRI) {
         OWLClass child = dataFactory.getOWLClass(anotherClassIRI);
         
-        return ontologies.stream()
-                .anyMatch(ontology -> ontology.getSubClassAxiomsForSubClass(child).stream()
-                        .anyMatch(axiom -> axiom.getSuperClass()
-                        .asOWLClass()
+        for(OWLOntology ontology : ontologies) {
+            for(OWLSubClassOfAxiom axiom : ontology.getSubClassAxiomsForSubClass(child)) {
+                OWLClassExpression classExpression = axiom.getSuperClass();
+                if(classExpression.isNamed()) {
+                    boolean test = classExpression.asOWLClass()
                         .getIRI()
                         .toString()
-                        .contentEquals(classIRI.toString())));
+                        .contentEquals(classIRI.toString());
+                    if(test) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     
     public boolean isSubClassOf(IRI classIRI, IRI anotherClassIRI) {
