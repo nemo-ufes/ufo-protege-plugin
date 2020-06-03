@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.relations;
+package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
@@ -20,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "menuItemSubQuantityOf",
+        id = "menuItemMemberOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
-        name = "New subquantity-of relation"
+        name = "New member-of relation"
 )
-public class SubQuantityOfCommand extends PatternCommand {
+public class MemberOfCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,20 +32,20 @@ public class SubQuantityOfCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI subquantity = IRI.create(getOntologyPrefix(), names[0]);
-        IRI quantity = IRI.create(getOntologyPrefix(), names[1]);
-        IRI subQuantityOfRelation = IRI.create(GufoIris.GUFO, "isSubQuantityOf");
+        IRI member = IRI.create(getOntologyPrefix(), names[0]);
+        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
+        IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Quantity, subquantity) &&
-                applier.isInstanceOf(GufoIris.Quantity, quantity)) {
-                applier.createRelation(subQuantityOfRelation, subquantity, quantity);
+            if (applier.isInstanceOf(GufoIris.Object, member) &&
+                applier.isInstanceOf(GufoIris.Collection, collection)) {
+                applier.createRelation(memberOfRelation, member, collection);
             } else {
-                showMessage("Only quantities can be subquantity of another quantities.");
+                showMessage("Only objects can be member of collections.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubQuantityOfCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MemberOfCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

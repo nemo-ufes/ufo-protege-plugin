@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.relations;
+package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
@@ -20,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "menuItemComponentOf",
+        id = "menuItemSubCollectionOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
-        name = "New component-of relation"
+        name = "New subcollection-of relation"
 )
-public class ComponentOfCommand extends PatternCommand {
+public class SubCollectionOfCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,20 +32,20 @@ public class ComponentOfCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI component = IRI.create(getOntologyPrefix(), names[0]);
-        IRI functionalComplex = IRI.create(getOntologyPrefix(), names[1]);
-        IRI componentOfRelation = IRI.create(GufoIris.GUFO, "isComponentOf");
+        IRI subcollection = IRI.create(getOntologyPrefix(), names[0]);
+        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
+        IRI subCollectionOfRelation = IRI.create(GufoIris.GUFO, "isSubCollectionOf");
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Object, component) &&
-                applier.isInstanceOf(GufoIris.FunctionalComplex, functionalComplex)) {
-                applier.createRelation(componentOfRelation, component, functionalComplex);
+            if (applier.isInstanceOf(GufoIris.Collection, subcollection) &&
+                applier.isInstanceOf(GufoIris.Collection, collection)) {
+                applier.createRelation(subCollectionOfRelation, subcollection, collection);
             } else {
-                showMessage("Only objects can be component of functional complexes.");
+                showMessage("Only collections can be subcollection of another collections.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(ComponentOfCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SubCollectionOfCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

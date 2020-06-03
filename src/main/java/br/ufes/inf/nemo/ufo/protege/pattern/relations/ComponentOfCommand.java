@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.relations;
+package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
@@ -20,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "menuItemMemberOf",
+        id = "menuItemComponentOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
-        name = "New member-of relation"
+        name = "New component-of relation"
 )
-public class MemberOfCommand extends PatternCommand {
+public class ComponentOfCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,20 +32,20 @@ public class MemberOfCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI member = IRI.create(getOntologyPrefix(), names[0]);
-        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
-        IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
+        IRI component = IRI.create(getOntologyPrefix(), names[0]);
+        IRI functionalComplex = IRI.create(getOntologyPrefix(), names[1]);
+        IRI componentOfRelation = IRI.create(GufoIris.GUFO, "isComponentOf");
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Object, member) &&
-                applier.isInstanceOf(GufoIris.Collection, collection)) {
-                applier.createRelation(memberOfRelation, member, collection);
+            if (applier.isInstanceOf(GufoIris.Object, component) &&
+                applier.isInstanceOf(GufoIris.FunctionalComplex, functionalComplex)) {
+                applier.createRelation(componentOfRelation, component, functionalComplex);
             } else {
-                showMessage("Only objects can be member of collections.");
+                showMessage("Only objects can be component of functional complexes.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(MemberOfCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ComponentOfCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
