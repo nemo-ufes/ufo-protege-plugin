@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemAddRoleToRoleMixin",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add role to rolemixin"
+        id = "menuItemInstantiateObject",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
+        name = "New instance of Object"
 )
-public class AddRoleToRoleMixinCommand extends PatternCommand {
+public class InstantiateObjectCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,19 +32,20 @@ public class AddRoleToRoleMixinCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI rolemixin = IRI.create(getOntologyPrefix(), names[0]);
-        IRI role = IRI.create(getOntologyPrefix(), names[1]);
+        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
+        IRI instance = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.RoleMixin, rolemixin) &&
-                applier.isInstanceOf(GufoIris.Role, role)) {
-                applier.addSubClassTo(rolemixin, role);
+            if (applier.isSubClassOf(GufoIris.Object, sortal) &&
+                applier.isInstanceOf(GufoIris.Sortal, sortal)) {
+                applier.createNamedIndividual(instance);
+                applier.makeInstanceOf(sortal, instance);
             } else {
-                showMessage("You must select a rolemixin and a role!");
+                showMessage("Only sortal types of Object can be directly instantiated.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(AddRoleToRoleMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InstantiateObjectCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

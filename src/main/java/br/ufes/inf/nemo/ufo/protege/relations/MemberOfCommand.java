@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemRoleMixinOfRoleMixin",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add rolemixin of rolemixin"
+        id = "menuItemMemberOf",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
+        name = "New member-of relation"
 )
-public class RoleMixinOfRoleMixinCommand extends PatternCommand {
+public class MemberOfCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,21 +32,20 @@ public class RoleMixinOfRoleMixinCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI member = IRI.create(getOntologyPrefix(), names[0]);
+        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
+        IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.RoleMixin, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.RoleMixin, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isInstanceOf(GufoIris.Object, member) &&
+                applier.isInstanceOf(GufoIris.Collection, collection)) {
+                applier.createRelation(memberOfRelation, member, collection);
             } else {
-                showMessage("You must select a rolemixin to be specialized in a rolemixin!");
+                showMessage("Only objects can be member of collections.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(RoleMixinOfRoleMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MemberOfCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

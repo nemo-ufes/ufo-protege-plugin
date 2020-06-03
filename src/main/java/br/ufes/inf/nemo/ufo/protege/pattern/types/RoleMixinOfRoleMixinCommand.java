@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemAddToCategory",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add to category"
+        id = "menuItemRoleMixinOfRoleMixin",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        name = "Add rolemixin of rolemixin"
 )
-public class AddToCategoryCommand extends PatternCommand {
+public class RoleMixinOfRoleMixinCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,19 +32,21 @@ public class AddToCategoryCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI category = IRI.create(getOntologyPrefix(), names[0]);
-        IRI rigidType = IRI.create(getOntologyPrefix(), names[1]);
+        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
+        IRI child = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Category, category) &&
-                applier.isInstanceOf(GufoIris.RigidType, rigidType)) {
-                applier.makeSubClassOf(category, rigidType);
+            if (applier.isInstanceOf(GufoIris.RoleMixin, parent)) {
+                applier.createNamedIndividual(child);
+                applier.makeInstanceOf(GufoIris.RoleMixin, child);
+                applier.createClass(child);
+                applier.addSubClassTo(parent, child);
             } else {
-                showMessage("You must select a category and a rigid type!");
+                showMessage("You must select a rolemixin to be specialized in a rolemixin!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(AddToCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoleMixinOfRoleMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

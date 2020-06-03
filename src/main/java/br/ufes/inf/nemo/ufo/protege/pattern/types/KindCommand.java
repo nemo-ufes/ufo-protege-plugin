@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemSubKind",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add subkind"
+        id = "menuItemKind",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        name = "New kind"
 )
-public class SubKindCommand extends PatternCommand {
+public class KindCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,22 +32,24 @@ public class SubKindCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
+        IRI kind = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
+                applier.isPublicGufoClass(endurantClass)) {
+                applier.createNamedIndividual(kind);
+                applier.makeInstanceOf(GufoIris.Kind, kind);
+                applier.createClass(kind);
+                applier.addSubClassTo(endurantClass, kind);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
+                        + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
+                        + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(KindCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

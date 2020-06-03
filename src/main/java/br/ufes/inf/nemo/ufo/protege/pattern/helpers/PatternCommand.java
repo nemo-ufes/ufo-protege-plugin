@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.helpers;
 
 import javax.swing.JOptionPane;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;

@@ -66,4 +66,33 @@
         <editorKitId value="OWLEditorKit"/>
     </extension>
     -->
+    
+    <extension id="PatternMenu"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="GUFO Patterns"/>
+        <toolTip value="Apply gUFO patterns"/>
+        <path value="/SlotG-A"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="ForTypesMenu"
+    		   point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="For Types"/>
+        <toolTip value="Apply patterns for gUFO types"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+	    <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="ForInstancesMenu"
+    		   point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="For Instances"/>
+        <toolTip value="Apply patterns for gUFO instances"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+	    <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="ForRelationsMenu"
+    		   point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="For Relations"/>
+        <toolTip value="Apply patterns for gUFO relations"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+	    <editorKitId value="OWLEditorKit"/>
+    </extension>
 </plugin>

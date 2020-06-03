@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemPhase",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add phase"
+        id = "menuItemRoleMixinOfCategory",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        name = "Add rolemixin of category"
 )
-public class PhaseCommand extends PatternCommand {
+public class RoleMixinOfCategoryCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,21 +32,21 @@ public class PhaseCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI phase = IRI.create(getOntologyPrefix(), names[1]);
+        IRI category = IRI.create(getOntologyPrefix(), names[0]);
+        IRI rolemixin = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                applier.createNamedIndividual(phase);
-                applier.makeInstanceOf(GufoIris.Phase, phase);
-                applier.createClass(phase);
-                applier.addSubClassTo(sortal, phase);
+            if (applier.isInstanceOf(GufoIris.Category, category)) {
+                applier.createNamedIndividual(rolemixin);
+                applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
+                applier.createClass(rolemixin);
+                applier.addSubClassTo(category, rolemixin);
             } else {
-                showMessage("There are only phases of sortals!");
+                showMessage("You must select a category to be specialized in a rolemixin!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(PhaseCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoleMixinOfCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

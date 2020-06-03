@@ -3,27 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import java.awt.event.ActionEvent;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 /**
  *
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemRoleMixinOfCategory",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "Add rolemixin of category"
+        id = "menuItemAddToCategory",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        name = "Add to category"
 )
-public class RoleMixinOfCategoryCommand extends PatternCommand {
+public class AddToCategoryCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,20 +35,25 @@ public class RoleMixinOfCategoryCommand extends PatternCommand {
                 .trim();
         String[] names = input.split(" ");
         IRI category = IRI.create(getOntologyPrefix(), names[0]);
-        IRI rolemixin = IRI.create(getOntologyPrefix(), names[1]);
+        IRI rigidType = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Category, category)) {
-                applier.createNamedIndividual(rolemixin);
-                applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
-                applier.createClass(rolemixin);
-                applier.addSubClassTo(category, rolemixin);
+            if (applier.isInstanceOf(GufoIris.Category, category) &&
+                applier.isInstanceOf(GufoIris.RigidType, rigidType)) {
+                
+                Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(category, rigidType);
+                if(!sharedEndurantClasses.isEmpty()) {
+                    applier.makeSubClassOf(category, rigidType, sharedEndurantClasses);
+                } else {
+                    showMessage("The category and the rigid type must share an Endurant class!");
+                }
+                    
             } else {
-                showMessage("You must select a category to be specialized in a rolemixin!");
+                showMessage("You must select a category and a rigid type!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(RoleMixinOfCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AddToCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

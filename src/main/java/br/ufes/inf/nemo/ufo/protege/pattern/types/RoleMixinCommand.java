@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.helpers;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.MixinCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,8 +20,8 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemRoleMixin",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
+        id = "menuItemRoleMixin",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
         name = "New rolemixin"
 )
 public class RoleMixinCommand extends PatternCommand {

@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemMixin",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "New mixin"
+        id = "menuItemSubQuantityOf",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
+        name = "New subquantity-of relation"
 )
-public class MixinCommand extends PatternCommand {
+public class SubQuantityOfCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -31,24 +32,20 @@ public class MixinCommand extends PatternCommand {
                 JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
                 .trim();
         String[] names = input.split(" ");
-        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI mixin = IRI.create(getOntologyPrefix(), names[1]);
+        IRI subquantity = IRI.create(getOntologyPrefix(), names[0]);
+        IRI quantity = IRI.create(getOntologyPrefix(), names[1]);
+        IRI subQuantityOfRelation = IRI.create(GufoIris.GUFO, "isSubQuantityOf");
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
-                applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(mixin);
-                applier.makeInstanceOf(GufoIris.Mixin, mixin);
-                applier.createClass(mixin);
-                applier.addSubClassTo(endurantClass, mixin);
+            if (applier.isInstanceOf(GufoIris.Quantity, subquantity) &&
+                applier.isInstanceOf(GufoIris.Quantity, quantity)) {
+                applier.createRelation(subQuantityOfRelation, subquantity, quantity);
             } else {
-                showMessage("A mixin must be subclass of FunctionalComplex, " + System.lineSeparator()
-                        + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
-                        + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
+                showMessage("Only quantities can be subquantity of another quantities.");
             }
         } catch (Exception ex) {
-            Logger.getLogger(MixinCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SubQuantityOfCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

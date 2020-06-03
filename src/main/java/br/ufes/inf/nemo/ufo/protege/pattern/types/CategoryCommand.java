@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
@@ -19,11 +20,11 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "ufopp.menuItemKind",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
-        name = "New kind"
+        id = "menuItemCategory",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        name = "New category"
 )
-public class KindCommand extends PatternCommand {
+public class CategoryCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -32,23 +33,23 @@ public class KindCommand extends PatternCommand {
                 .trim();
         String[] names = input.split(" ");
         IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI kind = IRI.create(getOntologyPrefix(), names[1]);
+        IRI category = IRI.create(getOntologyPrefix(), names[1]);
         
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
                 applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(kind);
-                applier.makeInstanceOf(GufoIris.Kind, kind);
-                applier.createClass(kind);
-                applier.addSubClassTo(endurantClass, kind);
+                applier.createNamedIndividual(category);
+                applier.makeInstanceOf(GufoIris.Category, category);
+                applier.createClass(category);
+                applier.addSubClassTo(endurantClass, category);
             } else {
-                showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
+                showMessage("A category must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
                         + "Quality, IntrinsicMode, ExtrinsicMode or Relator!");
             }
         } catch (Exception ex) {
-            Logger.getLogger(KindCommand.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
