@@ -53,7 +53,7 @@ public class GufoIris {
        tree = Collections.unmodifiableMap(map);
     }
 
-    // Set of classes expected to be specialized
+    // Set of classes expected to never be specialized from outside Gufo
     public static final Set<IRI> nonPublicClasses;
     static {
         Set<IRI> set = new HashSet<>(tree.keySet());
