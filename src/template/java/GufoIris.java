@@ -46,9 +46,11 @@ public class GufoIris {
     public static final Map<IRI, HierarchyNode> tree;
     static {
        Map<IRI, HierarchyNode> map = new HashMap<>();
+       map.put(null, new HierarchyNode(null, null, 0));
+
        // foreach treeNode {
-       HierarchyNode nodeForClassName = new HierarchyNode(ClassName, ParentClassName, INDEX);
-       map.put(null, nodeForClassName);
+       map.put(ClassName, new HierarchyNode(ClassName, ParentClassName, INDEX));
+       map.get(ParentClassName).getChildren().add(ClassName);
        // }
        tree = Collections.unmodifiableMap(map);
     }
