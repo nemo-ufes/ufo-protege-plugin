@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,13 +25,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class represents a validation being applied to an ontology.
+ * This class represents a validation (being) applied to an ontology.
  * <p>
  * A validation is the process of verifying whether the ontology complies with
- * the active rule set. The product of a validation will be a
- * {@link Validation.Result},
- * which has a possibly empty set of Violations of the rules.
+ * the active rule set. The product of a validation process will be a
+ * {@link Validation.Result}, which has a possibly empty set of Violations of
+ * the rules.
  * <p>
+ * Instances of this class are meant to be ephemeral. They are created for
+ * applying the rules to an ontology. After validating the rules, references to
+ * Validation results are saved but the Validation objects themselves are
+ * discarded.
+ * <p>
+ * This fields declared in this class are object references used during
+ * the validation process.
  *
  *
  * @author luciano
@@ -74,7 +82,7 @@ public class Validation {
                 .ruleConstructors()
                 .map(ruleLoader::instantiateRule)
                 .map(ruleLoader::initializeRule)
-                .filter(rule -> rule != null)
+                .filter(Objects::nonNull)
                 .forEach(rules::add)
                 ;
     }
@@ -111,27 +119,27 @@ public class Validation {
 
         initializeRuleSet();
         // Validate ontology level rules
-        rules
-                .stream()
-                .forEach(rule -> rule.validate(targetOntology))
-                ;
+        validateRulesOn(targetOntology);
 
         // Validate entity level rules
         targetOntology
                 .getAxioms(AxiomType.DECLARATION)
                 .stream()
                 .map(OWLDeclarationAxiom::getEntity)
-                .forEach(entity ->
-                    rules
-                            .stream()
-                            .forEach(rule -> rule.validate(entity))
-                )
+                .forEach(this::validateRulesOn)
                 ;
         return new Result(targetOntology, allOntologies, violations);
     }
 
     void addViolation(Rule.Violation violation) {
         violations.add(violation);
+    }
+
+    private void validateRulesOn(OWLObject subject) {
+        rules
+            .stream()
+            .forEach(rule -> rule.validate(subject))
+            ;
     }
 
     public interface Initializable {

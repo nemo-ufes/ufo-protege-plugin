@@ -8,6 +8,8 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import java.lang.reflect.ParameterizedType;
 import java.util.function.Supplier;
+import org.semanticweb.owlapi.model.HasIRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
@@ -27,8 +29,10 @@ import org.semanticweb.owlapi.model.OWLObject;
 public abstract class Rule<T extends OWLObject> extends GufoIris {
 
     protected Validation validation;
-    protected T target;
     protected Class<T> targetType;
+
+    protected T target;
+    protected Violation violation;
 
     public void initialize(Validation validation) throws Exception {
         this.validation = validation;
@@ -103,7 +107,10 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     void validate(OWLObject subject) {
         if (getTargetType().isInstance(subject)) {
             this.target = (T) subject;
-            if (isAppliable()) validate();
+            if (isAppliable()) {
+                this.violation = null;
+                validate();
+            }
         }
     }
 
@@ -136,29 +143,45 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     }
 
     protected Violation newViolation(OWLObject... arguments) {
-        Violation violation = new Violation(arguments);
+        if (violation != null) {
+            throw new RuntimeException(String.format(
+                "Unexpected error. A violation has already been created by this rule for this target. Rule class: %s; Target: %s",
+                getClass().getName(),
+                (target instanceof HasIRI) ?
+                        ((HasIRI)target).getIRI().toString() :
+                        target.toString()
+                ));
+
+        }
+        violation = new Violation(arguments);
         validation.addViolation(violation);
         return violation;
     }
 
-    public class Violation<T extends Rule> {
+    /**
+     * Single violation of a rule.
+     *
+     * @param <R>
+     */
+    public class Violation<R extends Rule> {
 
         private final OWLObject[] arguments;
 
         protected Violation(OWLObject... arguments) {
+            assert arguments[0] == target;
             this.arguments = arguments;
         }
 
-        public T getRule() {
-            return (T) Rule.this;
+        public R getRule() {
+            return (R) Rule.this;
         }
 
         public OWLObject[] getArguments() {
             return arguments;
         }
 
-        public OWLObject getMainObject() {
-            return arguments[0];
+        public T getSubject() {
+            return (T) arguments[0];
         }
     }
 
