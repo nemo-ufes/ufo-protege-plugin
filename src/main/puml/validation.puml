@@ -1,0 +1,35 @@
+@startuml
+
+
+participant Validation
+participant RuleLoader
+participant Rule
+
+activate Validation
+
+Validation -> Validation : initializeRuleSet
+activate Validation
+    create RuleLoader
+    Validation -> RuleLoader : new
+    Validation -> RuleLoader : instantiateRule(ruleConstructor)
+    create Rule
+    RuleLoader -> Rule : newInstance
+    RuleLoader --> Validation : rule
+    Validation -> RuleLoader : initializeRule(rule)
+    RuleLoader -> Rule : initialize
+    RuleLoader --> Validation : rule
+deactivate Validation
+
+
+Validation -> Validation : validateRulesOn(targetOntology)
+activate Validation
+    Validation -> Rule : validate
+deactivate Validation
+
+loop each Entity
+    Validation -> Validation : validateRulesOn(entity)
+    activate Validation
+        Validation -> Rule : validate
+    deactivate Validation
+end
+@enduml
