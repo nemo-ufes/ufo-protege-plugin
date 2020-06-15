@@ -7,10 +7,9 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
 import br.ufes.inf.nemo.ufo.protege.Singleton;
-import br.ufes.inf.nemo.ufo.protege.sandbox.LogDocument;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import org.apache.log4j.Logger;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
 
@@ -28,20 +27,24 @@ public class ValidationResultTextView extends AbstractOWLViewComponent {
     private static final long serialVersionUID = -4515710047558710080L;
     private static final Logger log =
             Logger.getLogger(ValidationResultTextView.class);
-    private JTextArea textArea;
+
+    protected ValidationResultDocument resultDocument;
 
     @Override
     protected void initialiseOWLView() throws Exception {
 
-        LogDocument logDocument = Singleton.get(
-                getOWLModelManager(), LogDocument.class);
+        resultDocument = Singleton.get(
+                getOWLModelManager(), ValidationResultDocument.class);
 
         setLayout(new BorderLayout());
-        textArea = new JTextArea(logDocument.getDocument());
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        JScrollPane textAreaScrollPane = new JScrollPane(textArea);
-        add(textAreaScrollPane);
+
+        JTextPane resultTextPane = new JTextPane();
+        resultTextPane.setEditable(false);
+        resultTextPane.setContentType("text/html");
+        resultTextPane.setDocument(resultDocument.getDocument());
+
+        JScrollPane resultTextScrollPane = new JScrollPane(resultTextPane);
+        add(resultTextScrollPane);
     }
 
     @Override

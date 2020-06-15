@@ -35,6 +35,10 @@ public class ValidateCommand extends ProtegeOWLAction {
         Validation.Result result = validator.validate();
         logDocument.append(result.toString());
         logDocument.append("\n");
+
+        ValidationResultDocument resultDocument = Singleton.get(
+                getOWLModelManager(), ValidationResultDocument.class);
+        resultDocument.setResult(result);
     }
 
     @Override
