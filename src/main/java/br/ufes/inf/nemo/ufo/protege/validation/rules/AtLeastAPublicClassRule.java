@@ -14,7 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Missing public UFO supertype"
+        label="Missing a public UFO supertype",
+        description="Every class should inherit from at least a public UFO supertype."
 )
 public class AtLeastAPublicClassRule extends ClassRule {
 
