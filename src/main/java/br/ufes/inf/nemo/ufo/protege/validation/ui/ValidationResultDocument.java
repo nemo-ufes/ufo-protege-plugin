@@ -7,16 +7,19 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import br.ufes.inf.nemo.ufo.protege.Util;
+import br.ufes.inf.nemo.ufo.protege.validation.Rule;
 import br.ufes.inf.nemo.ufo.protege.validation.Rule.Violation;
 import br.ufes.inf.nemo.ufo.protege.validation.Validation;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
-import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLWriter;
@@ -75,19 +78,6 @@ public class ValidationResultDocument implements Singleton.Initializable {
         return buffer.toString();
     }
 
-    public void append(String text) {
-        try {
-            final Element root = document.getDefaultRootElement();
-            final Element html = root.getElement(root.getElementCount() - 1);
-            final Element body = html.getElement(html.getElementCount() - 1);
-
-            document.insertBeforeEnd(body, "<p>The <a href=\"http://purl.org/nemo/gufo#Sortal\">Sortal</a> class</p>");
-            document.insertBeforeEnd(body, "<p>" + text + "</p>");
-        } catch (BadLocationException | IOException ex) {
-            log.error("Error on generating log text.", ex);
-        }
-    }
-
     void setResult(Validation.Result result) {
 
         body.getElementCount();
@@ -98,15 +88,34 @@ public class ValidationResultDocument implements Singleton.Initializable {
             }
         }
         result
-                .getViolations()
-                .stream()
-                .forEach(this::registerViolation);
+            .getViolations()
+            .stream()
+            .collect(
+                HashMap<Rule, Set<Violation>>::new,
+                (map, violation) -> {
+                    Set<Violation> set = map.computeIfAbsent(
+                            violation.getRule(), (rule) -> new HashSet<>());
+                    set.add(violation);
+                },
+                (a, b) -> {
+                    for (Map.Entry<Rule, Set<Violation>> entry : b.entrySet()) {
+                        if (a.containsKey(entry.getKey())) {
+                            a.get(entry.getKey()).addAll(entry.getValue());
+                        } else {
+                            a.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+            )
+            .forEach(this::printViolationsForRule);
     }
 
-    private void registerViolation(Violation violation) {
+    private void printViolationsForRule(Rule rule, Set<Violation> violations) {
         try {
-            document.insertBeforeEnd(body,
-                    "<h1>" + violation.getRule().getLabel() + "</h1>");
+            document.insertBeforeEnd(body, "<h1>" + rule.getLabel() + "</h1>");
+            for (Violation violation : violations) {
+
+            }
         } catch (BadLocationException | IOException ex) {
             log.error("Error on generating log text.", ex);
         }
