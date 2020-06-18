@@ -7,6 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.treeview;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
 import static br.ufes.inf.nemo.ufo.protege.GufoIris.compareOWLObjects;
+import br.ufes.inf.nemo.ufo.protege.Singleton;
 import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;
@@ -47,11 +48,9 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
 
     @Override
     protected OWLObjectHierarchyProvider<OWLClass> getHierarchyProvider() {
-        final OWLModelManager owlModelManager = getOWLEditorKit().getOWLModelManager();
-        final UFOBasedClassHierarchyProvider result
-                = new UFOBasedClassHierarchyProvider(owlModelManager);
-        result.setOntologies(owlModelManager.getActiveOntologies());
-        return result;
+        return Singleton.get(
+                getOWLEditorKit().getOWLModelManager(),
+                UFOBasedClassHierarchyProvider.class);
     }
 
     @Override

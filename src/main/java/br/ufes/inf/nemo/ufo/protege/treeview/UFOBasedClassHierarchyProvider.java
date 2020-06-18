@@ -14,10 +14,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.editor.owl.model.event.OWLModelManagerListener;
 import org.protege.editor.owl.model.hierarchy.AbstractOWLObjectHierarchyProvider;
 import org.protege.editor.owl.model.hierarchy.OWLObjectHierarchyProvider;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChangeListener;
 
 /**
  * Hierarchy Provider used by {@link UFOBasedHierarchyViewComponent
@@ -32,14 +34,25 @@ import org.semanticweb.owlapi.model.OWLOntology;
  *
  * @author luciano
  */
-public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyProvider<OWLClass> {
+public class UFOBasedClassHierarchyProvider
+        extends AbstractOWLObjectHierarchyProvider<OWLClass> {
 
     private List<OWLOntology> ontologies;
     private final OWLModelManager owlModelManager;
 
-    UFOBasedClassHierarchyProvider(OWLModelManager owlModelManager) {
+    public UFOBasedClassHierarchyProvider(OWLModelManager owlModelManager) {
         super(owlModelManager.getOWLOntologyManager());
         this.owlModelManager = owlModelManager;
+        this.updateOntologies();
+        owlModelManager.addListener(owlModelManagerListener);
+        owlModelManager.addOntologyChangeListener(owlOntologyChangeListener);
+    }
+
+    @Override
+    public void dispose() {
+        owlModelManager.removeListener(owlModelManagerListener);
+        owlModelManager.removeOntologyChangeListener(owlOntologyChangeListener);
+        super.dispose();
     }
 
     @Override
@@ -88,4 +101,29 @@ public class UFOBasedClassHierarchyProvider extends AbstractOWLObjectHierarchyPr
             getUFOViewChildren(ontologies, owlClass) :
             getOWLClassHierarchyProvider().getChildren(owlClass);
     }
+
+    final OWLOntologyChangeListener owlOntologyChangeListener = changes -> {
+        changes
+            .stream()
+            .filter(change -> ontologies.contains(change.getOntology()))
+            .filter(change -> change.isAxiomChange())
+            .flatMap(change -> change.getSignature().stream())
+            .filter(entity -> entity.isOWLClass())
+            .map(entity -> entity.asOWLClass())
+            .distinct()
+            .forEach(this::fireNodeChanged);
+    };
+
+    private void updateOntologies() {
+        setOntologies(owlModelManager.getActiveOntologies());
+    }
+
+    final OWLModelManagerListener owlModelManagerListener = event -> {
+        switch (event.getType()) {
+            case ACTIVE_ONTOLOGY_CHANGED:
+            case ONTOLOGY_RELOADED:
+                updateOntologies();
+                break;
+        }
+    };
 }
