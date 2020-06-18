@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.hierarchy.OWLObjectHierarchyProvider;
+import org.protege.editor.owl.model.selection.OWLSelectionModel;
+import org.protege.editor.owl.model.selection.OWLSelectionModelListener;
 import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -41,6 +43,14 @@ import org.semanticweb.owlapi.model.OWLObject;
 )
 public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewComponent {
 
+    private final OWLSelectionModelListener owlSelectionModelListener = () -> {
+        OWLObject selectedObject = getSelectionModel().getSelectedObject();
+        if (selectedObject instanceof OWLClass) {
+            OWLClass owlClass = (OWLClass) selectedObject;
+            getTree().setSelectedOWLObject(owlClass);
+        }
+    };
+
     @Override
     protected Optional<OWLObjectHierarchyProvider<OWLClass>> getInferredHierarchyProvider() {
         return Optional.empty();
@@ -60,6 +70,17 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
 
         initializeCellRenderer();
         initializeComparator();
+        getSelectionModel().addListener(owlSelectionModelListener);
+    }
+
+    @Override
+    public void disposeView() {
+        getSelectionModel().removeListener(owlSelectionModelListener);
+        super.disposeView();
+    }
+
+    protected OWLSelectionModel getSelectionModel() {
+        return getOWLWorkspace().getOWLSelectionModel();
     }
 
     protected void initializeCellRenderer() {
