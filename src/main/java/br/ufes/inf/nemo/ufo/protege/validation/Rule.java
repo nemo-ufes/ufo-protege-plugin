@@ -153,82 +153,12 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
                 ));
 
         }
-        violation = new Violation(arguments);
+        violation = new Violation(this, arguments);
         validation.addViolation(violation);
         return violation;
     }
 
-    /**
-     * Single violation of a rule.
-     *
-     * @param <R>
-     */
-    public class Violation<R extends Rule> {
-
-        private final OWLObject[] arguments;
-
-        protected Violation(OWLObject... arguments) {
-            assert arguments[0] == target;
-            this.arguments = arguments;
-        }
-
-        public R getRule() {
-            return (R) Rule.this;
-        }
-
-        public OWLObject[] getArguments() {
-            return arguments;
-        }
-
-        public T getSubject() {
-            return (T) arguments[0];
-        }
-    }
-
     protected ResultBuilder when(boolean b) {
-        return new ResultBuilder(b);
-    }
-
-    public class ResultBuilder {
-
-        boolean result = true;
-
-        private ResultBuilder(boolean b) {
-            result = b;
-        }
-
-        public ResultBuilder and(boolean b) {
-            result &= b;
-            return this;
-        }
-
-        public ResultBuilder or(boolean b) {
-            result |= b;
-            return this;
-        }
-
-        public ResultBuilder and(Supplier<Boolean> s) {
-            result &= s.get();
-            return this;
-        }
-
-        public ResultBuilder or(Supplier<Boolean> s) {
-            result |= s.get();
-            return this;
-        }
-
-        public ResultBuilder registerViolationFor(OWLObject... arguments) {
-            if (result) {
-                newViolation(arguments);
-            }
-            return this;
-        }
-
-        public ResultBuilder registerViolation() {
-            if (result) {
-                newViolation(target);
-            }
-            return this;
-        }
+        return new ResultBuilder(b, this);
     }
 }

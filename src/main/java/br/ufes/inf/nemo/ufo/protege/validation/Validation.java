@@ -56,7 +56,7 @@ public class Validation {
     private final OWLOntology targetOntology;
     private final Set<OWLOntology> allOntologies;
     private final Set<Rule> rules = new HashSet<>();
-    private final Set<Rule.Violation> violations = new HashSet<>();
+    private final Set<Violation> violations = new HashSet<>();
     private final Map<Class<?>, Object> helpers = new HashMap<>();
     private final Validator validator;
     // Set to hold all declared classes in ontology
@@ -131,7 +131,7 @@ public class Validation {
         return new Result(targetOntology, allOntologies, violations);
     }
 
-    void addViolation(Rule.Violation violation) {
+    void addViolation(Violation violation) {
         violations.add(violation);
     }
 
@@ -144,50 +144,5 @@ public class Validation {
 
     public interface Initializable {
         public void initialize(Validation validation);
-    }
-
-    public static class Result {
-        private final OWLOntology targetOntology;
-        private final Set<OWLOntology> allOntologies;
-        private final Set<Rule.Violation> violations;
-
-        public Result(
-                OWLOntology targetOntology,
-                Set<OWLOntology> allOntologies,
-                Set<Rule.Violation> violations) {
-            this.targetOntology = targetOntology;
-            this.allOntologies = allOntologies;
-            this.violations = violations;
-        }
-
-        public OWLOntology getTargetOntology() {
-            return targetOntology;
-        }
-
-        public Set<OWLOntology> getAllOntologies() {
-            return allOntologies;
-        }
-
-        public Set<Rule.Violation> getViolations() {
-            return violations;
-        }
-
-        @Override
-        public String toString() {
-            return violations
-                    .stream()
-                    .map(violation ->
-                        Stream.concat(
-                            Stream.of(violation.getRule().getClass().getSimpleName()),
-                            violation
-                                    .getArguments()[0]
-                                    .getSignature()
-                                    .stream()
-                                    .map(entity -> entity.getIRI().getShortForm())
-                        ).collect(Collectors.joining(": ", "(", ")"))
-                    )
-                    .collect(Collectors.joining("; ", "{", "}"))
-                    ;
-        }
     }
 }

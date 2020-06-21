@@ -8,6 +8,7 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import br.ufes.inf.nemo.ufo.protege.sandbox.LogDocument;
+import br.ufes.inf.nemo.ufo.protege.validation.Result;
 import br.ufes.inf.nemo.ufo.protege.validation.Validation;
 import br.ufes.inf.nemo.ufo.protege.validation.Validator;
 import java.awt.event.ActionEvent;
@@ -32,7 +33,7 @@ public class ValidateCommand extends ProtegeOWLAction {
         Validator validator = Validator.get(getOWLModelManager());
         LogDocument logDocument = Singleton.get(
                 getOWLModelManager(), LogDocument.class);
-        Validation.Result result = validator.validate();
+        Result result = validator.validate();
         logDocument.append(result.toString());
         logDocument.append("\n");
 

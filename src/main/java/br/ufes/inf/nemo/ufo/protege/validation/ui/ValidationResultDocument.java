@@ -7,9 +7,9 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import br.ufes.inf.nemo.ufo.protege.Util;
+import br.ufes.inf.nemo.ufo.protege.validation.Result;
 import br.ufes.inf.nemo.ufo.protege.validation.Rule;
-import br.ufes.inf.nemo.ufo.protege.validation.Rule.Violation;
-import br.ufes.inf.nemo.ufo.protege.validation.Validation;
+import br.ufes.inf.nemo.ufo.protege.validation.Violation;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -78,7 +78,7 @@ public class ValidationResultDocument implements Singleton.Initializable {
         return buffer.toString();
     }
 
-    void setResult(Validation.Result result) {
+    void setResult(Result result) {
 
         body.getElementCount();
         for (int i = body.getElementCount() - 1; i > 0; i--) {
