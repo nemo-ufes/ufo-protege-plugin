@@ -12,11 +12,9 @@ import br.ufes.inf.nemo.ufo.protege.validation.Rule;
 import br.ufes.inf.nemo.ufo.protege.validation.Violation;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
@@ -24,6 +22,9 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLWriter;
 import org.protege.editor.core.ModelManager;
+import org.semanticweb.owlapi.model.HasIRI;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,34 +91,45 @@ public class ValidationResultDocument implements Singleton.Initializable {
         result
             .getViolations()
             .stream()
-            .collect(
-                HashMap<Rule, Set<Violation>>::new,
-                (map, violation) -> {
-                    Set<Violation> set = map.computeIfAbsent(
-                            violation.getRule(), (rule) -> new HashSet<>());
-                    set.add(violation);
-                },
-                (a, b) -> {
-                    for (Map.Entry<Rule, Set<Violation>> entry : b.entrySet()) {
-                        if (a.containsKey(entry.getKey())) {
-                            a.get(entry.getKey()).addAll(entry.getValue());
-                        } else {
-                            a.put(entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-            )
+            .collect(Collectors.groupingBy(Violation::getRule))
             .forEach(this::printViolationsForRule);
     }
 
-    private void printViolationsForRule(Rule rule, Set<Violation> violations) {
+    private void printViolationsForRule(Rule rule, List<Violation> violations) {
         try {
+            violations.sort((a, b) -> {
+                OWLObject subjA = a.getSubject();
+                OWLObject subjB = b.getSubject();
+                if (subjA instanceof HasIRI) {
+                    if (subjB instanceof HasIRI) {
+                        IRI iriA = ((HasIRI) subjA).getIRI();
+                        IRI iriB = ((HasIRI) subjB).getIRI();
+                        return iriA.compareTo(iriB);
+                    }
+                    return -1;
+                }
+                return 1;
+            });
             document.insertBeforeEnd(body, "<h1>" + rule.getLabel() + "</h1>");
             for (Violation violation : violations) {
-
+                OWLObject subject = violation.getSubject();
+                if (subject instanceof HasIRI) {
+                    printIRI((HasIRI) subject);
+                }
             }
         } catch (BadLocationException | IOException ex) {
             log.error("Error on generating log text.", ex);
         }
+    }
+
+    private void printIRI(HasIRI hasIRI) throws BadLocationException, IOException {
+        IRI iri = hasIRI.getIRI();
+        StringBuilder str = new StringBuilder();
+        str.append("<p><a href=\"");
+        str.append(iri.toString());
+        str.append("\">");
+        str.append(iri.getShortForm());
+        str.append("</a></p>");
+        document.insertBeforeEnd(body, str.toString());
     }
 }
