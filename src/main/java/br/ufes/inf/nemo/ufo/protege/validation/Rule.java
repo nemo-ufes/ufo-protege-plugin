@@ -6,9 +6,17 @@
 package br.ufes.inf.nemo.ufo.protege.validation;
 
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraph;
+import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
+import br.ufes.inf.nemo.ufo.protege.validation.solution.OperationBuilder;
 import java.lang.reflect.ParameterizedType;
-import java.util.function.Supplier;
-import org.semanticweb.owlapi.model.HasIRI;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -137,6 +145,9 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
         }
     }
 
+    /**
+     * @return Description of this rule
+     */
     public String getDescription() {
         RuleInfo annotation = getClass().getAnnotation(RuleInfo.class);
         if (annotation != null) {
@@ -156,5 +167,76 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
 
     protected ResultBuilder when(boolean b) {
         return new ResultBuilder(b, this);
+    }
+
+    protected OperationBuilder solution(String title) {
+        return validation.solution(title);
+    }
+
+    private IRI newIRI(Set<IRI> set) {
+        return validation.newIRI(set);
+    }
+
+    private Set<IRI> getSet(IRI iri) {
+        return validation.getIRISet(iri);
+    }
+
+    private Set<IRI> getSet(Set<IRI> iriSet) {
+        return iriSet
+            .stream()
+            .map(this::getSet)
+            .flatMap(Set::stream)
+            .collect(Collectors.toSet())
+            ;
+    }
+
+    protected IRI nodeNavigation(
+            Set<IRI> baseClasses,
+            Function<ObjectGraphNode, Stream<ObjectGraphNode>> navigate) {
+        final ObjectGraph graph = validation.get(ObjectGraph.class);
+        Set<IRI> set = baseClasses
+                .stream()
+                .map(iri -> graph.getNode(iri))
+                .flatMap(node -> navigate.apply(node))
+                .filter(node -> node.isIRI())
+                .map(node -> node.getIRI())
+                .collect(Collectors.toSet())
+                ;
+        return newIRI(set);
+    }
+
+    protected IRI nodeNavigation(IRI baseIRI,
+            Function<ObjectGraphNode, Stream<ObjectGraphNode>> navigate) {
+        return nodeNavigation(getSet(baseIRI), navigate);
+    }
+
+    protected IRI instanceOf(IRI typeClass) {
+        return nodeNavigation(typeClass, ObjectGraphNode::instances);
+    }
+
+    protected IRI subClassOf(IRI superClass) {
+        return nodeNavigation(superClass, ObjectGraphNode::descendants);
+    }
+
+    protected IRI oneOf(Set<IRI> classSet) {
+        return newIRI(getSet(classSet));
+    }
+
+    protected IRI oneOf(IRI... classSet) {
+        Set<IRI> set = new HashSet<>();
+        Collections.addAll(set, classSet);
+        return oneOf(set);
+    }
+
+    protected IRI subclassesOfAny(Set<IRI> classSet) {
+        return nodeNavigation(
+                getSet(classSet),
+                ObjectGraphNode::descendants);
+    }
+
+    protected IRI subclassesOfAny(IRI... classSet) {
+        Set<IRI> set = new HashSet<>();
+        Collections.addAll(set, classSet);
+        return subclassesOfAny(set);
     }
 }

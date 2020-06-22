@@ -5,6 +5,9 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation;
 
+import br.ufes.inf.nemo.ufo.protege.validation.solution.ProposedSolution;
+import java.util.ArrayList;
+import java.util.List;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
@@ -16,11 +19,13 @@ public class Violation<T extends OWLObject> {
 
     private final OWLObject[] arguments;
     private final Rule<T> rule;
+    private final List<ProposedSolution> solutions;
 
     protected Violation(final Rule<T> rule, OWLObject... arguments) {
         this.rule = rule;
         assert arguments[0] == rule.getTarget();
         this.arguments = arguments;
+        this.solutions = new ArrayList<>();
     }
 
     public Rule<T> getRule() {
@@ -33,5 +38,13 @@ public class Violation<T extends OWLObject> {
 
     public T getSubject() {
         return (T) arguments[0];
+    }
+
+    public List<ProposedSolution> getSolutions() {
+        return solutions;
+    }
+
+    public boolean addProposal(ProposedSolution e) {
+        return solutions.add(e);
     }
 }

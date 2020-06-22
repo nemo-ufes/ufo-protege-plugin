@@ -26,4 +26,19 @@ public class AtLeastAPublicClassRule extends ClassRule {
         .and(!classNode().isSubclassOfAny(publicClasses))
         .registerViolation();
     }
+
+    public void getSolutionAlternatives() {
+        solution("Make class subclass of a public UFO class")
+                .addAxiom()
+                    .target()
+                    .subClassOf()
+                    .object(oneOf(publicClasses))
+                ;
+        solution("Make class subclass of a public UFO subclass")
+                .addAxiom()
+                    .target()
+                    .subClassOf()
+                    .object(oneOf(subclassesOfAny(publicClasses)))
+                ;
+    }
 }

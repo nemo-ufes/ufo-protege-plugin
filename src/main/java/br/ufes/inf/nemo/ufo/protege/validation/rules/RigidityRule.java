@@ -26,4 +26,23 @@ public class RigidityRule extends ClassRule {
                 .anyMatch(node -> node.isInstanceOf(AntiRigidType)))
         .registerViolation();
     }
+
+    public void getSolutionAlternatives() {
+        solution("Stop subclassing rigid type.")
+            .removeAxiom()
+                .target()
+                .subClassOf()
+                .object(subClassOf(instanceOf(RigidType)))
+            ;
+        solution("Make subject non Rigid.")
+            .removeAxiom()
+                .target()
+                .type()
+                .object(subClassOf(instanceOf(RigidType)))
+            .addAxiom()
+                .target()
+                .type()
+                .object(subClassOf(NonRigidType))
+                ;
+    }
 }

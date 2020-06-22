@@ -24,4 +24,13 @@ public class OnlyPublicClassRule extends ClassRule {
         when(classNode().isDirectSubclassOfAny(nonPublicClasses))
         .registerViolation();
     }
+
+    public void getSolutionAlternatives() {
+        solution("Stop subclassing non public classes.")
+            .removeAxiom()
+                .target()
+                .subClassOf()
+                .object(null /* anyOf(nonPublicClasses) */)
+            ;
+    }
 }

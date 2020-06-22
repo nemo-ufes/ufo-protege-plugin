@@ -16,14 +16,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper class to deal with of loading rule classes.
  * <p>
- * This class is instantiated only once during initialization of a
- * {@link Validator} object. Its method {@link loadRules(List) loadRules}
- * loads class names from 'rules.list' text file resource and creates an
- * instance for each one of the classes.
- * <p>
- * The 'rules.list' resource is automatically generated during build time by
- * maven-antrun-plugin. It makes a scan over the source code folder of
- * package br.ufes.inf.nemo.ufo.protege.validation
+ * This class holds the boilerplate code involved in loading {@link Rule }
+ * subclasses and instantiating them, while generating sensible log messages.
  *
  * @author luciano
  */

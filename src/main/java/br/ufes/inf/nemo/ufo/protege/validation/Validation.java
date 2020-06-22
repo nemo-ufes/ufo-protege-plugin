@@ -5,10 +5,13 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation;
 
+import br.ufes.inf.nemo.ufo.protege.validation.solution.OperationBuilder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -17,6 +20,7 @@ import org.protege.editor.core.ModelManager;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.HasIRI;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -71,6 +75,7 @@ public class Validation {
     private final Set<OWLOntology> allOntologies;
     private final Set<Rule> rules = new HashSet<>();
     private final Set<Violation> violations = new HashSet<>();
+    private final Map<IRI, Set<IRI>> iriMap = new HashMap<>();
     private final Map<Class<?>, Object> helpers = new HashMap<>();
     private final Validator validator;
     // Set to hold all declared classes in ontology
@@ -179,8 +184,24 @@ public class Validation {
             ;
     }
 
+    public IRI newIRI(Set<IRI> data) {
+        IRI result = IRI.create(
+                "internal://#",
+                String.format("%04d", iriMap.size() + 1));
+        iriMap.put(result, data);
+        return result;
+    }
+
+    public Set<IRI> getIRISet(IRI iri) {
+        return iriMap.computeIfAbsent(iri, Collections::singleton);
+    }
+
     public OWLObject getCurrentTarget() {
         return currentTarget;
+    }
+
+    OperationBuilder solution(String title) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public interface Initializable {
