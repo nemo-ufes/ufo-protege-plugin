@@ -8,10 +8,20 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import java.awt.BorderLayout;
+import java.net.URL;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.HyperlinkEvent;
+import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
+import javax.swing.event.HyperlinkListener;
 import org.apache.log4j.Logger;
+import org.protege.editor.owl.model.OWLModelManager;
+import org.protege.editor.owl.model.OWLWorkspace;
+import org.protege.editor.owl.model.selection.OWLSelectionModel;
 import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
+import org.semanticweb.owlapi.model.EntityType;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLClass;
 
 /**
  *
@@ -22,7 +32,8 @@ import org.protege.editor.owl.ui.view.AbstractOWLViewComponent;
         label = "GUFO validation result text",
         category = "@org.protege.ontologycategory"
 )
-public class ValidationResultTextView extends AbstractOWLViewComponent {
+public class ValidationResultTextView extends AbstractOWLViewComponent
+                                      implements HyperlinkListener {
 
     private static final long serialVersionUID = -4515710047558710080L;
     private static final Logger log =
@@ -45,10 +56,26 @@ public class ValidationResultTextView extends AbstractOWLViewComponent {
 
         JScrollPane resultTextScrollPane = new JScrollPane(resultTextPane);
         add(resultTextScrollPane);
+        resultTextPane.addHyperlinkListener(this);
     }
 
     @Override
     protected void disposeOWLView() {
+    }
+
+    @Override
+    public void hyperlinkUpdate(HyperlinkEvent he) {
+        if (ACTIVATED == he.getEventType()) {
+            final OWLModelManager modelManager = getOWLModelManager();
+            final OWLWorkspace workspace = getOWLWorkspace();
+            final OWLSelectionModel selection = workspace.getOWLSelectionModel();
+            final URL url = he.getURL();
+            final IRI selectingIRI = IRI.create(url);
+            final OWLClass entity = modelManager
+                    .getOWLDataFactory()
+                    .getOWLEntity(EntityType.CLASS, selectingIRI);
+            selection.setSelectedEntity(entity);
+        }
 
     }
 }
