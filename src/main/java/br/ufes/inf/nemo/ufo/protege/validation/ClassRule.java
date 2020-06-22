@@ -16,6 +16,6 @@ import org.semanticweb.owlapi.model.OWLClass;
 public abstract class ClassRule extends Rule<OWLClass> {
 
     protected ObjectGraphNode classNode() {
-        return get(ObjectGraph.class).getNode(target);
+        return get(ObjectGraph.class).getNode(getTarget());
     }
 }

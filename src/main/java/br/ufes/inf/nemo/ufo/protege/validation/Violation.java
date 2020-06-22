@@ -19,7 +19,7 @@ public class Violation<T extends OWLObject> {
 
     protected Violation(final Rule<T> rule, OWLObject... arguments) {
         this.rule = rule;
-        assert arguments[0] == rule.target;
+        assert arguments[0] == rule.getTarget();
         this.arguments = arguments;
     }
 

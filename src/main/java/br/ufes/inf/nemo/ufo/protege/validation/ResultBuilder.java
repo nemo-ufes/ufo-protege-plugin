@@ -51,7 +51,7 @@ public class ResultBuilder<T extends OWLObject> {
 
     public ResultBuilder registerViolation() {
         if (result) {
-            rule.newViolation(rule.target);
+            rule.newViolation(rule.getTarget());
         }
         return this;
     }

@@ -31,9 +31,6 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     protected Validation validation;
     protected Class<T> targetType;
 
-    protected T target;
-    protected Violation violation;
-
     public void initialize(Validation validation) throws Exception {
         this.validation = validation;
     }
@@ -60,6 +57,10 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
 
         }
         return targetType;
+    }
+
+    protected OWLObject getTarget() {
+        return validation.getCurrentTarget();
     }
 
     /**
@@ -106,9 +107,7 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
      */
     void validate(OWLObject subject) {
         if (getTargetType().isInstance(subject)) {
-            this.target = (T) subject;
             if (isAppliable()) {
-                this.violation = null;
                 validate();
             }
         }
@@ -143,19 +142,7 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     }
 
     protected Violation newViolation(OWLObject... arguments) {
-        if (violation != null) {
-            throw new RuntimeException(String.format(
-                "Unexpected error. A violation has already been created by this rule for this target. Rule class: %s; Target: %s",
-                getClass().getName(),
-                (target instanceof HasIRI) ?
-                        ((HasIRI)target).getIRI().toString() :
-                        target.toString()
-                ));
-
-        }
-        violation = new Violation(this, arguments);
-        validation.addViolation(violation);
-        return violation;
+        return validation.newViolation(arguments);
     }
 
     protected ResultBuilder when(boolean b) {

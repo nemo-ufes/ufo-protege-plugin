@@ -12,12 +12,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ModelManager;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.model.AxiomType;
+import org.semanticweb.owlapi.model.HasIRI;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -60,6 +59,9 @@ public class Validation {
     private final Map<Class<?>, Object> helpers = new HashMap<>();
     private final Validator validator;
     // Set to hold all declared classes in ontology
+    private OWLObject currentTarget;
+    private Rule currentRule;
+    private Violation currentViolation;
 
     public Validation(OWLModelManager modelManager) {
         this.modelManager = modelManager;
@@ -131,15 +133,36 @@ public class Validation {
         return new Result(targetOntology, allOntologies, violations);
     }
 
-    void addViolation(Violation violation) {
-        violations.add(violation);
+    public Violation newViolation(OWLObject... arguments) {
+        if (currentViolation != null) {
+            throw new RuntimeException(String.format(
+                "Unexpected error. A violation has already been created by this rule for this target. Rule class: %s; Target: %s",
+                currentTarget.getClass().getName(),
+                (currentTarget instanceof HasIRI) ?
+                        ((HasIRI)currentTarget).getIRI().toString() :
+                        currentTarget.toString()
+                ));
+
+        }
+        currentViolation = new Violation(currentRule, arguments);
+        violations.add(currentViolation);
+        return currentViolation;
     }
 
     private void validateRulesOn(OWLObject subject) {
+        currentTarget = subject;
         rules
             .stream()
-            .forEach(rule -> rule.validate(subject))
+            .forEach(rule -> {
+                currentRule = rule;
+                currentViolation = null;
+                rule.validate(subject);
+            })
             ;
+    }
+
+    public OWLObject getCurrentTarget() {
+        return currentTarget;
     }
 
     public interface Initializable {
