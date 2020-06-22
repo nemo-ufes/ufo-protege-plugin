@@ -36,7 +36,6 @@ final class RuleLoader {
     private Collection<Constructor<? extends Rule>> ruleConstructors;
     private String ruleClassName;
     private Constructor<? extends Rule> ruleConstructor;
-    private Rule rule;
 
     private RuntimeException quitException;
 
@@ -56,12 +55,6 @@ final class RuleLoader {
 
     private void quit(String message, Object... args) {
         String formattedMessage = String.format(message, args);
-        log.error(formattedMessage);
-        throw quitException = new RuntimeException(formattedMessage);
-    }
-
-    private void quit(String message) {
-        String formattedMessage = String.format(message, ruleClassName);
         log.error(formattedMessage);
         throw quitException = new RuntimeException(formattedMessage);
     }
