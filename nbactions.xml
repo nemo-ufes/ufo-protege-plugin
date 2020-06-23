@@ -8,9 +8,22 @@
         <properties>
             <jpda.listen>true</jpda.listen>
             <vm.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</vm.args>
+            <skipTests>true</skipTests>
         </properties>
         <activatedProfiles>
             <activatedProfile>run-on-protege</activatedProfile>
         </activatedProfiles>
+    </action>
+    <action>
+        <actionName>build</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>install</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+        </properties>
     </action>
 </actions>
