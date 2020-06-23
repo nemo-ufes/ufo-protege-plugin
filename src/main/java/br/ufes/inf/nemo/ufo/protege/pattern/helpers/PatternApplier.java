@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -206,16 +207,96 @@ public final class PatternApplier {
         modelManager.applyChange(addAxiom);
     }
     
-    public void createRelation(IRI propertyIRI, IRI instA_IRI, IRI instB_IRI) {
+    public void createRelation(IRI propertyIRI, IRI subjectIRI, IRI objectIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
         
         OWLObjectProperty relation = dataFactory.getOWLObjectProperty(propertyIRI);
-        OWLNamedIndividual instA = dataFactory.getOWLNamedIndividual(instA_IRI);
-        OWLNamedIndividual instB = dataFactory.getOWLNamedIndividual(instB_IRI);
+        OWLNamedIndividual subject = dataFactory.getOWLNamedIndividual(subjectIRI);
+        OWLNamedIndividual object = dataFactory.getOWLNamedIndividual(objectIRI);
         
         OWLAxiom assertionAxiom = 
-            dataFactory.getOWLObjectPropertyAssertionAxiom(relation, instA, instB);
+            dataFactory.getOWLObjectPropertyAssertionAxiom(relation, subject, object);
         AddAxiom addAxiom = new AddAxiom(ontology, assertionAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public void assertDataProperty(IRI propertyIRI, IRI instIRI, String value) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLDataProperty property = dataFactory.getOWLDataProperty(propertyIRI);
+        OWLNamedIndividual inst = dataFactory.getOWLNamedIndividual(instIRI);
+        
+        OWLAxiom assertionAxiom = 
+            dataFactory.getOWLDataPropertyAssertionAxiom(property, inst, value);
+        AddAxiom addAxiom = new AddAxiom(ontology, assertionAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public void createSubDataProperty(IRI propertyIRI, IRI subPropertyIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLDataProperty property = dataFactory.getOWLDataProperty(propertyIRI);
+        OWLDataProperty subProperty = dataFactory.getOWLDataProperty(subPropertyIRI);
+        
+        OWLAxiom assertionAxiom = dataFactory.getOWLSubDataPropertyOfAxiom(subProperty, property);
+        AddAxiom addAxiom = new AddAxiom(ontology, assertionAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public boolean isSubDataPropertyOf(IRI propertyIRI, IRI subPropertyIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLDataProperty property = dataFactory.getOWLDataProperty(propertyIRI);
+        OWLDataProperty subProperty = dataFactory.getOWLDataProperty(subPropertyIRI);
+        
+        return ontology.getDataSubPropertyAxiomsForSubProperty(subProperty).stream()
+                .anyMatch(axiom -> axiom.getSuperProperty()
+                    .asOWLDataProperty()
+                    .getIRI()
+                    .toString()
+                    .contentEquals(propertyIRI.toString()));
+    }
+    
+    public void setDataPropertyDomain(IRI propertyIRI, IRI domainIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLDataProperty property = dataFactory.getOWLDataProperty(propertyIRI);
+        OWLClass domain = dataFactory.getOWLClass(domainIRI);
+        
+        OWLAxiom domainAxiom = dataFactory.getOWLDataPropertyDomainAxiom(property, domain);
+        AddAxiom addAxiom = new AddAxiom(ontology, domainAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public void createObjectProperty(IRI propertyIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLObjectProperty newProperty = dataFactory.getOWLObjectProperty(propertyIRI);
+        
+        OWLAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(newProperty);
+        AddAxiom addAxiom = new AddAxiom(ontology, declarationAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public void setObjectPropertyDomain(IRI propertyIRI, IRI domainIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLObjectProperty property = dataFactory.getOWLObjectProperty(propertyIRI);
+        OWLClass domain = dataFactory.getOWLClass(domainIRI);
+        
+        OWLAxiom domainAxiom = dataFactory.getOWLObjectPropertyDomainAxiom(property, domain);
+        AddAxiom addAxiom = new AddAxiom(ontology, domainAxiom);
+        modelManager.applyChange(addAxiom);
+    }
+    
+    public void setObjectPropertyRange(IRI propertyIRI, IRI rangeIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLObjectProperty property = dataFactory.getOWLObjectProperty(propertyIRI);
+        OWLClass range = dataFactory.getOWLClass(rangeIRI);
+        
+        OWLAxiom rangeAxiom = dataFactory.getOWLObjectPropertyRangeAxiom(property, range);
+        AddAxiom addAxiom = new AddAxiom(ontology, rangeAxiom);
         modelManager.applyChange(addAxiom);
     }
 }
