@@ -80,8 +80,7 @@ public class ValidationResultDocument implements Singleton.Initializable {
         return buffer.toString();
     }
 
-    void setResult(Result result) {
-
+    private void clearPreviousResults() {
         body.getElementCount();
         for (int i = body.getElementCount() - 1; i > 0; i--) {
             Element elem = body.getElement(i);
@@ -89,6 +88,11 @@ public class ValidationResultDocument implements Singleton.Initializable {
                 document.removeElement(elem);
             }
         }
+    }
+
+    void setResult(Result result) {
+
+        clearPreviousResults();
 
         final Set<Violation> violations = result.getViolations();
         if (!violations.isEmpty()) {
