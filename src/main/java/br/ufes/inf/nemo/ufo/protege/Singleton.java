@@ -5,10 +5,13 @@
  */
 package br.ufes.inf.nemo.ufo.protege;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.protege.editor.core.Disposable;
 import org.protege.editor.core.ModelManager;
+import org.protege.editor.owl.model.OWLModelManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,28 +24,57 @@ public class Singleton {
     protected static Logger log = LoggerFactory.getLogger(Singleton.class);
 
     public static <T extends Disposable> T get(
-            ModelManager modelManager, Class<T> aClass) {
+            OWLModelManager modelManager, Class<T> aClass) {
 
         T result = (T) modelManager.get(aClass);
         if (result == null) {
-            try {
-                Constructor<T> constructor = aClass.getConstructor();
-                result = constructor.newInstance();
+            Optional<T> optional =
+
+            Stream.<ResultConstructor<T>>of(
+                () -> aClass.getConstructor(OWLModelManager.class)
+                        .newInstance(modelManager),
+                () -> aClass.getConstructor()
+                        .newInstance()
+            )
+            .map(constructor -> {
+                try {
+                    return constructor.construct();
+                } catch (NoSuchMethodException
+                        | SecurityException
+                        | InstantiationException
+                        | IllegalAccessException
+                        | IllegalArgumentException
+                        | InvocationTargetException ex) {
+                    log.debug("Could not instatiate object.", ex);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .findFirst()
+            ;
+
+            if (optional.isPresent()) {
+                result = optional.get();
+                modelManager.put(aClass, result);
                 if (result instanceof Initializable) {
                     ((Initializable) result).initialize(modelManager);
                 }
-                modelManager.put(aClass, result);
-            } catch (
-                    NoSuchMethodException |
-                    SecurityException |
-                    InstantiationException |
-                    IllegalAccessException |
-                    IllegalArgumentException
-                    | InvocationTargetException ex) {
-                log.error("Error on getting singleton object.", ex);
+            } else {
+                log.error("Could not instantiate singleton for class "
+                        + aClass.getName());
             }
         }
         return result;
+    }
+
+    public interface ResultConstructor<T> {
+        public T construct() throws
+                NoSuchMethodException,
+                SecurityException,
+                InstantiationException,
+                IllegalAccessException,
+                IllegalArgumentException,
+                InvocationTargetException;
     }
 
     public interface Initializable extends Disposable {

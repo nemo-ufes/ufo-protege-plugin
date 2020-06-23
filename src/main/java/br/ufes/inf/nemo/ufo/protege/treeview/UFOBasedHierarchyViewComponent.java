@@ -6,11 +6,14 @@
 package br.ufes.inf.nemo.ufo.protege.treeview;
 
 import br.ufes.inf.nemo.protege.annotations.ViewComponent;
-import br.ufes.inf.nemo.ufo.protege.UFOConfig;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.compareOWLObjects;
+import br.ufes.inf.nemo.ufo.protege.Singleton;
 import java.util.Comparator;
 import java.util.Optional;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.hierarchy.OWLObjectHierarchyProvider;
+import org.protege.editor.owl.model.selection.OWLSelectionModel;
+import org.protege.editor.owl.model.selection.OWLSelectionModelListener;
 import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
@@ -40,6 +43,14 @@ import org.semanticweb.owlapi.model.OWLObject;
 )
 public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewComponent {
 
+    private final OWLSelectionModelListener owlSelectionModelListener = () -> {
+        OWLObject selectedObject = getSelectionModel().getSelectedObject();
+        if (selectedObject instanceof OWLClass) {
+            OWLClass owlClass = (OWLClass) selectedObject;
+            getTree().setSelectedOWLObject(owlClass);
+        }
+    };
+
     @Override
     protected Optional<OWLObjectHierarchyProvider<OWLClass>> getInferredHierarchyProvider() {
         return Optional.empty();
@@ -47,11 +58,9 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
 
     @Override
     protected OWLObjectHierarchyProvider<OWLClass> getHierarchyProvider() {
-        final OWLModelManager owlModelManager = getOWLEditorKit().getOWLModelManager();
-        final UFOBasedClassHierarchyProvider result
-                = new UFOBasedClassHierarchyProvider(owlModelManager);
-        result.setOntologies(owlModelManager.getActiveOntologies());
-        return result;
+        return Singleton.get(
+                getOWLEditorKit().getOWLModelManager(),
+                UFOBasedClassHierarchyProvider.class);
     }
 
     @Override
@@ -61,6 +70,17 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
 
         initializeCellRenderer();
         initializeComparator();
+        getSelectionModel().addListener(owlSelectionModelListener);
+    }
+
+    @Override
+    public void disposeView() {
+        getSelectionModel().removeListener(owlSelectionModelListener);
+        super.disposeView();
+    }
+
+    protected OWLSelectionModel getSelectionModel() {
+        return getOWLWorkspace().getOWLSelectionModel();
     }
 
     protected void initializeCellRenderer() {
@@ -73,9 +93,8 @@ public class UFOBasedHierarchyViewComponent extends ToldOWLClassHierarchyViewCom
                 = getOWLEditorKit().getOWLModelManager();
         final Comparator<OWLObject> original
                 = owlModelManager.getOWLObjectComparator();
-        final UFOConfig ufo = UFOConfig.get(owlModelManager);
         getTree().setOWLObjectComparator((a, b) -> {
-            int result = ufo.compareOWLObjects(a, b);
+            int result = compareOWLObjects(a, b);
             return result != 0 ? result : original.compare(a, b);
         });
     }

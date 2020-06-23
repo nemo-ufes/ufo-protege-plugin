@@ -5,23 +5,23 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
-import static br.ufes.inf.nemo.ufo.protege.GufoIris.publicClasses;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
 /**
  *
- * @author luciano
+ * @author jeferson
  */
 @RuleInfo(
-        label="Missing a public UFO supertype",
-        description="Every class should inherit from at least a public UFO supertype."
+        label="No non-sortal type specializing sortal type"
 )
-public class AtLeastAPublicClassRule extends ClassRule {
+public class SortalityRule extends ClassRule {
 
     @Override
     public void validate() {
-        when(!classNode().isSubclassOfAny(publicClasses))
+        when(classNode().isInstanceOf(NonSortal))
+                .and(classNode().ancestors()
+                .anyMatch(node -> node.isInstanceOf(Sortal)))
         .registerViolation();
-    }
+    }   
 }

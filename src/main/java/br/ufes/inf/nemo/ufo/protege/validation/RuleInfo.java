@@ -22,4 +22,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RuleInfo {
     String label();
+    String description() default "";
 }

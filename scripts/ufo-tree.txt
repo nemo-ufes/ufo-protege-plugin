@@ -26,7 +26,7 @@
 #
 # Lines starting with '+' contain the IRIs of public classes.
 
-- gufo:Object
++ gufo:Object
     + gufo:FunctionalComplex
     + gufo:FixedCollection
     + gufo:VariableCollection
@@ -64,9 +64,9 @@
         + gufo:PhaseMixin
         + gufo:Mixin
 
+    + gufo:AbstractIndividualType
     + gufo:EventType
     + gufo:SituationType
-    + gufo:AbstractIndividualType
     - gufo:RelationshipType
         + gufo:ComparativeRelationshipType
         + gufo:MaterialRelationshipType

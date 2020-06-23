@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +36,6 @@ final class RuleLoader {
     private Collection<Constructor<? extends Rule>> ruleConstructors;
     private String ruleClassName;
     private Constructor<? extends Rule> ruleConstructor;
-    private Rule rule;
 
     private RuntimeException quitException;
 
@@ -57,12 +55,6 @@ final class RuleLoader {
 
     private void quit(String message, Object... args) {
         String formattedMessage = String.format(message, args);
-        log.error(formattedMessage);
-        throw quitException = new RuntimeException(formattedMessage);
-    }
-
-    private void quit(String message) {
-        String formattedMessage = String.format(message, ruleClassName);
         log.error(formattedMessage);
         throw quitException = new RuntimeException(formattedMessage);
     }

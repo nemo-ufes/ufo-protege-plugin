@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -93,5 +94,22 @@ public abstract class Util {
             String resourceName,
             Consumer<String> consumer) throws Exception {
         forEachLine(getClass(), resourceName, consumer);
+    }
+
+
+    /**
+     * Read reource content and return it as a String.
+     *
+     * @param clazz The class whose ClassLoader is going to be used to load the
+     * resource
+     * @param resourceName The resource name
+     */
+    public static String readAsString(Class<?> clazz, String resourceName) {
+        try (
+            Scanner scanner = new Scanner(
+                clazz.getResourceAsStream(resourceName), "UTF-8")
+        ) {
+            return scanner.useDelimiter("\\A").next();
+        }
     }
 }

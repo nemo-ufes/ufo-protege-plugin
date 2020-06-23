@@ -7,7 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitHook;
 import br.ufes.inf.nemo.ufo.protege.AbstractEditorKitHook;
-import br.ufes.inf.nemo.ufo.protege.validation.Validation.Result;
+import br.ufes.inf.nemo.ufo.protege.validation.Result;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;

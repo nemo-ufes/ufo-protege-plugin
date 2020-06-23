@@ -8,16 +8,13 @@ package br.ufes.inf.nemo.ufo.protege.validation.helpers;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.semanticweb.owlapi.model.HasIRI;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataProperty;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLNamedObject;
 import org.semanticweb.owlapi.model.OWLObject;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
 
 /**
  *
@@ -27,14 +24,21 @@ public class ObjectGraphNode {
 
     private static final int EQUIVALENTS = 0;
     private static final int PARENTS = 1;
-//    private static final int CHILDREN = ;
-    private static final int TYPES = 2;
-//    private static final int INSTANCES = ;
-    private static final int ARRAY_SIZE = 3;
+    private static final int CHILDREN = 2;
+    private static final int TYPES = 3;
+    private static final int INSTANCES = 4;
+    private static final int ARRAY_SIZE = 5;
 
+    public boolean isIRI() {
+        return this.owlObject.isIRI();
+    }
+
+    public IRI getIRI() {
+        return this.owlObject.isIRI() ? (IRI) owlObject : null;
+    }
 
     private final OWLObject owlObject;
-    private Set<ObjectGraphNode>[] relata = new Set[5];
+    private Set<ObjectGraphNode>[] relata = new Set[ARRAY_SIZE];
 
     ObjectGraphNode(OWLObject owlObject) {
         if (owlObject instanceof HasIRI) {
@@ -88,8 +92,12 @@ public class ObjectGraphNode {
         return getStream(TYPES);
     }
 
-    public boolean isOWLClass() {
-        return this.owlObject instanceof OWLClass;
+    public Stream<ObjectGraphNode> children() {
+        return getStream(CHILDREN);
+    }
+
+    public Stream<ObjectGraphNode> directInstances() {
+        return getStream(INSTANCES);
     }
 
     public void addEquivalent(ObjectGraphNode equivalent) {
@@ -112,21 +120,36 @@ public class ObjectGraphNode {
     }
 
     /**
-     * Return this node, equivalent nodes and ancestor nodes.
-     * <p>
+     * Return a subtree of the graph starting from this node and navigating
+     * as specified.
+     * <br/>
+     * This function returns a stream havig this node, its equivalents, and
+     * nodes found by transitive navigation through supplied function.
      *
-     * @param visited Predicate to protect against infinite recursion
-     * @return Stream containing this node, equivalent nodes and respactive
-     * ancestor nodes
+     * @param navigate Function to find new nodes from the current one.
+     * @param visited Helper to prevent duplicated entries.
+     * @return Stream of nodes found
      */
-    private Stream<ObjectGraphNode> ancestors(Predicate<ObjectGraphNode> visited) {
+    private Stream<ObjectGraphNode> tree(
+            Function<ObjectGraphNode, Stream<ObjectGraphNode>> navigate,
+            Predicate<ObjectGraphNode> visited) {
         return equivalents()
                 .filter(visited)
                 .flatMap(node -> Stream.concat(
                     Stream.of(node),
-                    parents().flatMap(parent -> parent.ancestors(visited))
+                    navigate.apply(this)
+                    .flatMap(parent -> parent.tree(navigate, visited))
                 ));
+    }
 
+    private Stream<ObjectGraphNode> tree(
+            Function<ObjectGraphNode, Stream<ObjectGraphNode>> navigate) {
+        return tree(navigate, new HashSet<>()::add);
+    }
+
+    private Stream<ObjectGraphNode> properTree(
+            Function<ObjectGraphNode, Stream<ObjectGraphNode>> navigate) {
+        return navigate.apply(this).flatMap(parent -> parent.tree(navigate));
     }
 
     /**
@@ -134,12 +157,22 @@ public class ObjectGraphNode {
      * parents.
      */
     public Stream<ObjectGraphNode> properAncestors() {
-        return parents().flatMap(parent ->
-                parent.ancestors(new HashSet<>()::add));
+        return properTree(ObjectGraphNode::parents);
     }
 
     public Stream<ObjectGraphNode> ancestors() {
-        return ancestors(new HashSet<>()::add);
+        return tree(ObjectGraphNode::parents);
+    }
+
+    public Stream<ObjectGraphNode> descendants() {
+        return properTree(ObjectGraphNode::children);
+    }
+
+    public Stream<ObjectGraphNode> instances() {
+        return tree(ObjectGraphNode::children)
+                .flatMap(node -> node.directInstances())
+                .filter(new HashSet<>()::add)
+                ;
     }
 
     public boolean isSubclassOf(OWLClass owlClass) {
@@ -176,9 +209,19 @@ public class ObjectGraphNode {
 
     void addParent(ObjectGraphNode parent) {
         getSet(PARENTS).add(parent);
+        parent.getSet(CHILDREN).add(this);
+    }
+
+    void addChild(ObjectGraphNode child) {
+        child.addParent(this);
     }
 
     void addType(ObjectGraphNode type) {
         getSet(TYPES).add(type);
+        type.getSet(INSTANCES).add(this);
+    }
+
+    void addInstance(ObjectGraphNode instance) {
+        instance.addType(this);
     }
 }

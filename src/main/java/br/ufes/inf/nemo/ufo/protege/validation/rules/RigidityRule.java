@@ -5,23 +5,23 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
-import static br.ufes.inf.nemo.ufo.protege.GufoIris.publicClasses;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
 /**
  *
- * @author luciano
+ * @author jeferson
  */
 @RuleInfo(
-        label="Missing a public UFO supertype",
-        description="Every class should inherit from at least a public UFO supertype."
+        label="No rigid type specializing anti-rigid type"
 )
-public class AtLeastAPublicClassRule extends ClassRule {
+public class RigidityRule extends ClassRule {
 
     @Override
     public void validate() {
-        when(!classNode().isSubclassOfAny(publicClasses))
+        when(classNode().isInstanceOf(RigidType))
+                .and(classNode().ancestors()
+                .anyMatch(node -> node.isInstanceOf(AntiRigidType)))
         .registerViolation();
     }
 }

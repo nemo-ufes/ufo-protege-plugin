@@ -8,6 +8,8 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import java.lang.reflect.ParameterizedType;
 import java.util.function.Supplier;
+import org.semanticweb.owlapi.model.HasIRI;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
@@ -27,7 +29,6 @@ import org.semanticweb.owlapi.model.OWLObject;
 public abstract class Rule<T extends OWLObject> extends GufoIris {
 
     protected Validation validation;
-    protected T target;
     protected Class<T> targetType;
 
     public void initialize(Validation validation) throws Exception {
@@ -58,29 +59,69 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
         return targetType;
     }
 
+    protected OWLObject getTarget() {
+        return validation.getCurrentTarget();
+    }
+
     /**
-     * Validate given subject.
+     * Test whether this rule is apppliable to given subject.
      * <p>
+     * Before calling {@link #validate} the validation process checks whether
+     * this rule is appliable to given subject. It does this checking the
+     * whether the subject class matches the target type of the rule and then
+     * calling this method.
+     * <p>
+     * The subject is referenced by the <i>target</i> field, and when this
+     * method is called, it is already known that the subject is an instance of
+     * target type.
+     * <p>
+     * The target type is given by the value of the generic type argument
+     * specified when subclassing this class, while the aplicability of the rule
+     * may be changed by overriding this method.
+     * <p>
+     * For example, a rule may want to check whether a NonSortal class is
+     * specializing a Sortal one. The target type is {@link OWLClass}, and the
+     * rule is appliable when the subject is instance of NonSortal. So this
+     * method would be overriden and return true only when the subject is
+     * instance of NonSortal. The {@link #validate} method whould
+     * <p>
+     * The default implementation of this method returns true.
      *
-     * @param context Subject being validated
-     * @return Set of violations of this rule
-     *
-     * @see RuleSubject
-     * @see Violation
+     * @return true, if the subject, referenced by the <i>target</i> field,
+     * should be validated by this rule
      */
-    public boolean isAppliableTo(T subject) {
-        return getTargetType().isInstance(subject);
+    public boolean isAppliable() {
+        return true;
     }
 
     /**
      * Validate given subject.
      * <p>
+     * If the subject is of type targeted by this rule, the <i>target</i> field
+     * is updated to reference the subject and a check is done, bycalling
+     * {@link #isAppliable() } to ensure that the subject should be validated
+     * by this rule. If the call returns true, the method {@link #validate} is
+     * called to effectively validate the subject.
      *
      * @param context Subject being validated
-     * @return Set of violations of this rule
+     */
+    void validate(OWLObject subject) {
+        if (getTargetType().isInstance(subject)) {
+            if (isAppliable()) {
+                validate();
+            }
+        }
+    }
+
+    /**
+     * Validate subject referenced by <i>target</i> field.
+     * <p>
      *
-     * @see RuleSubject
-     * @see Violation
+     * Implementations of this method validade the subject (referenced by the
+     * <i>target</i> field) and put the result of validation in the object
+     * referenced by the <i>validation</i> field. The class
+     * {@link ResultBuilder}, instantiated by calling {@link #when(boolean)},
+     * can be used in this task.
      */
     public abstract void validate();
 
@@ -100,81 +141,11 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
         return validation.get(helperClass);
     }
 
-    void setTarget(T target) {
-        this.target = target;
-    }
-
     protected Violation newViolation(OWLObject... arguments) {
-        Violation violation = new Violation(arguments);
-        validation.addViolation(violation);
-        return violation;
-    }
-
-    public class Violation<T extends Rule> {
-
-        private final OWLObject[] arguments;
-
-        protected Violation(OWLObject... arguments) {
-            this.arguments = arguments;
-        }
-
-        public T getRule() {
-            return (T) Rule.this;
-        }
-
-        public OWLObject[] getArguments() {
-            return arguments;
-        }
-
-        public OWLObject getMainObject() {
-            return arguments[0];
-        }
+        return validation.newViolation(arguments);
     }
 
     protected ResultBuilder when(boolean b) {
-        return new ResultBuilder(b);
-    }
-
-    public class ResultBuilder {
-
-        boolean result = true;
-
-        private ResultBuilder(boolean b) {
-            result = b;
-        }
-
-        public ResultBuilder and(boolean b) {
-            result &= b;
-            return this;
-        }
-
-        public ResultBuilder or(boolean b) {
-            result |= b;
-            return this;
-        }
-
-        public ResultBuilder and(Supplier<Boolean> s) {
-            result &= s.get();
-            return this;
-        }
-
-        public ResultBuilder or(Supplier<Boolean> s) {
-            result |= s.get();
-            return this;
-        }
-
-        public ResultBuilder registerViolationFor(OWLObject... arguments) {
-            if (result) {
-                newViolation(arguments);
-            }
-            return this;
-        }
-
-        public ResultBuilder registerViolation() {
-            if (result) {
-                newViolation(target);
-            }
-            return this;
-        }
+        return new ResultBuilder(b, this);
     }
 }
