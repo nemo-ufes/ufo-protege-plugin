@@ -13,6 +13,7 @@ import br.ufes.inf.nemo.ufo.protege.validation.Violation;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.swing.event.DocumentListener;
@@ -88,11 +89,25 @@ public class ValidationResultDocument implements Singleton.Initializable {
                 document.removeElement(elem);
             }
         }
-        result
-            .getViolations()
-            .stream()
-            .collect(Collectors.groupingBy(Violation::getRule))
-            .forEach(this::printViolationsForRule);
+
+        final Set<Violation> violations = result.getViolations();
+        if (!violations.isEmpty()) {
+            violations
+                .stream()
+                .collect(Collectors.groupingBy(Violation::getRule))
+                .forEach(this::printViolationsForRule)
+                ;
+        } else {
+            printNoViolationsDetected();
+        }
+    }
+
+    private void printNoViolationsDetected() {
+        try {
+            document.insertBeforeEnd(body, "<h1>No violations detected.</h1>");
+        } catch (BadLocationException | IOException ex) {
+            log.error("Error on generating log text.", ex);
+        }
     }
 
     private void printViolationsForRule(Rule rule, List<Violation> violations) {
