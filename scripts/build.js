@@ -2,7 +2,7 @@ var
     options = {
         gufo: {
             iri: "${gufo.iri}",
-            localFile: "${gufo.ontology.file}"
+            localFile: "${basedir}/src/general/owl/gufo.ttl"
         },
         gufoIris: {
             ufoTreeFile: "${basedir}/scripts/ufo-tree.txt",
