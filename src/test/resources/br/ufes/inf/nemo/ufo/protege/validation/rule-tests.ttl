@@ -32,14 +32,16 @@
 .
 
 # Class without a public GUFO superclass
-:NoGufoSuperclass rdf:type owl:Class ;
-                  :violates "AtLeastAPublicClassRule"
+:NoGufoSuperclass
+    rdf:type owl:Class ;
+    :violates "AtLeastAPublicClassRule"
 .
 
 # Class specializing a private GUFO superclass.
-:PrivateGufoSuperclass rdf:type owl:Class ;
-                       rdfs:subClassOf gufo:Endurant, gufo:Object ;
-                       :violates "OnlyPublicClassRule"
+:PrivateGufoSuperclass
+    rdf:type owl:Class ;
+    rdfs:subClassOf gufo:Endurant, gufo:Object ;
+    :violates "OnlyPublicClassRule"
 .
 
 # Sortal type (SubKind instance) specializing more than one Kind instance.
