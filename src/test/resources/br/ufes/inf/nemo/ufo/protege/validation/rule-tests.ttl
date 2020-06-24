@@ -22,6 +22,13 @@
 :Kind2 rdf:type owl:Class, owl:NamedIndividual, gufo:Kind ;
        rdfs:subClassOf gufo:Object
 .
+:PhaseOfKind1
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Phase ;
+    rdfs:subClassOf
+             :Kind1 ;
+.
 
 # Class without a public GUFO superclass
 :NoGufoSuperclass rdf:type owl:Class ;
@@ -43,4 +50,14 @@
              :Kind1,
              :Kind2 ;
     :violates "OnlyAKindRule"
+.
+
+# Rigid subclass (Category instance) specializing anti rigid parent (Phase)
+:RigidSubclassingAntiRigid
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Category ;
+    rdfs:subClassOf
+             :PhaseOfKind1 ;
+    :violates "RigidityRule"
 .
