@@ -95,10 +95,40 @@
             <artifactId>rhino</artifactId>
             <version>1.7.12</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Specifying surefire plugin for enabling JUnit 5 tests -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -183,6 +213,29 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <executions>
+                    <execution>
+                        <id>convert-package-to-path</id>
+                        <goals><goal>regex-property</goal></goals>
+                        <configuration>
+                            <name>validation.main.package.path</name>
+                            <value>${validation.main.package}</value>
+                            <regex>\.</regex>
+                            <replacement>${file.separator}</replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-resource</id>
+                        <goals><goal>add-test-resource</goal></goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/general/owl</directory>
+                                    <targetPath>${validation.main.package.path}</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>add-generated-sources</id>
                         <phase>generate-sources</phase>

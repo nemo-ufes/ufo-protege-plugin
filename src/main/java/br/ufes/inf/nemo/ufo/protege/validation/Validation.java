@@ -46,9 +46,24 @@ public class Validation {
 
     private static final Logger log = LoggerFactory.getLogger(Validation.class);
 
-    static Result on(ModelManager modelManager) {
+    /**
+     * Validate rules on the model manager's active ontology.
+     * <br/>
+     * This method instantiates a Validation object for the model manager and
+     * pass control to its {@link Validation#validate(java.lang.Class)} method.
+     * <br/>
+     * The rule Class parameter specifies the single rule that should be
+     * validated. If it's null, then all rules are validated. Currently this
+     * parameter is non null only when unit testing.
+     *
+     * @param modelManager Model whose active ontology shall be validated.
+     * @param ruleClass Optional rule class to be validated.
+     * @return Object representing the validation process findings.
+     */
+    static Result on(ModelManager modelManager,
+            Class<? extends Rule> ruleClass ) {
         Validation validation = new Validation((OWLModelManager) modelManager);
-        return validation.validate();
+        return validation.validate(ruleClass);
     }
 
     private final OWLModelManager modelManager;
@@ -78,10 +93,12 @@ public class Validation {
         return targetOntology;
     }
 
-    private void initializeRuleSet() {
+    private void initializeRuleSet(Class<? extends Rule> ruleClass) {
         RuleLoader ruleLoader = new RuleLoader(this);
         validator
                 .ruleConstructors()
+                .filter(ruleClass == null ? (constructor -> true) :
+                        (ctor -> ctor.getDeclaringClass().equals(ruleClass)))
                 .map(ruleLoader::instantiateRule)
                 .map(ruleLoader::initializeRule)
                 .filter(Objects::nonNull)
@@ -117,9 +134,10 @@ public class Validation {
         });
     }
 
-    public Result validate() {
+    private Result validate(Class<? extends Rule> ruleClass) {
 
-        initializeRuleSet();
+        initializeRuleSet(ruleClass);
+
         // Validate ontology level rules
         validateRulesOn(targetOntology);
 
