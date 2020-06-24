@@ -5,8 +5,10 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,26 +100,41 @@ public class RuleTest {
                 .asOWLAnnotationProperty()
                 ;
 
-        return activeOntology
+        Map<String, List<OWLAnnotationAssertionAxiom>> annotationsByRuleName =
+            activeOntology
                 .getAxioms(AxiomType.ANNOTATION_ASSERTION, Imports.EXCLUDED)
                 .stream()
                 .filter(axiom -> axiom.getSubject().isIRI())
                 .filter(axiom -> violates.equals(axiom.getProperty()))
                 .collect(Collectors.groupingBy(axiom ->
                         axiom.getValue().asLiteral().get().getLiteral()))
+                ;
+
+        {
+            Set<String> notFoundRules = new HashSet<>(
+                    annotationsByRuleName.keySet());
+            notFoundRules.removeAll(ruleClasses.keySet());
+            if (!notFoundRules.isEmpty()) {
+                Assertions.fail("The following set of rule classes has " +
+                        "not been loaded by RuleLoader: " + notFoundRules);
+
+            }
+        }
+
+        final List<OWLAnnotationAssertionAxiom> EMPTY_LIST =
+                Collections.EMPTY_LIST;
+
+        return ruleClasses
                 .entrySet()
                 .stream()
                 .map(entry -> {
                     final String ruleClassName = entry.getKey();
                     return DynamicTest.dynamicTest(ruleClassName, () -> {
 
-                        Class<? extends Rule> ruleClass =
-                                ruleClasses.get(ruleClassName);
-                        Assertions.assertNotNull(ruleClass,
-                            "Rule class named " + ruleClassName + "not found.");
+                        Class<? extends Rule> ruleClass = entry.getValue();
 
-                        Set<String> expectedViolators = entry
-                                .getValue()
+                        Set<String> expectedViolators = annotationsByRuleName
+                                .getOrDefault(ruleClassName, EMPTY_LIST)
                                 .stream()
                                 .map(OWLAnnotationAssertionAxiom::getSubject)
                                 .map(subject -> (IRI) subject)
