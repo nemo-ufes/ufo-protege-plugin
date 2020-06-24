@@ -42,7 +42,7 @@ public class GufoIris {
         publicClasses = Collections.unmodifiableSet(set);
     }
 
-    // Map with hierarchyview information
+    // Map with hierarchy view information
     public static final Map<IRI, HierarchyNode> tree;
     static {
        Map<IRI, HierarchyNode> map = new HashMap<>();
@@ -61,6 +61,8 @@ public class GufoIris {
         Set<IRI> set = new HashSet<>(tree.keySet());
         set.remove(null);
         set.removeAll(publicClasses);
+        // foreach notInTreeClassName
+        set.add(ClassName);
         nonPublicClasses = Collections.unmodifiableSet(set);
     }
 

@@ -29,7 +29,8 @@ var
         targetFile: null,
         prefixes: [],
         nsToPrefix: {},
-        tree: []
+        tree: [],
+        treeClassNames: {}
     },
 
     // Making Netbeans happy
@@ -210,6 +211,7 @@ function generatePublicClassesSetAndTreeHierarchy() {
         configData,
 
         tree = gufoIris.tree,
+        treeClassNames = gufoIris.treeClassNames,
         parent,
         prefixes = {},
         pattern, match,
@@ -259,7 +261,7 @@ function generatePublicClassesSetAndTreeHierarchy() {
                     }
                 }
                 parent = tree[levelInfo.index];
-                tree.push({
+                tree.push(treeClassNames[name] = {
                     namespace: prefixes[prefix],
                     shortForm: name,
                     childrenCount: 0,
@@ -331,6 +333,14 @@ function generateGufoIrisClassFile() {
                 ParentClassName: node => node.parentShortForm || null,
                 ClassName: node => node.shortForm,
                 INDEX: node => node.index
+            }
+        },
+        "notInTreeClassName": {
+            items: gufoIris.classIRIs
+                    .filter(iri => gufoIris.nsToPrefix[iri.namespace])
+                    .filter(iri => !gufoIris.treeClassNames[iri.shortForm]),
+            map: {
+                ClassName: iri => iri.shortForm
             }
         }
     };
