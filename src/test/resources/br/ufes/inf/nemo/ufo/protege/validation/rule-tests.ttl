@@ -14,3 +14,13 @@
 :violates rdf:type owl:AnnotationProperty ;
           rdfs:domain owl:Class
 .
+
+# Valid classes (Should not generate any violation)
+:Kind1 rdf:type owl:Class, owl:NamedIndividual, gufo:Kind ;
+       rdfs:subClassOf gufo:Object
+.
+
+# Class without a public GUFO superclass
+:NoGufoSuperclass rdf:type owl:Class ;
+                  :violates "AtLeastAPublicClassRule"
+.
