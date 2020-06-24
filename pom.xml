@@ -249,7 +249,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>add-annotation-list</id>
+                        <id>add-generated-resources</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>add-resource</goal>
