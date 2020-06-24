@@ -39,8 +39,12 @@
 
 # Class specializing a private GUFO superclass.
 :PrivateGufoSuperclass
-    rdf:type owl:Class ;
-    rdfs:subClassOf gufo:Endurant, gufo:Object ;
+    rdf:type
+        owl:Class,
+        gufo:EndurantType ;
+    rdfs:subClassOf
+        gufo:Endurant,
+        gufo:Object ;
     :violates "OnlyPublicClassRule"
 .
 
