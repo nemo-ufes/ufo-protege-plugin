@@ -22,12 +22,13 @@
 :Kind2 rdf:type owl:Class, owl:NamedIndividual, gufo:Kind ;
        rdfs:subClassOf gufo:Object
 .
-:PhaseOfKind1
+
+:PhaseMixin1
     rdf:type owl:Class,
              owl:NamedIndividual,
-             gufo:Phase ;
+             gufo:PhaseMixin ;
     rdfs:subClassOf
-             :Kind1 ;
+             gufo:Object ;
 .
 
 # Class without a public GUFO superclass
@@ -58,6 +59,16 @@
              owl:NamedIndividual,
              gufo:Category ;
     rdfs:subClassOf
-             :PhaseOfKind1 ;
+             :PhaseMixin1 ;
     :violates "RigidityRule"
+.
+
+# NonSortal subclass (Category instance) specializing sortal parent (Kind1)
+:NonSortalSubclassingSortal
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Category ;
+    rdfs:subClassOf
+             :Kind1 ;
+    :violates "SortalityRule"
 .
