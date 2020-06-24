@@ -24,3 +24,9 @@
 :NoGufoSuperclass rdf:type owl:Class ;
                   :violates "AtLeastAPublicClassRule"
 .
+
+# Class specializing a private GUFO superclass.
+:PrivateGufoSuperclass rdf:type owl:Class ;
+                       rdfs:subClassOf gufo:Endurant, gufo:Object ;
+                       :violates "OnlyPublicClassRule"
+.
