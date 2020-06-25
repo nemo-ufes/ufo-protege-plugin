@@ -78,3 +78,14 @@
              :Kind1 ;
     :violates "SortalityRule"
 .
+
+# Kind specializing Sortal
+:KindSubclassingSortal
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Kind ;
+    rdfs:subClassOf
+             gufo:Object ,
+             :Kind1 ;
+    :violates "KindCannotSubclassSortalRule"
+.

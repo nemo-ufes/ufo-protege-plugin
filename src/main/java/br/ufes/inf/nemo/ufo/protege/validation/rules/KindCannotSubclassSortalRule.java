@@ -5,25 +5,25 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.Kind;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.Sortal;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
 /**
  *
- * @author jeferson
+ * @author luciano
  */
 @RuleInfo(
-        label = "Every sortal type must be a kind type or specialize exactly one kind type"
+        label = "An instance of Kind cannot specialize an instance of Sortal"
 )
-public class OnlyAKindRule extends ClassRule {
+public class KindCannotSubclassSortalRule extends ClassRule {
 
     @Override
     public void validate() {
-        when(classNode().isInstanceOf(Sortal))
-        .and(!classNode().isInstanceOf(Kind))
-        .and(classNode().ancestors()
-                .filter(node -> node.isInstanceOf(Kind))
-                .count() != 1)
+        when(classNode().isInstanceOf(Kind))
+        .and(classNode().properAncestors()
+                .anyMatch(node -> node.isInstanceOf(Sortal)))
         .registerViolation();
     }
 }
