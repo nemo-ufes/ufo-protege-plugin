@@ -29,6 +29,11 @@
              gufo:PhaseMixin
 .
 
+:Category1 rdf:type owl:Class, owl:NamedIndividual, gufo:Category .
+:Kind1 rdfs:subClassOf :Category1 .
+:Kind2 rdfs:subClassOf :Category1 .
+:PhaseMixin1 rdfs:subClassOf :Category1 .
+
 # Class without a public GUFO superclass
 :NoGufoSuperclass
     rdf:type owl:Class ;
@@ -97,4 +102,11 @@
              gufo:Object ,
              :PhaseMixin1 ;
     :violates "SemiRigidityRule"
+.
+
+# NonSortal which is neither subclassed by a Sortal nor is subclassing
+# another NonSortal subclassed by a Sortal
+:NonSubclassedCategory
+    rdf:type owl:Class, owl:NamedIndividual, gufo:Category ;
+    :violates "NonSortalRule"
 .
