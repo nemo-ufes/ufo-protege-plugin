@@ -89,3 +89,14 @@
              :Kind1 ;
     :violates "KindCannotSubclassSortalRule"
 .
+
+# Semirigid instance specializing Antirigid instance
+:MixinSubclassingPhaseMixin
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Mixin ;
+    rdfs:subClassOf
+             gufo:Object ,
+             :PhaseMixin1 ;
+    :violates "SemiRigidityRule"
+.
