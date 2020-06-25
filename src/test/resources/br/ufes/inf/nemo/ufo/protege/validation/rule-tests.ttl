@@ -26,9 +26,7 @@
 :PhaseMixin1
     rdf:type owl:Class,
              owl:NamedIndividual,
-             gufo:PhaseMixin ;
-    rdfs:subClassOf
-             gufo:Object ;
+             gufo:PhaseMixin
 .
 
 # Class without a public GUFO superclass
