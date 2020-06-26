@@ -5,7 +5,8 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
-import static br.ufes.inf.nemo.ufo.protege.GufoIris.publicClasses;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.Kind;
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.Sortal;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
@@ -14,16 +15,15 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Missing a public UFO supertype or type",
-        description="Every class which is not an instance of NonSortal should "
-                + "inherit from a public UFO supertype."
+        label = "An instance of Kind cannot specialize an instance of Sortal"
 )
-public class AtLeastAPublicClassRule extends ClassRule {
+public class KindCannotSubclassSortalRule extends ClassRule {
 
     @Override
     public void validate() {
-        when(!classNode().isInstanceOf(NonSortal))
-        .and(!classNode().isSubclassOfAny(publicClasses))
+        when(classNode().isInstanceOf(Kind))
+        .and(classNode().properAncestors()
+                .anyMatch(node -> node.isInstanceOf(Sortal)))
         .registerViolation();
     }
 }

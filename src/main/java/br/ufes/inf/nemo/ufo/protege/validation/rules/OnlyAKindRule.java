@@ -20,7 +20,8 @@ public class OnlyAKindRule extends ClassRule {
     @Override
     public void validate() {
         when(classNode().isInstanceOf(Sortal))
-                .and(classNode().ancestors()
+        .and(!classNode().isInstanceOf(Kind))
+        .and(classNode().ancestors()
                 .filter(node -> node.isInstanceOf(Kind))
                 .count() != 1)
         .registerViolation();

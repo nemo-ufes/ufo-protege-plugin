@@ -5,7 +5,6 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
-import static br.ufes.inf.nemo.ufo.protege.GufoIris.publicClasses;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
@@ -14,16 +13,14 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Missing a public UFO supertype or type",
-        description="Every class which is not an instance of NonSortal should "
-                + "inherit from a public UFO supertype."
+        label="Endurant specialization not instantiating EndurantType"
 )
-public class AtLeastAPublicClassRule extends ClassRule {
+public class EndurantSubclassRule  extends ClassRule {
 
     @Override
     public void validate() {
-        when(!classNode().isInstanceOf(NonSortal))
-        .and(!classNode().isSubclassOfAny(publicClasses))
+        when(classNode().isSubclassOf(Endurant))
+        .and(!classNode().isInstanceOf(EndurantType))
         .registerViolation();
     }
 }

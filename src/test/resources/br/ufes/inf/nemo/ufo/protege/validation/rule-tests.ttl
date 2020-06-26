@@ -1,0 +1,112 @@
+@prefix : <local://ufo-protege-plugin/unit-testing#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gufo: <http://purl.org/nemo/gufo#> .
+@base <local://ufo-protege-plugin/unit-testing> .
+
+<local://ufo-protege-plugin/unit-testing> rdf:type owl:Ontology ;
+                                          owl:imports gufo: .
+
+# Annotation property for declaring expected violations
+:violates rdf:type owl:AnnotationProperty ;
+          rdfs:domain owl:Class
+.
+
+# Valid classes (Should not generate any violation)
+:Kind1 rdf:type owl:Class, owl:NamedIndividual, gufo:Kind ;
+       rdfs:subClassOf gufo:Object
+.
+:Kind2 rdf:type owl:Class, owl:NamedIndividual, gufo:Kind ;
+       rdfs:subClassOf gufo:Object
+.
+
+:PhaseMixin1
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:PhaseMixin
+.
+
+:Category1 rdf:type owl:Class, owl:NamedIndividual, gufo:Category .
+:Kind1 rdfs:subClassOf :Category1 .
+:Kind2 rdfs:subClassOf :Category1 .
+:PhaseMixin1 rdfs:subClassOf :Category1 .
+
+# Class without a public GUFO superclass
+:NoGufoSuperclass
+    rdf:type owl:Class ;
+    :violates "AtLeastAPublicClassRule"
+.
+
+# Class specializing a private GUFO superclass.
+:PrivateGufoSuperclass
+    rdf:type
+        owl:Class,
+        gufo:EndurantType ;
+    rdfs:subClassOf
+        gufo:Endurant,
+        gufo:Object ;
+    :violates "OnlyPublicClassRule"
+.
+
+# Sortal type (SubKind instance) specializing more than one Kind instance.
+:MultipleKindSuperclasses
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:SubKind ;
+    rdfs:subClassOf
+             :Kind1,
+             :Kind2 ;
+    :violates "OnlyAKindRule"
+.
+
+# Rigid subclass (Category instance) specializing anti rigid parent (Phase)
+:RigidSubclassingAntiRigid
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Category ;
+    rdfs:subClassOf
+             :PhaseMixin1 ;
+    :violates "RigidityRule"
+.
+
+# NonSortal subclass (Category instance) specializing sortal parent (Kind1)
+:NonSortalSubclassingSortal
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Category ;
+    rdfs:subClassOf
+             :Kind1 ;
+    :violates "SortalityRule"
+.
+
+# Kind specializing Sortal
+:KindSubclassingSortal
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Kind ;
+    rdfs:subClassOf
+             gufo:Object ,
+             :Kind1 ;
+    :violates "KindCannotSubclassSortalRule"
+.
+
+# Semirigid instance specializing Antirigid instance
+:MixinSubclassingPhaseMixin
+    rdf:type owl:Class,
+             owl:NamedIndividual,
+             gufo:Mixin ;
+    rdfs:subClassOf
+             gufo:Object ,
+             :PhaseMixin1 ;
+    :violates "SemiRigidityRule"
+.
+
+# NonSortal which is neither subclassed by a Sortal nor is subclassing
+# another NonSortal subclassed by a Sortal
+:NonSubclassedCategory
+    rdf:type owl:Class, owl:NamedIndividual, gufo:Category ;
+    :violates "NonSortalRule"
+.

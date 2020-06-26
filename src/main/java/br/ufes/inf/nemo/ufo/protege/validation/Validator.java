@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitHook;
 import br.ufes.inf.nemo.ufo.protege.AbstractEditorKitHook;
-import br.ufes.inf.nemo.ufo.protege.validation.Result;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.protege.editor.core.ModelManager;
+import org.protege.editor.core.editorkit.EditorKit;
 
 /**
  *
@@ -28,11 +28,20 @@ public class Validator extends AbstractEditorKitHook {
     }
 
     public Result validate() {
-        return Validation.on(modelManager);
+        return validate(null);
+    }
+
+    public Result validate(Class<? extends Rule> ruleClass) {
+        return Validation.on(modelManager, ruleClass);
     }
 
     Stream<Constructor<? extends Rule>> ruleConstructors() {
         return ruleConstructors.stream();
+    }
+
+    void initialise(EditorKit editorKit) throws Exception {
+        super.setup(editorKit);
+        this.initialise();
     }
 
     @Override
