@@ -29,7 +29,10 @@ public class MaterialRelationshipTypeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type four names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<derivation: Relator> <RelationshipType> <domain: EndurantClass> <range: EndurantClass>\"."
+                    + System.lineSeparator()
+                    + "Example: \"Marriage wifeOf Woman Man\".")
                 .trim();
         String[] names = input.split(" ");
         IRI isDerivedFrom = IRI.create(GufoIris.GUFO, "isDerivedFrom");

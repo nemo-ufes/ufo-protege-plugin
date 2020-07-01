@@ -29,7 +29,9 @@ public class InstantiateIntrinsicModeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type three names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<sortal: IntrinsicMode> <instance> <bearer: ConcreteIndividual>\"." + System.lineSeparator()
+                    + "Example: \"Hapiness Susan'sHapiness Susan\".")
                 .trim();
         String[] names = input.split(" ");
         IRI sortal = IRI.create(getOntologyPrefix(), names[0]);

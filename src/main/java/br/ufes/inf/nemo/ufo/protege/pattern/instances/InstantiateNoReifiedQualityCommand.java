@@ -29,7 +29,9 @@ public class InstantiateNoReifiedQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type three names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<qualityType: DataProperty> <value: String> <bearer: ConcreteIndividual>\"." + System.lineSeparator()
+                    + "Example: \"hasMass 30-tons LittlePrincePlanet\".")
                 .trim();
         String[] names = input.split(" ");
 

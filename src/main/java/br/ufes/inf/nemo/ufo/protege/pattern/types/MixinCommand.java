@@ -29,7 +29,9 @@ public class MixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<EndurantClass> <Mixin>\". " + System.lineSeparator()
+                    + "Example: \"FunctionalComplex Sitable\".")
                 .trim();
         String[] names = input.split(" ");
         IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);

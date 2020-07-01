@@ -29,7 +29,9 @@ public class PhaseCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<Sortal> <Phase>\". " + System.lineSeparator()
+                    + "Example: \"Person Child\".")
                 .trim();
         String[] names = input.split(" ");
         IRI sortal = IRI.create(getOntologyPrefix(), names[0]);

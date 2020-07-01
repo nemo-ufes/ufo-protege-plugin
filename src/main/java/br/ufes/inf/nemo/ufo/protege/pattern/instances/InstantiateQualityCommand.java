@@ -29,7 +29,10 @@ public class InstantiateQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type four names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<sortal: Quality> <instance> <value: String> <bearer: ConcreteIndividual>\"."
+                    + System.lineSeparator()
+                    + "Example: \"Love John'sLoveForMary John Mary\".")
                 .trim();
         String[] names = input.split(" ");
         IRI sortal = IRI.create(getOntologyPrefix(), names[0]);

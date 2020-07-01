@@ -29,7 +29,10 @@ public class InstantiateRelatorCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type four names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<sortal: Relator> <instance> <mediated: Endurant> <mediated: Endurant>\"."
+                    + System.lineSeparator()
+                    + "Example: \"Marriage FirstMarriage Adam Eve\".")
                 .trim();
         String[] names = input.split(" ");
         IRI sortal = IRI.create(getOntologyPrefix(), names[0]);

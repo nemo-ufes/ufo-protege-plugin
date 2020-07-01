@@ -29,7 +29,9 @@ public class PhaseMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<NonSortal> <PhaseMixin>\". " + System.lineSeparator()
+                    + "Example: \"Animal Alive\".")
                 .trim();
         String[] names = input.split(" ");
         IRI nonsortal = IRI.create(getOntologyPrefix(), names[0]);
