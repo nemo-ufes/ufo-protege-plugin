@@ -8,6 +8,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import java.awt.event.ActionEvent;
 import java.util.logging.Level;
@@ -46,7 +47,11 @@ public class SubKindCommand extends PatternCommand {
                 applier.createClass(subkind);
                 applier.addSubClassTo(rigidSortal, subkind);
             } else {
-                showMessage("There are only subkinds of kinds or other subkinds!");
+                // showMessage("There are only subkinds of rigid sortals (kinds or other subkinds)!");
+                EntityFilter criterion = new EntityFilter(getOWLModelManager());
+                criterion.addType(GufoIris.RigidType);
+                criterion.addType(GufoIris.Sortal);
+                showMessage(EntityFilter.showSet(criterion.filterEntities()));
             }
         } catch (Exception ex) {
             Logger.getLogger(SubKindCommand.class.getName()).log(Level.SEVERE, null, ex);
