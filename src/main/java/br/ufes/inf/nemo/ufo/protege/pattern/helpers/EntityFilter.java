@@ -5,7 +5,9 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.helpers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,8 +70,17 @@ public class EntityFilter {
         for(IRI type: types) {
             entities = entities.filter(entity -> applier.isInstanceOf(type, entity));
         }
+        if(isPublicGufoClass) {
+            entities = entities.filter(applier::isPublicGufoClass);
+        }
         
         return entities.collect(Collectors.toCollection(HashSet::new));
+    }
+    
+    public List<IRI> listEntities() {
+        List<IRI> list = new ArrayList<>();
+        list.addAll(filterEntities());
+        return list;
     }
     
     /* public static Collection<IRI> getAllClasses() {
