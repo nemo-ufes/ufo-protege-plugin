@@ -26,6 +26,24 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateObjectCommand extends PatternCommand {
 
+    private IRI sortal;
+    private IRI instance;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setInstance(IRI instance) {
+        this.instance = instance;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(instance);
+        applier.makeInstanceOf(sortal, instance);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -41,8 +59,7 @@ public class InstantiateObjectCommand extends PatternCommand {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Object, sortal) &&
                 applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                applier.createNamedIndividual(instance);
-                applier.makeInstanceOf(sortal, instance);
+                runCommand();
             } else {
                 showMessage("Only sortal types of Object can be directly instantiated.");
             }

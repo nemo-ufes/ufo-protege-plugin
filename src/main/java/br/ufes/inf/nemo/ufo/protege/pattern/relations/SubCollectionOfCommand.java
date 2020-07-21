@@ -25,6 +25,24 @@ import org.semanticweb.owlapi.model.IRI;
         name = "New subcollection-of relation"
 )
 public class SubCollectionOfCommand extends PatternCommand {
+    
+    private final IRI subCollectionOfRelation = IRI.create(GufoIris.GUFO, "isSubCollectionOf");
+    private IRI subcollection;
+    private IRI collection;
+
+    public void setSubcollection(IRI subcollection) {
+        this.subcollection = subcollection;
+    }
+
+    public void setCollection(IRI collection) {
+        this.collection = collection;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createRelation(subCollectionOfRelation, subcollection, collection);
+    }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -34,15 +52,14 @@ public class SubCollectionOfCommand extends PatternCommand {
                     + "Example: \"SpadeCards Deck\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI subcollection = IRI.create(getOntologyPrefix(), names[0]);
-        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
-        IRI subCollectionOfRelation = IRI.create(GufoIris.GUFO, "isSubCollectionOf");
+        subcollection = IRI.create(getOntologyPrefix(), names[0]);
+        collection = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Collection, subcollection) &&
                 applier.isInstanceOf(GufoIris.Collection, collection)) {
-                applier.createRelation(subCollectionOfRelation, subcollection, collection);
+                runCommand();
             } else {
                 showMessage("Only collections can be subcollection of another collections.");
             }

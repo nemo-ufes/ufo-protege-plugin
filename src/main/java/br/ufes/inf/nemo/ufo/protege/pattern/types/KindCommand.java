@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class KindCommand extends PatternCommand {
 
+    private IRI endurantClass;
+    private IRI kind;
+
+    public void setEndurantClass(IRI endurantClass) {
+        this.endurantClass = endurantClass;
+    }
+
+    public void setKind(IRI kind) {
+        this.kind = kind;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(kind);
+        applier.makeInstanceOf(GufoIris.Kind, kind);
+        applier.createClass(kind);
+        applier.addSubClassTo(endurantClass, kind);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,17 +54,14 @@ public class KindCommand extends PatternCommand {
                     + "Example: \"Quality Age\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI kind = IRI.create(getOntologyPrefix(), names[1]);
+        endurantClass = IRI.create(GufoIris.GUFO, names[0]);
+        kind = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
                 applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(kind);
-                applier.makeInstanceOf(GufoIris.Kind, kind);
-                applier.createClass(kind);
-                applier.addSubClassTo(endurantClass, kind);
+                runCommand();
             } else {
                 showMessage("A kind must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()

@@ -26,6 +26,24 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class MemberOfCommand extends PatternCommand {
 
+    private final IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
+    private IRI member;
+    private IRI collection;
+
+    public void setMember(IRI member) {
+        this.member = member;
+    }
+
+    public void setCollection(IRI collection) {
+        this.collection = collection;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createRelation(memberOfRelation, member, collection);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,15 +52,14 @@ public class MemberOfCommand extends PatternCommand {
                     + "Example: \"JonForeman Switchfoot\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI member = IRI.create(getOntologyPrefix(), names[0]);
-        IRI collection = IRI.create(getOntologyPrefix(), names[1]);
-        IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
+        member = IRI.create(getOntologyPrefix(), names[0]);
+        collection = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Object, member) &&
                 applier.isInstanceOf(GufoIris.Collection, collection)) {
-                applier.createRelation(memberOfRelation, member, collection);
+                runCommand();
             } else {
                 showMessage("Only objects can be member of collections.");
             }

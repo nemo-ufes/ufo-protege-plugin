@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class RoleMixinOfCategoryCommand extends PatternCommand {
 
+    private IRI category;
+    private IRI rolemixin;
+
+    public void setCategory(IRI category) {
+        this.category = category;
+    }
+
+    public void setRoleMixin(IRI rolemixin) {
+        this.rolemixin = rolemixin;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(rolemixin);
+        applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
+        applier.createClass(rolemixin);
+        applier.addSubClassTo(category, rolemixin);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,16 +54,13 @@ public class RoleMixinOfCategoryCommand extends PatternCommand {
                     + "Example: \"LegalAgent Customer\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI category = IRI.create(getOntologyPrefix(), names[0]);
-        IRI rolemixin = IRI.create(getOntologyPrefix(), names[1]);
+        category = IRI.create(getOntologyPrefix(), names[0]);
+        rolemixin = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Category, category)) {
-                applier.createNamedIndividual(rolemixin);
-                applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
-                applier.createClass(rolemixin);
-                applier.addSubClassTo(category, rolemixin);
+                runCommand();
             } else {
                 showMessage("You must select a category to be specialized in a rolemixin!");
             }

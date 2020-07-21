@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class RoleCommand extends PatternCommand {
 
+    private IRI sortal;
+    private IRI role;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setRole(IRI role) {
+        this.role = role;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(role);
+        applier.makeInstanceOf(GufoIris.Role, role);
+        applier.createClass(role);
+        applier.addSubClassTo(sortal, role);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,16 +54,13 @@ public class RoleCommand extends PatternCommand {
                     + "Example: \"Woman Wife\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI role = IRI.create(getOntologyPrefix(), names[1]);
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        role = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                applier.createNamedIndividual(role);
-                applier.makeInstanceOf(GufoIris.Role, role);
-                applier.createClass(role);
-                applier.addSubClassTo(sortal, role);
+                runCommand();
             } else {
                 showMessage("You must select a sortal to be specialized in a role!");
             }

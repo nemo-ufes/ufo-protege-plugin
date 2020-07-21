@@ -26,6 +26,24 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class SubQuantityOfCommand extends PatternCommand {
 
+    private final IRI subQuantityOfRelation = IRI.create(GufoIris.GUFO, "isSubQuantityOf");
+    private IRI subquantity;
+    private IRI quantity;
+
+    public void setSubQuantity(IRI subquantity) {
+        this.subquantity = subquantity;
+    }
+
+    public void setQuantity(IRI quantity) {
+        this.quantity = quantity;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createRelation(subQuantityOfRelation, subquantity, quantity);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,15 +52,14 @@ public class SubQuantityOfCommand extends PatternCommand {
                     + "Example: \"AlcoholInCupOfWine CupOfWine\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI subquantity = IRI.create(getOntologyPrefix(), names[0]);
-        IRI quantity = IRI.create(getOntologyPrefix(), names[1]);
-        IRI subQuantityOfRelation = IRI.create(GufoIris.GUFO, "isSubQuantityOf");
+        subquantity = IRI.create(getOntologyPrefix(), names[0]);
+        quantity = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Quantity, subquantity) &&
                 applier.isInstanceOf(GufoIris.Quantity, quantity)) {
-                applier.createRelation(subQuantityOfRelation, subquantity, quantity);
+                runCommand();
             } else {
                 showMessage("Only quantities can be subquantity of another quantities.");
             }

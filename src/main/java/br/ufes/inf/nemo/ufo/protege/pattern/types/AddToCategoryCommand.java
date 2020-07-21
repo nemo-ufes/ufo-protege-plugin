@@ -28,6 +28,29 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 )
 public class AddToCategoryCommand extends PatternCommand {
 
+    private IRI category;
+    private IRI rigidType;
+
+    public void setCategory(IRI category) {
+        this.category = category;
+    }
+
+    public void setRigidType(IRI rigidType) {
+        this.rigidType = rigidType;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        
+        Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(category, rigidType);
+        if(!sharedEndurantClasses.isEmpty()) {
+            applier.makeSubClassOf(category, rigidType, sharedEndurantClasses);
+        } else {
+            showMessage("The category and the rigid type must share an Endurant class!");
+        }
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -36,21 +59,14 @@ public class AddToCategoryCommand extends PatternCommand {
                     + "Example: \"Animal Dog\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI category = IRI.create(getOntologyPrefix(), names[0]);
-        IRI rigidType = IRI.create(getOntologyPrefix(), names[1]);
+        category = IRI.create(getOntologyPrefix(), names[0]);
+        rigidType = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Category, category) &&
                 applier.isInstanceOf(GufoIris.RigidType, rigidType)) {
-
-                Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(category, rigidType);
-                if(!sharedEndurantClasses.isEmpty()) {
-                    applier.makeSubClassOf(category, rigidType, sharedEndurantClasses);
-                } else {
-                    showMessage("The category and the rigid type must share an Endurant class!");
-                }
-
+                runCommand();
             } else {
                 showMessage("You must select a category and a rigid type!");
             }

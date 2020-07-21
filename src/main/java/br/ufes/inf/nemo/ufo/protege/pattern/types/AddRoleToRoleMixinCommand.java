@@ -26,6 +26,23 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class AddRoleToRoleMixinCommand extends PatternCommand {
 
+    private IRI rolemixin;
+    private IRI role;
+
+    public void setRoleMixin(IRI rolemixin) {
+        this.rolemixin = rolemixin;
+    }
+
+    public void setRole(IRI role) {
+        this.role = role;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.addSubClassTo(rolemixin, role);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,14 +51,14 @@ public class AddRoleToRoleMixinCommand extends PatternCommand {
                     + "Example: \"Customer CorporateCustomer\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI rolemixin = IRI.create(getOntologyPrefix(), names[0]);
-        IRI role = IRI.create(getOntologyPrefix(), names[1]);
+        rolemixin = IRI.create(getOntologyPrefix(), names[0]);
+        role = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.RoleMixin, rolemixin) &&
                 applier.isInstanceOf(GufoIris.Role, role)) {
-                applier.addSubClassTo(rolemixin, role);
+                runCommand();
             } else {
                 showMessage("You must select a rolemixin and a role!");
             }

@@ -27,6 +27,29 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
         name = "Add to mixin"
 )
 public class AddToMixinCommand extends PatternCommand {
+    
+    private IRI mixin;
+    private IRI endurantType;
+
+    public void setMixin(IRI mixin) {
+        this.mixin = mixin;
+    }
+
+    public void setEndurantType(IRI endurantType) {
+        this.endurantType = endurantType;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        
+        Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(mixin, endurantType);
+        if(!sharedEndurantClasses.isEmpty()) {
+            applier.makeSubClassOf(mixin, endurantType, sharedEndurantClasses);
+        } else {
+            showMessage("The mixin and the endurant type must share an Endurant class!");
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -36,21 +59,14 @@ public class AddToMixinCommand extends PatternCommand {
                     + "Example: \"Sitable Chair\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI mixin = IRI.create(getOntologyPrefix(), names[0]);
-        IRI endurantType = IRI.create(getOntologyPrefix(), names[1]);
+        mixin = IRI.create(getOntologyPrefix(), names[0]);
+        endurantType = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Mixin, mixin) &&
                 applier.isInstanceOf(GufoIris.EndurantType, endurantType)) {
-
-                Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(mixin, endurantType);
-                if(!sharedEndurantClasses.isEmpty()) {
-                    applier.makeSubClassOf(mixin, endurantType, sharedEndurantClasses);
-                } else {
-                    showMessage("The mixin and the endurant type must share an Endurant class!");
-                }
-
+                runCommand();
             } else {
                 showMessage("You must select a mixin and an endurant type!");
             }

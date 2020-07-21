@@ -26,6 +26,38 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateQualityCommand extends PatternCommand {
 
+    private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
+    private final IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
+    private IRI sortal;
+    private IRI quality;
+    private String qualityValue;
+    private IRI bearer;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setQuality(IRI quality) {
+        this.quality = quality;
+    }
+
+    public void setQualityValue(String qualityValue) {
+        this.qualityValue = qualityValue;
+    }
+
+    public void setBearer(IRI bearer) {
+        this.bearer = bearer;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(quality);
+        applier.makeInstanceOf(sortal, quality);
+        applier.createRelation(inheritance, quality, bearer);
+        applier.assertDataProperty(hasQualityValue, quality, qualityValue);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -35,22 +67,17 @@ public class InstantiateQualityCommand extends PatternCommand {
                     + "Example: \"Age AgeOfJohn 35-years John\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI quality = IRI.create(getOntologyPrefix(), names[1]);
-        String qualityValue = names[2];
-        IRI bearer = IRI.create(getOntologyPrefix(), names[3]);
-        IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
-        IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        quality = IRI.create(getOntologyPrefix(), names[1]);
+        qualityValue = names[2];
+        bearer = IRI.create(getOntologyPrefix(), names[3]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Quality, sortal) &&
                 applier.isInstanceOf(GufoIris.Sortal, sortal) &&
                 applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                applier.createNamedIndividual(quality);
-                applier.makeInstanceOf(sortal, quality);
-                applier.createRelation(inheritance, quality, bearer);
-                applier.assertDataProperty(hasQualityValue, quality, qualityValue);
+                runCommand();
             } else {
                 showMessage("Only sortal types of Quality can be directly instantiated." + System.lineSeparator()
                           + "A ConcreteIndividual must be chosen as bearer.");

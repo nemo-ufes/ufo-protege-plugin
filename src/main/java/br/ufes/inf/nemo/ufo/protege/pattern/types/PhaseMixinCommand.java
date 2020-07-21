@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class PhaseMixinCommand extends PatternCommand {
 
+    private IRI nonsortal;
+    private IRI phasemixin;
+
+    public void setNonSortal(IRI nonsortal) {
+        this.nonsortal = nonsortal;
+    }
+
+    public void setPhaseMixin(IRI phasemixin) {
+        this.phasemixin = phasemixin;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(phasemixin);
+        applier.makeInstanceOf(GufoIris.PhaseMixin, phasemixin);
+        applier.createClass(phasemixin);
+        applier.addSubClassTo(nonsortal, phasemixin);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,16 +54,13 @@ public class PhaseMixinCommand extends PatternCommand {
                     + "Example: \"Animal Alive\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI nonsortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI phasemixin = IRI.create(getOntologyPrefix(), names[1]);
+        nonsortal = IRI.create(getOntologyPrefix(), names[0]);
+        phasemixin = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.NonSortal, nonsortal)) {
-                applier.createNamedIndividual(phasemixin);
-                applier.makeInstanceOf(GufoIris.PhaseMixin, phasemixin);
-                applier.createClass(phasemixin);
-                applier.addSubClassTo(nonsortal, phasemixin);
+                runCommand();
             } else {
                 showMessage("There are only phasemixins of non-sortals!");
             }

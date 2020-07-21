@@ -14,6 +14,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * @author jeferson
  */
 public abstract class PatternCommand extends ProtegeOWLAction {
+    
+    public abstract void runCommand();
+    
     public String getOntologyPrefix() {
         OWLOntology ontology = getOWLModelManager().getActiveOntology();
         String ontologyPrefix = ontology.getOWLOntologyManager()

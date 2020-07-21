@@ -26,6 +26,31 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateIntrinsicModeCommand extends PatternCommand {
 
+    private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
+    private IRI sortal;
+    private IRI intrinsicMode;
+    private IRI bearer;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setIntrinsicMode(IRI intrinsicMode) {
+        this.intrinsicMode = intrinsicMode;
+    }
+
+    public void setBearer(IRI bearer) {
+        this.bearer = bearer;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(intrinsicMode);
+        applier.makeInstanceOf(sortal, intrinsicMode);
+        applier.createRelation(inheritance, intrinsicMode, bearer);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,19 +59,16 @@ public class InstantiateIntrinsicModeCommand extends PatternCommand {
                     + "Example: \"Hapiness Susan'sHapiness Susan\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI intrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
-        IRI bearer = IRI.create(getOntologyPrefix(), names[2]);
-        IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        intrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
+        bearer = IRI.create(getOntologyPrefix(), names[2]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.IntrinsicMode, sortal) &&
                 applier.isInstanceOf(GufoIris.Sortal, sortal) &&
                 applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                applier.createNamedIndividual(intrinsicMode);
-                applier.makeInstanceOf(sortal, intrinsicMode);
-                applier.createRelation(inheritance, intrinsicMode, bearer);
+                runCommand();
             } else {
                 showMessage("Only sortal types of IntrinsicMode can be directly instantiated." + System.lineSeparator()
                           + "A ConcreteIndividual must be chosen as bearer.");

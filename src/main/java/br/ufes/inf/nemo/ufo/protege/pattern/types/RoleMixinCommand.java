@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class RoleMixinCommand extends PatternCommand {
 
+    private IRI endurantClass;
+    private IRI rolemixin;
+
+    public void setEndurantClass(IRI endurantClass) {
+        this.endurantClass = endurantClass;
+    }
+
+    public void setRoleMixin(IRI rolemixin) {
+        this.rolemixin = rolemixin;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(rolemixin);
+        applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
+        applier.createClass(rolemixin);
+        applier.addSubClassTo(endurantClass, rolemixin);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,17 +54,14 @@ public class RoleMixinCommand extends PatternCommand {
                     + "Example: \"FunctionalComplex Provider\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI rolemixin = IRI.create(getOntologyPrefix(), names[1]);
+        endurantClass = IRI.create(GufoIris.GUFO, names[0]);
+        rolemixin = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
                 applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(rolemixin);
-                applier.makeInstanceOf(GufoIris.RoleMixin, rolemixin);
-                applier.createClass(rolemixin);
-                applier.addSubClassTo(endurantClass, rolemixin);
+                runCommand();
             } else {
                 showMessage("A rolemixin must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()

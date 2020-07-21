@@ -26,6 +26,29 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateNoReifiedQualityCommand extends PatternCommand {
 
+    private final IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
+    private IRI qualityType;
+    private String noReifiedQuality;
+    private IRI bearer;
+
+    public void setQualityType(IRI qualityType) {
+        this.qualityType = qualityType;
+    }
+
+    public void setNoReifiedQuality(String noReifiedQuality) {
+        this.noReifiedQuality = noReifiedQuality;
+    }
+
+    public void setBearer(IRI bearer) {
+        this.bearer = bearer;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.assertDataProperty(qualityType, bearer, noReifiedQuality);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -35,16 +58,15 @@ public class InstantiateNoReifiedQualityCommand extends PatternCommand {
                 .trim();
         String[] names = input.split(" ");
 
-        IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
-        IRI type = IRI.create(getOntologyPrefix(), names[0]);
-        String noReifiedQuality = names[1];
-        IRI bearer = IRI.create(getOntologyPrefix(), names[2]);
+        qualityType = IRI.create(getOntologyPrefix(), names[0]);
+        noReifiedQuality = names[1];
+        bearer = IRI.create(getOntologyPrefix(), names[2]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubDataPropertyOf(hasQualityValue, type) &&
+            if (applier.isSubDataPropertyOf(hasQualityValue, qualityType) &&
                 applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                applier.assertDataProperty(type, bearer, noReifiedQuality);
+                runCommand();
             } else {
                 showMessage("A subproperty of hasQualityValue must be chosen as property" + System.lineSeparator()
                           + "and a ConcreteIndividual must be chosen as bearer.");

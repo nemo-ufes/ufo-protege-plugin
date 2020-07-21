@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class RoleMixinOfRoleMixinCommand extends PatternCommand {
 
+    private IRI parent;
+    private IRI child;
+
+    public void setParent(IRI parent) {
+        this.parent = parent;
+    }
+
+    public void setChild(IRI child) {
+        this.child = child;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(child);
+        applier.makeInstanceOf(GufoIris.RoleMixin, child);
+        applier.createClass(child);
+        applier.addSubClassTo(parent, child);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,16 +54,13 @@ public class RoleMixinOfRoleMixinCommand extends PatternCommand {
                     + "Example: \"Provider ServiceProvider\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        parent = IRI.create(getOntologyPrefix(), names[0]);
+        child = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.RoleMixin, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.RoleMixin, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+                runCommand();
             } else {
                 showMessage("You must select a rolemixin to be specialized in a rolemixin!");
             }

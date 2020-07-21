@@ -41,7 +41,7 @@ public class EntityFilter {
         return allEntities.stream();
     }
     
-    public static String showSet(Set<IRI> iris) {
+    public static String showList(List<IRI> iris) {
         return "Count: " + iris.size() + System.lineSeparator()
             + iris.stream()
             .map(iri -> iri.getShortForm() + System.lineSeparator())
@@ -60,12 +60,12 @@ public class EntityFilter {
         isPublicGufoClass = isPublic;
     }
     
-    public Set<IRI> filterEntities() {
+    public List<IRI> filterEntities() {
         PatternApplier applier = new PatternApplier(modelManager);
         
         Stream<IRI> entities = getAllEntities();
         for(IRI superClass: superClasses) {
-            entities = entities.filter(entity -> applier.isInstanceOf(superClass, entity));
+            entities = entities.filter(entity -> applier.isSubClassOf(superClass, entity));
         }
         for(IRI type: types) {
             entities = entities.filter(entity -> applier.isInstanceOf(type, entity));
@@ -74,13 +74,7 @@ public class EntityFilter {
             entities = entities.filter(applier::isPublicGufoClass);
         }
         
-        return entities.collect(Collectors.toCollection(HashSet::new));
-    }
-    
-    public List<IRI> listEntities() {
-        List<IRI> list = new ArrayList<>();
-        list.addAll(filterEntities());
-        return list;
+        return entities.collect(Collectors.toCollection(ArrayList::new));
     }
     
     /* public static Collection<IRI> getAllClasses() {

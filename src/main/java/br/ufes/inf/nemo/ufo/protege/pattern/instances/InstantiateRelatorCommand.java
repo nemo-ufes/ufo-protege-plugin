@@ -26,6 +26,37 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateRelatorCommand extends PatternCommand {
 
+    private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
+    private IRI sortal;
+    private IRI relator;
+    private IRI mediatedA;
+    private IRI mediatedB;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setRelator(IRI relator) {
+        this.relator = relator;
+    }
+
+    public void setMediatedA(IRI mediatedA) {
+        this.mediatedA = mediatedA;
+    }
+
+    public void setMediatedB(IRI mediatedB) {
+        this.mediatedB = mediatedB;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(relator);
+        applier.makeInstanceOf(sortal, relator);
+        applier.createRelation(mediates, relator, mediatedA);
+        applier.createRelation(mediates, relator, mediatedB);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -35,11 +66,10 @@ public class InstantiateRelatorCommand extends PatternCommand {
                     + "Example: \"Marriage FirstMarriage Adam Eve\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI relator = IRI.create(getOntologyPrefix(), names[1]);
-        IRI mediatedA = IRI.create(getOntologyPrefix(), names[2]);
-        IRI mediatedB = IRI.create(getOntologyPrefix(), names[3]);
-        IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        relator = IRI.create(getOntologyPrefix(), names[1]);
+        mediatedA = IRI.create(getOntologyPrefix(), names[2]);
+        mediatedB = IRI.create(getOntologyPrefix(), names[3]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
@@ -47,10 +77,7 @@ public class InstantiateRelatorCommand extends PatternCommand {
                 applier.isInstanceOf(GufoIris.Sortal, sortal) &&
                 applier.isInstanceOf(GufoIris.Endurant, mediatedA) &&
                 applier.isInstanceOf(GufoIris.Endurant, mediatedB)) {
-                applier.createNamedIndividual(relator);
-                applier.makeInstanceOf(sortal, relator);
-                applier.createRelation(mediates, relator, mediatedA);
-                applier.createRelation(mediates, relator, mediatedB);
+                runCommand();
             } else {
                 showMessage("Only sortal types of Relator can be directly instantiated." + System.lineSeparator()
                           + "Two Endurants must be chosen to be mediated.");

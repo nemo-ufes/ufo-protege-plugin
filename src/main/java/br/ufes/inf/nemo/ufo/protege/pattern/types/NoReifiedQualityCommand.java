@@ -7,12 +7,11 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.NoReifiedQualityPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -26,35 +25,39 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class NoReifiedQualityCommand extends PatternCommand {
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), 
-                    "Input: \"<domain: ConcreteIndividualClass> <qualityType: DataProperty>\". "
-                    + System.lineSeparator()
-                    + "Example: \"Planet hasMass\".")
-                .trim();
-        String[] names = input.split(" ");
-        IRI domain = IRI.create(getOntologyPrefix(), names[0]);
-        IRI qualityType = IRI.create(getOntologyPrefix(), names[1]);
-        IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
+    private final IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
+    private IRI domain;
+    private IRI qualityType;
 
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.ConcreteIndividual, domain)) {
-                applier.createSubDataProperty(hasQualityValue, qualityType);
-                applier.setDataPropertyDomain(qualityType, domain);
-            } else {
-                showMessage("A type of ConcreteIndividual must be chosen as domain.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(NoReifiedQualityCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void setDomain(IRI domain) {
+        this.domain = domain;
+    }
+
+    public void setQualityType(IRI qualityType) {
+        this.qualityType = qualityType;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createSubDataProperty(hasQualityValue, qualityType);
+        applier.setDataPropertyDomain(qualityType, domain);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent ae) {        
+        
+        EntityFilter criterion = new EntityFilter(getOWLModelManager());
+        criterion.addSuperClass(GufoIris.ConcreteIndividual);
+        
+        NoReifiedQualityPatternFrame frame = new NoReifiedQualityPatternFrame(this);
+        frame.setConcreteIndividualIRIs(criterion.filterEntities());
+        frame.display();
     }
 
     @Override
     public void initialise() throws Exception {
-
+        
     }
 
     @Override

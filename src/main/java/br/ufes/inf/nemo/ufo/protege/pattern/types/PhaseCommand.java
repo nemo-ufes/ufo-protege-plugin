@@ -25,6 +25,26 @@ import org.semanticweb.owlapi.model.IRI;
         name = "Add phase"
 )
 public class PhaseCommand extends PatternCommand {
+    
+    private IRI sortal;
+    private IRI phase;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setPhase(IRI phase) {
+        this.phase = phase;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(phase);
+        applier.makeInstanceOf(GufoIris.Phase, phase);
+        applier.createClass(phase);
+        applier.addSubClassTo(sortal, phase);
+    }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -34,16 +54,13 @@ public class PhaseCommand extends PatternCommand {
                     + "Example: \"Person Child\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI phase = IRI.create(getOntologyPrefix(), names[1]);
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        phase = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                applier.createNamedIndividual(phase);
-                applier.makeInstanceOf(GufoIris.Phase, phase);
-                applier.createClass(phase);
-                applier.addSubClassTo(sortal, phase);
+                runCommand();
             } else {
                 showMessage("There are only phases of sortals!");
             }

@@ -26,6 +26,39 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class InstantiateExtrinsicModeCommand extends PatternCommand {
 
+    private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
+    private final IRI dependenceRelation = IRI.create(GufoIris.GUFO, "externallyDependsOn");
+    private IRI sortal;
+    private IRI extrinsicMode;
+    private IRI bearer;
+    private IRI externalDependence;
+
+    public void setSortal(IRI sortal) {
+        this.sortal = sortal;
+    }
+
+    public void setExtrinsicMode(IRI extrinsicMode) {
+        this.extrinsicMode = extrinsicMode;
+    }
+
+    public void setBearer(IRI bearer) {
+        this.bearer = bearer;
+    }
+
+    public void setExternalDependence(IRI externalDependence) {
+        this.externalDependence = externalDependence;
+    }
+    
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(extrinsicMode);
+        applier.makeInstanceOf(sortal, extrinsicMode);
+        applier.createRelation(inheritance, extrinsicMode, bearer);
+        applier.createRelation(dependenceRelation, extrinsicMode, externalDependence);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -35,12 +68,10 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
                     + "Example: \"Love John'sLoveForMary John Mary\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI extrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
-        IRI bearer = IRI.create(getOntologyPrefix(), names[2]);
-        IRI externalDependence = IRI.create(getOntologyPrefix(), names[3]);
-        IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
-        IRI dependenceRelation = IRI.create(GufoIris.GUFO, "externallyDependsOn");
+        sortal = IRI.create(getOntologyPrefix(), names[0]);
+        extrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
+        bearer = IRI.create(getOntologyPrefix(), names[2]);
+        externalDependence = IRI.create(getOntologyPrefix(), names[3]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
@@ -48,10 +79,7 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
                 applier.isInstanceOf(GufoIris.Sortal, sortal) &&
                 applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer) &&
                 applier.isInstanceOf(GufoIris.Endurant, externalDependence)) {
-                applier.createNamedIndividual(extrinsicMode);
-                applier.makeInstanceOf(sortal, extrinsicMode);
-                applier.createRelation(inheritance, extrinsicMode, bearer);
-                applier.createRelation(dependenceRelation, extrinsicMode, externalDependence);
+                runCommand();
             } else {
                 showMessage("Only sortal types of ExtrinsicMode can be directly instantiated." + System.lineSeparator()
                           + "A ConcreteIndividual must be chosen as bearer." + System.lineSeparator()

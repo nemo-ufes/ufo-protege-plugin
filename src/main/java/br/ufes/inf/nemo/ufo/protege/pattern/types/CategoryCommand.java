@@ -26,6 +26,26 @@ import org.semanticweb.owlapi.model.IRI;
 )
 public class CategoryCommand extends PatternCommand {
 
+    private IRI endurantClass;
+    private IRI category;
+
+    public void setEndurantClass(IRI endurantClass) {
+        this.endurantClass = endurantClass;
+    }
+
+    public void setCategory(IRI category) {
+        this.category = category;
+    }
+    
+    @Override
+    public void runCommand() {
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        applier.createNamedIndividual(category);
+        applier.makeInstanceOf(GufoIris.Category, category);
+        applier.createClass(category);
+        applier.addSubClassTo(endurantClass, category);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
@@ -34,17 +54,14 @@ public class CategoryCommand extends PatternCommand {
                     + "Example: \"FunctionalComplex Animal\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);
-        IRI category = IRI.create(getOntologyPrefix(), names[1]);
+        endurantClass = IRI.create(GufoIris.GUFO, names[0]);
+        category = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
             if (applier.isSubClassOf(GufoIris.Endurant, endurantClass) &&
                 applier.isPublicGufoClass(endurantClass)) {
-                applier.createNamedIndividual(category);
-                applier.makeInstanceOf(GufoIris.Category, category);
-                applier.createClass(category);
-                applier.addSubClassTo(endurantClass, category);
+                runCommand();
             } else {
                 showMessage("A category must be subclass of FunctionalComplex, " + System.lineSeparator()
                         + "FixedCollection, VariableCollection, Quantity, " + System.lineSeparator()
