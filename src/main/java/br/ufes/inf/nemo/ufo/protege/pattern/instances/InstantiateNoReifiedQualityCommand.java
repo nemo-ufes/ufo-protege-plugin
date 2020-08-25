@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateNoReifiedQualityPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -51,29 +51,18 @@ public class InstantiateNoReifiedQualityCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<qualityType: DataProperty> <value: String> <bearer: ConcreteIndividual>\"." + System.lineSeparator()
-                    + "Example: \"hasMass 30-tons LittlePrincePlanet\".")
-                .trim();
-        String[] names = input.split(" ");
-
-        qualityType = IRI.create(getOntologyPrefix(), names[0]);
-        noReifiedQuality = names[1];
-        bearer = IRI.create(getOntologyPrefix(), names[2]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubDataPropertyOf(hasQualityValue, qualityType) &&
-                applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                runCommand();
-            } else {
-                showMessage("A subproperty of hasQualityValue must be chosen as property" + System.lineSeparator()
-                          + "and a ConcreteIndividual must be chosen as bearer.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateNoReifiedQualityCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperDataProperty(hasQualityValue)
+                .entities();
+        
+        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.ConcreteIndividual)
+                .entities();
+        
+        InstantiateNoReifiedQualityPatternFrame frame = new InstantiateNoReifiedQualityPatternFrame(this);
+        frame.setQualityTypeIRIs(qualityTypeIRIs);
+        frame.setConcreteIndividualIRIs(bearerIRIs);
+        frame.display();
     }
 
     @Override

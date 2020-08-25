@@ -10,8 +10,9 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.NoReifiedQualityPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.NoReifiedQualityPatternFrame;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -47,11 +48,12 @@ public class NoReifiedQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {        
         
-        EntityFilter criterion = new EntityFilter(getOWLModelManager());
-        criterion.addSuperClass(GufoIris.ConcreteIndividual);
+        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.ConcreteIndividual)
+                .entities();
         
         NoReifiedQualityPatternFrame frame = new NoReifiedQualityPatternFrame(this);
-        frame.setConcreteIndividualIRIs(criterion.filterEntities());
+        frame.setConcreteIndividualClassIRIs(bearerIRIs);
         frame.display();
     }
 

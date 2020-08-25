@@ -10,8 +10,9 @@ import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.SubKindPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.SubKindPatternFrame;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -48,12 +49,13 @@ public class SubKindCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         
-        EntityFilter criterion = new EntityFilter(getOWLModelManager());
-        criterion.addType(GufoIris.RigidType);
-        criterion.addType(GufoIris.Sortal);
+        List<IRI> rigidSortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.RigidType)
+                .addType(GufoIris.Sortal)
+                .entities();
         
         SubKindPatternFrame frame = new SubKindPatternFrame(this);
-        frame.setRigidSortalIRIs(criterion.filterEntities());
+        frame.setRigidSortalIRIs(rigidSortalIRIs);
         frame.display();
     }
 

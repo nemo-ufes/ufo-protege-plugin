@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.types.NoReifiedQualityCommand;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.semanticweb.owlapi.model.IRI;
@@ -26,29 +27,36 @@ public class NoReifiedQualityPatternFrame extends JFrame implements ActionListen
     private final NoReifiedQualityCommand command;
     
     private JComboBox domainSelection;
-    private final JTextField qualityTypeName;
+    private JTextField qualityTypeName;
     
-    private List<IRI> concreteIndividualIRIs;
+    private final JLabel domainLabel = new JLabel("Concrete individual class to be the domain: ");
+    private final JLabel qualityTypeLabel = new JLabel("No reified quality type: ");
+    
+    private List<IRI> concreteIndividualClassIRIs;
+    
+    private final JPanel domainPanel = new JPanel();
+    private final JPanel qualityTypePanel = new JPanel();
+    private final JPanel okPanel = new JPanel();
     
     public NoReifiedQualityPatternFrame(NoReifiedQualityCommand command) {
         this.command = command;
         
         this.setTitle("New no reified quality type");
+        this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
-        this.setLayout(new FlowLayout());
-        
-        this.qualityTypeName = new JTextField(30);
     }
     
-    public void setConcreteIndividualIRIs(List<IRI> IRIs) {
-        concreteIndividualIRIs = IRIs;
+    public void setConcreteIndividualClassIRIs(List<IRI> IRIs) {
+        concreteIndividualClassIRIs = IRIs;
     }
     
     public void display() {
-        Object[] boxList = concreteIndividualIRIs.stream()
+        Object[] boxList = concreteIndividualClassIRIs.stream()
             .map(iri -> iri.getShortForm())
             .toArray();
         this.domainSelection = new JComboBox(boxList);
+        
+        this.qualityTypeName = new JTextField(30);
         
         JButton ok = new JButton("OK");
         JButton cancel = new JButton("Cancel");
@@ -56,24 +64,28 @@ public class NoReifiedQualityPatternFrame extends JFrame implements ActionListen
         ok.addActionListener(this);
         cancel.addActionListener(this);
         
-        JPanel panel = new JPanel();
-        panel.add(domainSelection);
-        panel.add(qualityTypeName);
-        panel.add(ok);
-        panel.add(cancel);
-        this.add(panel);
+        domainPanel.add(domainLabel);
+        domainPanel.add(domainSelection);
+        qualityTypePanel.add(qualityTypeLabel);
+        qualityTypePanel.add(qualityTypeName);
+        okPanel.add(ok);
+        okPanel.add(cancel);
         
-        this.setSize(800, 100);
+        this.add(domainPanel);
+        this.add(qualityTypePanel);
+        this.add(okPanel);
+        
+        this.pack();
         this.setVisible(true);
     }
     
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        String button = ae.getActionCommand();
-        if(button.equals("OK")) {
+    public void actionPerformed(ActionEvent event) {
+        String action = event.getActionCommand();
+        if(action.equals("OK")) {
             int index = domainSelection.getSelectedIndex();
             
-            IRI domain = concreteIndividualIRIs.get(index);
+            IRI domain = concreteIndividualClassIRIs.get(index);
             IRI qualityType = IRI.create(command.getOntologyPrefix(), qualityTypeName.getText());
             
             command.setDomain(domain);

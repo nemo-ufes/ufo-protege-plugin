@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateQualityPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -60,31 +60,19 @@ public class InstantiateQualityCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<sortal: Quality> <instance> <value: String> <bearer: ConcreteIndividual>\"."
-                    + System.lineSeparator()
-                    + "Example: \"Age AgeOfJohn 35-years John\".")
-                .trim();
-        String[] names = input.split(" ");
-        sortal = IRI.create(getOntologyPrefix(), names[0]);
-        quality = IRI.create(getOntologyPrefix(), names[1]);
-        qualityValue = names[2];
-        bearer = IRI.create(getOntologyPrefix(), names[3]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Quality, sortal) &&
-                applier.isInstanceOf(GufoIris.Sortal, sortal) &&
-                applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                runCommand();
-            } else {
-                showMessage("Only sortal types of Quality can be directly instantiated." + System.lineSeparator()
-                          + "A ConcreteIndividual must be chosen as bearer.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateQualityCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Quality)
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.ConcreteIndividual)
+                .entities();
+        
+        InstantiateQualityPatternFrame frame = new InstantiateQualityPatternFrame(this);
+        frame.setQualityTypeIRIs(qualityTypeIRIs);
+        frame.setConcreteIndividualIRIs(bearerIRIs);
+        frame.display();
     }
 
     @Override

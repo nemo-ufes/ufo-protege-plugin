@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateObjectPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -46,26 +46,14 @@ public class InstantiateObjectCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<sortal: ObjectClass> <instance>\"." + System.lineSeparator()
-                    + "Example: \"Dog Jack\".")
-                .trim();
-        String[] names = input.split(" ");
-        IRI sortal = IRI.create(getOntologyPrefix(), names[0]);
-        IRI instance = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Object, sortal) &&
-                applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                runCommand();
-            } else {
-                showMessage("Only sortal types of Object can be directly instantiated.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateObjectCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> sortalIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Object)
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        InstantiateObjectPatternFrame frame = new InstantiateObjectPatternFrame(this);
+        frame.setSortalIRIs(sortalIRIs);
+        frame.display();
     }
 
     @Override

@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateIntrinsicModePatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -53,29 +53,19 @@ public class InstantiateIntrinsicModeCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<sortal: IntrinsicMode> <instance> <bearer: ConcreteIndividual>\"." + System.lineSeparator()
-                    + "Example: \"Hapiness Susan'sHapiness Susan\".")
-                .trim();
-        String[] names = input.split(" ");
-        sortal = IRI.create(getOntologyPrefix(), names[0]);
-        intrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
-        bearer = IRI.create(getOntologyPrefix(), names[2]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.IntrinsicMode, sortal) &&
-                applier.isInstanceOf(GufoIris.Sortal, sortal) &&
-                applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer)) {
-                runCommand();
-            } else {
-                showMessage("Only sortal types of IntrinsicMode can be directly instantiated." + System.lineSeparator()
-                          + "A ConcreteIndividual must be chosen as bearer.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateIntrinsicModeCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> intrinsicModeTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.IntrinsicMode)
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.ConcreteIndividual)
+                .entities();
+        
+        InstantiateIntrinsicModePatternFrame frame = new InstantiateIntrinsicModePatternFrame(this);
+        frame.setIntrinsicModeTypeIRIs(intrinsicModeTypeIRIs);
+        frame.setConcreteIndividualIRIs(bearerIRIs);
+        frame.display();
     }
 
     @Override

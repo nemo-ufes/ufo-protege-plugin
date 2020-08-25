@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.ui;
+package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.types.SubKindCommand;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.semanticweb.owlapi.model.IRI;
@@ -26,19 +27,24 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
     private final SubKindCommand command;
     
     private JComboBox rigidSortalSelection;
-    private final JTextField subkindName;
+    private JTextField subkindName;
+    
+    private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to specialize: ");
+    private final JLabel subkindLabel = new JLabel("SubKind name: ");
     
     private List<IRI> rigidSortalIRIs;
+    
+    private final JPanel rigidSortalPanel = new JPanel();
+    private final JPanel subkindPanel = new JPanel();
+    private final JPanel okPanel = new JPanel();
     
     public SubKindPatternFrame(SubKindCommand command) {
         
         this.command = command;
         
         this.setTitle("Add subkind");
+        this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
-        this.setLayout(new FlowLayout());
-        
-        this.subkindName = new JTextField(30);
     }
     
     public void setRigidSortalIRIs(List<IRI> IRIs) {
@@ -51,27 +57,33 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
             .toArray();
         this.rigidSortalSelection = new JComboBox(boxList);
         
+        subkindName = new JTextField(30);
+        
         JButton ok = new JButton("OK");
         JButton cancel = new JButton("Cancel");
         
         ok.addActionListener(this);
         cancel.addActionListener(this);
         
-        JPanel panel = new JPanel();
-        panel.add(rigidSortalSelection);
-        panel.add(subkindName);
-        panel.add(ok);
-        panel.add(cancel);
-        this.add(panel);
+        rigidSortalPanel.add(rigidSortalLabel);
+        rigidSortalPanel.add(rigidSortalSelection);
+        subkindPanel.add(subkindLabel);
+        subkindPanel.add(subkindName);
+        okPanel.add(ok);
+        okPanel.add(cancel);
         
-        this.setSize(800, 100);
+        this.add(rigidSortalPanel);
+        this.add(subkindPanel);
+        this.add(okPanel);
+        
+        this.pack();
         this.setVisible(true);
     }
     
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        String button = ae.getActionCommand();
-        if(button.equals("OK")) {
+    public void actionPerformed(ActionEvent event) {
+        String action = event.getActionCommand();
+        if(action.equals("OK")) {
             int index = rigidSortalSelection.getSelectedIndex();
             
             IRI rigidSortal = rigidSortalIRIs.get(index);

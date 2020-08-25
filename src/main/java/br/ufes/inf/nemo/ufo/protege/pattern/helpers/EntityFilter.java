@@ -20,15 +20,14 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * @author jeferson
  */
 public class EntityFilter {
-    private final OWLModelManager modelManager;
     private final Set<OWLOntology> ontologies;
-    private final Set<IRI> superClasses = new HashSet<>();
-    private final Set<IRI> types = new HashSet<>();
-    private boolean isPublicGufoClass = false;
+    private final PatternApplier applier;
+    private Stream<IRI> entities;
     
     public EntityFilter(OWLModelManager modelManager) {
-        this.modelManager = modelManager;
         this.ontologies = modelManager.getActiveOntologies();
+        this.applier = new PatternApplier(modelManager);
+        this.entities = getAllEntities();
     }
     
     private Stream<IRI> getAllEntities() {
@@ -48,88 +47,27 @@ public class EntityFilter {
             .reduce("", (a, b) -> a + b);
     }
     
-    public void addSuperClass(IRI superClass) {
-        superClasses.add(superClass);
+    public EntityFilter addSuperClass(IRI superClass) {
+        entities = entities.filter(entity -> applier.isSubClassOf(superClass, entity));
+        return this;
     }
     
-    public void addType(IRI type) {
-        types.add(type);
+    public EntityFilter addType(IRI type) {
+        entities = entities.filter(entity -> applier.isInstanceOf(type, entity));
+        return this;
     }
     
-    public void setIsPublicGufoClass(boolean isPublic) {
-        isPublicGufoClass = isPublic;
+    public EntityFilter addSuperDataProperty(IRI superDataProperty) {
+        entities = entities.filter(entity -> applier.isSubDataPropertyOf(superDataProperty, entity));
+        return this;
     }
     
-    public List<IRI> filterEntities() {
-        PatternApplier applier = new PatternApplier(modelManager);
-        
-        Stream<IRI> entities = getAllEntities();
-        for(IRI superClass: superClasses) {
-            entities = entities.filter(entity -> applier.isSubClassOf(superClass, entity));
-        }
-        for(IRI type: types) {
-            entities = entities.filter(entity -> applier.isInstanceOf(type, entity));
-        }
-        if(isPublicGufoClass) {
-            entities = entities.filter(applier::isPublicGufoClass);
-        }
-        
+    public EntityFilter isPublicGufoClass() {
+        entities = entities.filter(applier::isPublicGufoClass);
+        return this;
+    }
+    
+    public List<IRI> entities() {
         return entities.collect(Collectors.toCollection(ArrayList::new));
     }
-    
-    /* public static Collection<IRI> getAllClasses() {
-        Collection<IRI> allClasses = new HashSet<>();
-        ontologies.stream()
-            .forEach(ontology -> GufoIris.owlClasses(ontology)
-                .map(owlClass -> owlClass.getIRI())
-                .forEach(iri -> allClasses.add(iri)));
-        
-        return allClasses;
-    }
-    
-    public static Collection<IRI> getAllNamedIndividuals() {
-        Collection<IRI> allNamedIndividuals = new HashSet<>();
-        ontologies.stream()
-            .forEach(ontology -> ontology.getIndividualsInSignature().stream()
-                .filter(individual -> individual.isNamed())
-                .map(individual -> individual.getIRI())
-                .forEach(iri -> allNamedIndividuals.add(iri)));
-        
-        return allNamedIndividuals;
-    }
-    
-    public static Collection<IRI> getPublicEndurantClasses() {
-        PatternApplier applier = new PatternApplier(modelManager);
-        return GufoIris.publicClasses.stream()
-            .filter(iri -> applier.isSubClassOf(GufoIris.Endurant, iri))
-            .collect(Collectors.toCollection(ArrayList::new));
-    }
-    
-    public static Collection<IRI> getCategories() {
-        PatternApplier applier = new PatternApplier(modelManager);
-        IRI categoryIRI = GufoIris.Category;
-        
-        Collection<IRI> categories = new ArrayList<>();
-        ontologies.stream()
-            .forEach(ontology -> GufoIris.owlClasses(ontology)
-                .map(owlClass -> owlClass.getIRI())
-                .filter(iri -> applier.isInstanceOf(categoryIRI, iri))
-                .forEach(iri -> categories.add(iri)));
-        
-        return categories;
-    }
-    
-    public static Collection<IRI> getRigidTypes() {
-        PatternApplier applier = new PatternApplier(modelManager);
-        IRI rigidTypeIRI = GufoIris.RigidType;
-        
-        Collection<IRI> rigidTypes = new ArrayList<>();
-        ontologies.stream()
-            .forEach(ontology -> GufoIris.owlClasses(ontology)
-                .map(owlClass -> owlClass.getIRI())
-                .filter(iri -> applier.isInstanceOf(rigidTypeIRI, iri))
-                .forEach(iri -> rigidTypes.add(iri)));
-        
-        return rigidTypes;
-    } */
 }

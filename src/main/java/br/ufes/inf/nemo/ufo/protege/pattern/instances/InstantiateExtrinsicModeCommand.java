@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateExtrinsicModePatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -61,33 +61,24 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<sortal: ExtrinsicMode> <instance> <bearer: ConcreteIndividual> <dependence: Endurant>\"."
-                    + System.lineSeparator()
-                    + "Example: \"Love John'sLoveForMary John Mary\".")
-                .trim();
-        String[] names = input.split(" ");
-        sortal = IRI.create(getOntologyPrefix(), names[0]);
-        extrinsicMode = IRI.create(getOntologyPrefix(), names[1]);
-        bearer = IRI.create(getOntologyPrefix(), names[2]);
-        externalDependence = IRI.create(getOntologyPrefix(), names[3]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.ExtrinsicMode, sortal) &&
-                applier.isInstanceOf(GufoIris.Sortal, sortal) &&
-                applier.isInstanceOf(GufoIris.ConcreteIndividual, bearer) &&
-                applier.isInstanceOf(GufoIris.Endurant, externalDependence)) {
-                runCommand();
-            } else {
-                showMessage("Only sortal types of ExtrinsicMode can be directly instantiated." + System.lineSeparator()
-                          + "A ConcreteIndividual must be chosen as bearer." + System.lineSeparator()
-                          + "An Endurant must be chosen as external dependence.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateExtrinsicModeCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> extrinsicModeTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.ExtrinsicMode)
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.ConcreteIndividual)
+                .entities();
+        
+        List<IRI> externalDependenceIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Endurant)
+                .entities();
+        
+        InstantiateExtrinsicModePatternFrame frame = new InstantiateExtrinsicModePatternFrame(this);
+        frame.setExtrinsicModeTypeIRIs(extrinsicModeTypeIRIs);
+        frame.setConcreteIndividualIRIs(bearerIRIs);
+        frame.setEndurantIRIs(externalDependenceIRIs);
+        frame.display();
     }
 
     @Override

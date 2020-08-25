@@ -7,9 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.instances;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateRelatorPatternFrame;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -59,32 +62,19 @@ public class InstantiateRelatorCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<sortal: Relator> <instance> <mediated: Endurant> <mediated: Endurant>\"."
-                    + System.lineSeparator()
-                    + "Example: \"Marriage FirstMarriage Adam Eve\".")
-                .trim();
-        String[] names = input.split(" ");
-        sortal = IRI.create(getOntologyPrefix(), names[0]);
-        relator = IRI.create(getOntologyPrefix(), names[1]);
-        mediatedA = IRI.create(getOntologyPrefix(), names[2]);
-        mediatedB = IRI.create(getOntologyPrefix(), names[3]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Relator, sortal) &&
-                applier.isInstanceOf(GufoIris.Sortal, sortal) &&
-                applier.isInstanceOf(GufoIris.Endurant, mediatedA) &&
-                applier.isInstanceOf(GufoIris.Endurant, mediatedB)) {
-                runCommand();
-            } else {
-                showMessage("Only sortal types of Relator can be directly instantiated." + System.lineSeparator()
-                          + "Two Endurants must be chosen to be mediated.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(InstantiateRelatorCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> relatorIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Relator)
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        List<IRI> mediatedIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Endurant)
+                .entities();
+        
+        InstantiateRelatorPatternFrame frame = new InstantiateRelatorPatternFrame(this);
+        frame.setRelatorTypeIRIs(relatorIRIs);
+        frame.setEndurantIRIs(mediatedIRIs);
+        frame.display();
     }
 
     @Override
