@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateObjectCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -83,19 +84,30 @@ public class InstantiateObjectPatternFrame extends JFrame implements ActionListe
     public void actionPerformed(ActionEvent event) {
         String action = event.getActionCommand();
         
-        if(action.equals("OK")) {
-            int index = sortalSelection.getSelectedIndex();
-            IRI sortal = sortalIRIs.get(index);
-            
-            IRI instance = IRI.create(command.getOntologyPrefix(), instanceName.getText());
-            
-            command.setSortal(sortal);
-            command.setInstance(instance);
-            
-            command.runCommand();
+        try {
+            if(action.equals("OK")) {
+                int index = sortalSelection.getSelectedIndex();
+                IRI sortal = sortalIRIs.get(index);
+
+                String instanceStr = instanceName.getText();
+                if(instanceStr.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+                IRI instance = IRI.create(command.getOntologyPrefix(), instanceStr);
+
+                command.setSortal(sortal);
+                command.setInstance(instance);
+
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
 }

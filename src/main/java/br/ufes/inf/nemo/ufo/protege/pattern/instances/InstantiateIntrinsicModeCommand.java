@@ -48,7 +48,7 @@ public class InstantiateIntrinsicModeCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(intrinsicMode);
         applier.makeInstanceOf(sortal, intrinsicMode);
-        applier.createRelation(inheritance, intrinsicMode, bearer);
+        applier.assertObjectProperty(inheritance, intrinsicMode, bearer);
     }
     
     @Override

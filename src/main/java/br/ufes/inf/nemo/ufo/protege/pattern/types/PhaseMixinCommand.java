@@ -8,11 +8,11 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.PhaseMixinPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -48,25 +48,13 @@ public class PhaseMixinCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), 
-                    "Input: \"<NonSortal> <PhaseMixin>\". " + System.lineSeparator()
-                    + "Example: \"Animal Alive\".")
-                .trim();
-        String[] names = input.split(" ");
-        nonsortal = IRI.create(getOntologyPrefix(), names[0]);
-        phasemixin = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.NonSortal, nonsortal)) {
-                runCommand();
-            } else {
-                showMessage("There are only phasemixins of non-sortals!");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(PhaseMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> nonsortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.NonSortal)
+                .entities();
+        
+        PhaseMixinPatternFrame frame = new PhaseMixinPatternFrame(this);
+        frame.setNonSortalIRIs(nonsortalIRIs);
+        frame.display();
     }
 
     @Override

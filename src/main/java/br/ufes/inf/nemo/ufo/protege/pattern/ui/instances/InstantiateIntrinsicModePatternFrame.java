@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateIntrinsicModeCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -100,23 +101,34 @@ public class InstantiateIntrinsicModePatternFrame extends JFrame implements Acti
         String action = event.getActionCommand();
         int index;
         
-        if(action.equals("OK")) {
-            index = intrinsicModeTypeSelection.getSelectedIndex();
-            IRI intrinsicModeType = intrinsicModeTypeIRIs.get(index);
-            
-            index = bearerSelection.getSelectedIndex();
-            IRI bearer = concreteIndividualIRIs.get(index);
-            
-            IRI instance = IRI.create(command.getOntologyPrefix(), instanceName.getText());
-            
-            command.setSortal(intrinsicModeType);
-            command.setBearer(bearer);
-            command.setIntrinsicMode(instance);           
-            
-            command.runCommand();
+        try {
+            if(action.equals("OK")) {
+                index = intrinsicModeTypeSelection.getSelectedIndex();
+                IRI intrinsicModeType = intrinsicModeTypeIRIs.get(index);
+
+                index = bearerSelection.getSelectedIndex();
+                IRI bearer = concreteIndividualIRIs.get(index);
+
+                String instanceStr = instanceName.getText();
+                if(instanceStr.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+                IRI instance = IRI.create(command.getOntologyPrefix(), instanceStr);
+
+                command.setSortal(intrinsicModeType);
+                command.setBearer(bearer);
+                command.setIntrinsicMode(instance);           
+
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
 }

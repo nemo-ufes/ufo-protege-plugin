@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.MaterialRelationshipTypePatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -37,7 +37,7 @@ public class MaterialRelationshipTypeCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(relationshipType);
         applier.makeInstanceOf(GufoIris.MaterialRelationshipType, relationshipType);
-        applier.createRelation(isDerivedFrom, relationshipType, relatorType);
+        applier.assertObjectProperty(isDerivedFrom, relationshipType, relatorType);
         applier.createObjectProperty(relationshipType);
         applier.setObjectPropertyDomain(relationshipType, domain);
         applier.setObjectPropertyRange(relationshipType, range);
@@ -61,31 +61,20 @@ public class MaterialRelationshipTypeCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<derivation: Relator> <RelationshipType> <domain: EndurantClass> <range: EndurantClass>\"."
-                    + System.lineSeparator()
-                    + "Example: \"Marriage wifeOf Woman Man\".")
-                .trim();
-        String[] names = input.split(" ");
-        relatorType = IRI.create(getOntologyPrefix(), names[0]);
-        relationshipType = IRI.create(getOntologyPrefix(), names[1]);
-        domain = IRI.create(getOntologyPrefix(), names[2]);
-        range = IRI.create(getOntologyPrefix(), names[3]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Relator, relatorType) &&
-                applier.isSubClassOf(GufoIris.Endurant, domain) &&
-                applier.isSubClassOf(GufoIris.Endurant, range)) {
-                runCommand();
-            } else {
-                showMessage("A MaterialRelationshipType must be derived from a Relator type " + System.lineSeparator()
-                          + "and have an Endurant type as domain and as range.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(MaterialRelationshipTypeCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> relatorTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Relator)
+                .entities();
+        
+        IRI firstRelatorType = relatorTypeIRIs.isEmpty() ? null : relatorTypeIRIs.get(0);
+        List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Endurant)
+                .isDifferentFrom(firstRelatorType)
+                .entities();
+        
+        MaterialRelationshipTypePatternFrame frame = new MaterialRelationshipTypePatternFrame(this);
+        frame.setRelatorTypeIRIs(relatorTypeIRIs);
+        frame.setEndurantClassIRIs(endurantClassIRIs);
+        frame.display();
     }
 
     @Override

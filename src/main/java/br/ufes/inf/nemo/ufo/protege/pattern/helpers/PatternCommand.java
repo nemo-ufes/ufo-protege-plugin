@@ -15,6 +15,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
  */
 public abstract class PatternCommand extends ProtegeOWLAction {
     
+    public static String NOT_ALL_FIELDS_FILLED = "All fields must be filled! Nothing done.";
+    
     public abstract void runCommand();
     
     public String getOntologyPrefix() {

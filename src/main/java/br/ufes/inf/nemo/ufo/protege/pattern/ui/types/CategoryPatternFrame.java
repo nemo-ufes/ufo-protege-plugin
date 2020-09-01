@@ -6,7 +6,7 @@
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.types.SubKindCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.types.CategoryCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,42 +23,42 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-public class SubKindPatternFrame extends JFrame implements ActionListener {
+public class CategoryPatternFrame extends JFrame implements ActionListener {
     
-    private final SubKindCommand command;
+    private final CategoryCommand command;
     
-    private JComboBox rigidSortalSelection;
-    private JTextField subkindName;
+    private JComboBox endurantClassSelection;
+    private JTextField categoryName;
     
-    private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to specialize: ");
-    private final JLabel subkindLabel = new JLabel("SubKind name: ");
+    private final JLabel endurantClassLabel = new JLabel("Endurant class to specialize: ");
+    private final JLabel categoryLabel = new JLabel("Category name: ");
     
-    private List<IRI> rigidSortalIRIs;
+    private List<IRI> endurantClassIRIs;
     
-    private final JPanel rigidSortalPanel = new JPanel();
-    private final JPanel subkindPanel = new JPanel();
+    private final JPanel endurantClassPanel = new JPanel();
+    private final JPanel categoryPanel = new JPanel();
     private final JPanel okPanel = new JPanel();
     
-    public SubKindPatternFrame(SubKindCommand command) {
+    public CategoryPatternFrame(CategoryCommand command) {
         
         this.command = command;
         
-        this.setTitle("Add subkind");
+        this.setTitle("New category");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
     
-    public void setRigidSortalIRIs(List<IRI> IRIs) {
-        rigidSortalIRIs = IRIs;
+    public void setEndurantClassIRIs(List<IRI> IRIs) {
+        endurantClassIRIs = IRIs;
     }
     
     public void display() {
-        Object[] boxList = rigidSortalIRIs.stream()
+        Object[] boxList = endurantClassIRIs.stream()
             .map(iri -> iri.getShortForm())
             .toArray();
-        this.rigidSortalSelection = new JComboBox(boxList);
+        this.endurantClassSelection = new JComboBox(boxList);
         
-        subkindName = new JTextField(30);
+        categoryName = new JTextField(30);
         
         JButton ok = new JButton("OK");
         JButton cancel = new JButton("Cancel");
@@ -66,15 +66,15 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         ok.addActionListener(this);
         cancel.addActionListener(this);
         
-        rigidSortalPanel.add(rigidSortalLabel);
-        rigidSortalPanel.add(rigidSortalSelection);
-        subkindPanel.add(subkindLabel);
-        subkindPanel.add(subkindName);
+        endurantClassPanel.add(endurantClassLabel);
+        endurantClassPanel.add(endurantClassSelection);
+        categoryPanel.add(categoryLabel);
+        categoryPanel.add(categoryName);
         okPanel.add(ok);
         okPanel.add(cancel);
         
-        this.add(rigidSortalPanel);
-        this.add(subkindPanel);
+        this.add(endurantClassPanel);
+        this.add(categoryPanel);
         this.add(okPanel);
         
         this.pack();
@@ -87,20 +87,21 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         
         try {
             if(action.equals("OK")) {
-                int index = rigidSortalSelection.getSelectedIndex();
+                int index = endurantClassSelection.getSelectedIndex();
 
-                IRI rigidSortal = rigidSortalIRIs.get(index);
+                IRI endurantClass = endurantClassIRIs.get(index);
 
-                String subkindStr = subkindName.getText();
-                if(subkindStr.trim().isEmpty()) {
+                String categoryStr = categoryName.getText();
+                if(categoryStr.trim().isEmpty()) {
                     setVisible(false);
                     command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
                     return;
                 }
-                IRI subkind = IRI.create(command.getOntologyPrefix(), subkindStr);
+                IRI category = IRI.create(command.getOntologyPrefix(), categoryStr);
 
-                command.setRigidSortal(rigidSortal);
-                command.setSubKind(subkind);
+                command.setEndurantClass(endurantClass);
+                command.setCategory(category);
+
                 command.runCommand();
                 setVisible(false);
             } else {

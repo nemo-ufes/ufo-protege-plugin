@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.ComparativeRelationshipTypePatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -48,7 +48,7 @@ public class ComparativeRelationshipTypeCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(relationshipType);
         applier.makeInstanceOf(GufoIris.ComparativeRelationshipType, relationshipType);
-        applier.createRelation(isDerivedFrom, relationshipType, qualityType);
+        applier.assertObjectProperty(isDerivedFrom, relationshipType, qualityType);
         applier.createObjectProperty(relationshipType);
         applier.setObjectPropertyDomain(relationshipType, domainAndRange);
         applier.setObjectPropertyRange(relationshipType, domainAndRange);
@@ -56,28 +56,20 @@ public class ComparativeRelationshipTypeCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<derivation: Quality> <RelationshipType> <domainAndRange: ConcreteIndividualClass>\"." + System.lineSeparator()
-                    + "Example: \"Weight heavierThan PhysicalObject\".")
-                .trim();
-        String[] names = input.split(" ");
-        qualityType = IRI.create(getOntologyPrefix(), names[0]);
-        relationshipType = IRI.create(getOntologyPrefix(), names[1]);
-        domainAndRange = IRI.create(getOntologyPrefix(), names[2]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isSubClassOf(GufoIris.Quality, qualityType) &&
-                applier.isSubClassOf(GufoIris.ConcreteIndividual, domainAndRange)) {
-                runCommand();
-            } else {
-                showMessage("A ComparativeRelationshipType must be derived from a Quality type " + System.lineSeparator()
-                          + "and have a single Endurant type as domain and range.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(ComparativeRelationshipTypeCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.Quality)
+                .entities();
+        
+        IRI firstQualityType = qualityTypeIRIs.isEmpty() ? null : qualityTypeIRIs.get(0);
+        List<IRI> domainAndRangeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperClass(GufoIris.ConcreteIndividual)
+                .isDifferentFrom(firstQualityType)
+                .entities();
+        
+        ComparativeRelationshipTypePatternFrame frame = new ComparativeRelationshipTypePatternFrame(this);
+        frame.setQualityTypeIRIs(qualityTypeIRIs);
+        frame.setConcreteIndividualClassIRIs(domainAndRangeIRIs);
+        frame.display();
     }
 
     @Override

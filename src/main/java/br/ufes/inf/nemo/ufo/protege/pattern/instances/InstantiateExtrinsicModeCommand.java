@@ -55,8 +55,8 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(extrinsicMode);
         applier.makeInstanceOf(sortal, extrinsicMode);
-        applier.createRelation(inheritance, extrinsicMode, bearer);
-        applier.createRelation(dependenceRelation, extrinsicMode, externalDependence);
+        applier.assertObjectProperty(inheritance, extrinsicMode, bearer);
+        applier.assertObjectProperty(dependenceRelation, extrinsicMode, externalDependence);
     }
     
     @Override
@@ -70,8 +70,10 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
                 .addType(GufoIris.ConcreteIndividual)
                 .entities();
         
+        IRI firstBearer = bearerIRIs.isEmpty() ? null : bearerIRIs.get(0);
         List<IRI> externalDependenceIRIs = new EntityFilter(getOWLModelManager())
                 .addType(GufoIris.Endurant)
+                .isDifferentFrom(firstBearer)
                 .entities();
         
         InstantiateExtrinsicModePatternFrame frame = new InstantiateExtrinsicModePatternFrame(this);

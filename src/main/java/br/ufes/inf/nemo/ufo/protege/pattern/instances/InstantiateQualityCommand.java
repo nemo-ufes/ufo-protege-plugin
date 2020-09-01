@@ -54,7 +54,7 @@ public class InstantiateQualityCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(quality);
         applier.makeInstanceOf(sortal, quality);
-        applier.createRelation(inheritance, quality, bearer);
+        applier.assertObjectProperty(inheritance, quality, bearer);
         applier.assertDataProperty(hasQualityValue, quality, qualityValue);
     }
     

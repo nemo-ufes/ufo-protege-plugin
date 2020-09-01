@@ -67,7 +67,31 @@ public class EntityFilter {
         return this;
     }
     
+    public EntityFilter hasSharedSuperClasses(IRI classIRI) {
+        if(classIRI != null) {
+            entities = entities.filter(entity -> applier.hasSharedSuperClasses(classIRI, entity));
+        } else {
+            entities = entities.limit(0);
+        }
+        return this;
+    }
+    
+    public EntityFilter isDifferentFrom(IRI classIRI) {
+        if(classIRI != null) {
+            entities = entities.filter(entity -> applier.isDifferentFrom(classIRI, entity));
+        }
+        return this;
+    }
+    
+    public EntityFilter isNotSuperClassOf(IRI classIRI) {
+        entities = entities.filter(entity -> ! applier.isSubClassOf(entity, classIRI));
+        return this;
+    }
+    
     public List<IRI> entities() {
-        return entities.collect(Collectors.toCollection(ArrayList::new));
+        return entities
+                .sorted((IRI iri1, IRI iri2) -> iri1.getShortForm()
+                        .compareToIgnoreCase(iri2.getShortForm()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

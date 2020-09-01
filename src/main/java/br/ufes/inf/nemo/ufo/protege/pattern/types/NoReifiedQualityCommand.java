@@ -48,12 +48,12 @@ public class NoReifiedQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {        
         
-        List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
+        List<IRI> domainIRIs = new EntityFilter(getOWLModelManager())
                 .addSuperClass(GufoIris.ConcreteIndividual)
                 .entities();
         
         NoReifiedQualityPatternFrame frame = new NoReifiedQualityPatternFrame(this);
-        frame.setConcreteIndividualClassIRIs(bearerIRIs);
+        frame.setConcreteIndividualClassIRIs(domainIRIs);
         frame.display();
     }
 

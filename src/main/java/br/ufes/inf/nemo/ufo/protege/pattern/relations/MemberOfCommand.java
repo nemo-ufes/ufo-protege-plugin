@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.MemberOfPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -41,31 +41,25 @@ public class MemberOfCommand extends PatternCommand {
     @Override
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
-        applier.createRelation(memberOfRelation, member, collection);
+        applier.assertObjectProperty(memberOfRelation, member, collection);
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<member: Object> <Collection>\"." + System.lineSeparator()
-                    + "Example: \"JonForeman Switchfoot\".")
-                .trim();
-        String[] names = input.split(" ");
-        member = IRI.create(getOntologyPrefix(), names[0]);
-        collection = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Object, member) &&
-                applier.isInstanceOf(GufoIris.Collection, collection)) {
-                runCommand();
-            } else {
-                showMessage("Only objects can be member of collections.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(MemberOfCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> collectionIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Collection)
+                .entities();
+        
+        IRI firstCollection = collectionIRIs.isEmpty() ? null : collectionIRIs.get(0);
+        List<IRI> memberIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Object)
+                .isDifferentFrom(firstCollection)
+                .entities();
+        
+        MemberOfPatternFrame frame = new MemberOfPatternFrame(this);
+        frame.setCollectionIRIs(collectionIRIs);
+        frame.setObjectIRIs(memberIRIs);
+        frame.display();
     }
 
     @Override

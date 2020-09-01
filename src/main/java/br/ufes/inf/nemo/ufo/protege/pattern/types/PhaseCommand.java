@@ -8,11 +8,11 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.PhasePatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -48,25 +48,13 @@ public class PhaseCommand extends PatternCommand {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), 
-                    "Input: \"<Sortal> <Phase>\". " + System.lineSeparator()
-                    + "Example: \"Person Child\".")
-                .trim();
-        String[] names = input.split(" ");
-        sortal = IRI.create(getOntologyPrefix(), names[0]);
-        phase = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Sortal, sortal)) {
-                runCommand();
-            } else {
-                showMessage("There are only phases of sortals!");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(PhaseCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> sortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Sortal)
+                .entities();
+        
+        PhasePatternFrame frame = new PhasePatternFrame(this);
+        frame.setSortalIRIs(sortalIRIs);
+        frame.display();
     }
 
     @Override

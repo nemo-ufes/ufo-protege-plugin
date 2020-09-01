@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.ComponentOfPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -41,31 +41,25 @@ public class ComponentOfCommand extends PatternCommand {
     @Override
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
-        applier.createRelation(componentOfRelation, component, functionalComplex);
+        applier.assertObjectProperty(componentOfRelation, component, functionalComplex);
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<component: Object> <FunctionalComplex>\"." + System.lineSeparator()
-                    + "Example: \"Heart Person\".")
-                .trim();
-        String[] names = input.split(" ");
-        IRI component = IRI.create(getOntologyPrefix(), names[0]);
-        IRI functionalComplex = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Object, component) &&
-                applier.isInstanceOf(GufoIris.FunctionalComplex, functionalComplex)) {
-                runCommand();
-            } else {
-                showMessage("Only objects can be component of functional complexes.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(ComponentOfCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> functionalComplexIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.FunctionalComplex)
+                .entities();
+        
+        IRI firstFunctionalComplex = functionalComplexIRIs.isEmpty() ? null : functionalComplexIRIs.get(0);
+        List<IRI> componentIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Object)
+                .isDifferentFrom(firstFunctionalComplex)
+                .entities();
+        
+        ComponentOfPatternFrame frame = new ComponentOfPatternFrame(this);
+        frame.setFunctionalComplexIRIs(functionalComplexIRIs);
+        frame.setObjectIRIs(componentIRIs);
+        frame.display();
     }
 
     @Override

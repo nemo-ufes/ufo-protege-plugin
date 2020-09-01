@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateRelatorCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -107,28 +108,38 @@ public class InstantiateRelatorPatternFrame extends JFrame implements ActionList
         String action = event.getActionCommand();
         int index;
         
-        if(action.equals("OK")) {
-            index = relatorTypeSelection.getSelectedIndex();
-            IRI relatorType = relatorTypeIRIs.get(index);
-            
-            index = mediatedASelection.getSelectedIndex();
-            IRI mediatedA = endurantIRIs.get(index);
-            
-            index = mediatedBSelection.getSelectedIndex();
-            IRI mediatedB = endurantIRIs.get(index);
-            
-            IRI instance = IRI.create(command.getOntologyPrefix(), instanceName.getText());
-            
-            command.setSortal(relatorType);
-            command.setMediatedA(mediatedA);
-            command.setMediatedB(mediatedB);
-            command.setRelator(instance);           
-            
-            command.runCommand();
+        try {
+            if(action.equals("OK")) {
+                index = relatorTypeSelection.getSelectedIndex();
+                IRI relatorType = relatorTypeIRIs.get(index);
+
+                index = mediatedASelection.getSelectedIndex();
+                IRI mediatedA = endurantIRIs.get(index);
+
+                index = mediatedBSelection.getSelectedIndex();
+                IRI mediatedB = endurantIRIs.get(index);
+
+                String instanceStr = instanceName.getText();
+                if(instanceStr.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+                IRI instance = IRI.create(command.getOntologyPrefix(), instanceStr);
+
+                command.setSortal(relatorType);
+                command.setMediatedA(mediatedA);
+                command.setMediatedB(mediatedB);
+                command.setRelator(instance);           
+
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
-    
 }

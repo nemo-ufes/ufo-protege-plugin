@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.NoReifiedQualityCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -82,18 +83,31 @@ public class NoReifiedQualityPatternFrame extends JFrame implements ActionListen
     @Override
     public void actionPerformed(ActionEvent event) {
         String action = event.getActionCommand();
-        if(action.equals("OK")) {
-            int index = domainSelection.getSelectedIndex();
-            
-            IRI domain = concreteIndividualClassIRIs.get(index);
-            IRI qualityType = IRI.create(command.getOntologyPrefix(), qualityTypeName.getText());
-            
-            command.setDomain(domain);
-            command.setQualityType(qualityType);
-            command.runCommand();
+        
+        try {
+            if(action.equals("OK")) {
+                int index = domainSelection.getSelectedIndex();
+
+                IRI domain = concreteIndividualClassIRIs.get(index);
+
+                String qualityTypeStr = qualityTypeName.getText();
+                if(qualityTypeStr.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+                IRI qualityType = IRI.create(command.getOntologyPrefix(), qualityTypeStr);
+
+                command.setDomain(domain);
+                command.setQualityType(qualityType);
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
     

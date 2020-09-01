@@ -5,6 +5,9 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateExtrinsicModeCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -76,6 +79,8 @@ public class InstantiateExtrinsicModePatternFrame extends JFrame implements Acti
             .map(iri -> iri.getShortForm())
             .toArray();
         this.bearerSelection = new JComboBox(bearerList);
+        this.bearerSelection.setActionCommand("Bearer selected");
+        this.bearerSelection.addActionListener(this);
         
         Object[] externalDependenceList = endurantIRIs.stream()
             .map(iri -> iri.getShortForm())
@@ -115,29 +120,65 @@ public class InstantiateExtrinsicModePatternFrame extends JFrame implements Acti
     public void actionPerformed(ActionEvent event) {
         String action = event.getActionCommand();
         int index;
+        IRI extrinsicModeType, bearer, externalDependence;
         
-        if(action.equals("OK")) {
-            index = extrinsicModeTypeSelection.getSelectedIndex();
-            IRI extrinsicModeType = extrinsicModeTypeIRIs.get(index);
-            
-            index = bearerSelection.getSelectedIndex();
-            IRI bearer = concreteIndividualIRIs.get(index);
-            
-            index = externalDependenceSelection.getSelectedIndex();
-            IRI externalDependence = endurantIRIs.get(index);
-            
-            IRI instance = IRI.create(command.getOntologyPrefix(), instanceName.getText());
-            
-            command.setSortal(extrinsicModeType);
-            command.setBearer(bearer);
-            command.setExternalDependence(externalDependence);
-            command.setExtrinsicMode(instance);           
-            
-            command.runCommand();
+        try {
+            switch (action) {
+                case "OK":
+                    index = extrinsicModeTypeSelection.getSelectedIndex();
+                    extrinsicModeType = extrinsicModeTypeIRIs.get(index);
+                    
+                    index = bearerSelection.getSelectedIndex();
+                    bearer = concreteIndividualIRIs.get(index);
+                    
+                    index = externalDependenceSelection.getSelectedIndex();
+                    externalDependence = endurantIRIs.get(index);
+                    
+                    String instanceStr = instanceName.getText();
+                    if(instanceStr.trim().isEmpty()) {
+                        setVisible(false);
+                        command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                        return;
+                    }
+                    IRI instance = IRI.create(command.getOntologyPrefix(), instanceStr);
+                    
+                    command.setSortal(extrinsicModeType);
+                    command.setBearer(bearer);
+                    command.setExternalDependence(externalDependence);
+                    command.setExtrinsicMode(instance);
+                    
+                    command.runCommand();
+                    setVisible(false);
+                    break;
+                case "Bearer selected":
+                    index = bearerSelection.getSelectedIndex();
+                    bearer = concreteIndividualIRIs.get(index);
+                    
+                    this.externalDependencePanel.remove(this.externalDependenceSelection);
+                    
+                    this.endurantIRIs = new EntityFilter(command.getOWLModelManager())
+                            .addType(GufoIris.Endurant)
+                            .isDifferentFrom(bearer)
+                            .entities();
+                    
+                    Object[] boxList = endurantIRIs.stream()
+                            .map(iri -> iri.getShortForm())
+                            .toArray();
+                    
+                    this.externalDependenceSelection = new JComboBox(boxList);
+                    
+                    this.externalDependencePanel.add(this.externalDependenceSelection);
+                    
+                    this.pack();
+                    this.repaint();
+                    break;
+                default:
+                    setVisible(false);
+                    break;
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
-    
 }

@@ -80,11 +80,7 @@ public final class PatternApplier {
 
         return buildSuperClassSet(types);
     }
-
-    public boolean isPublicGufoClass(IRI classIRI) {
-        return GufoIris.publicClasses.contains(classIRI);
-    }
-
+    
     public Set<OWLSubClassOfAxiom> sharedSuperClassAxioms(IRI classIRI, IRI subClassIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
 
@@ -133,49 +129,7 @@ public final class PatternApplier {
         AddAxiom addAxiom = new AddAxiom(ontology, axiom);
         modelManager.applyChange(addAxiom);
     }
-
-    public boolean isDirectSubClassOf(IRI classIRI, IRI anotherClassIRI) {
-        OWLOntology ontology = modelManager.getActiveOntology();
-
-        OWLClass child = dataFactory.getOWLClass(anotherClassIRI);
-
-        return ontology.getSubClassAxiomsForSubClass(child).stream()
-                .map(axiom -> axiom.getSuperClass())
-                .filter(classExpression -> classExpression.isNamed())
-                .map(classExpression -> classExpression.asOWLClass()
-                    .getIRI()
-                    .toString()
-                    .contentEquals(classIRI.toString()))
-                .anyMatch(test -> true);
-    }
-
-    public boolean isSubClassOf(IRI classIRI, IRI anotherClassIRI) {
-        OWLClass superClass = dataFactory.getOWLClass(classIRI);
-        OWLClass subClass = dataFactory.getOWLClass(anotherClassIRI);
-
-        return getSuperClasses(subClass).contains(superClass);
-    }
-
-    public boolean isDirectInstanceOf(IRI classIRI, IRI instanceIRI) {
-        OWLOntology ontology = modelManager.getActiveOntology();
-
-        OWLNamedIndividual owlInstance = dataFactory.getOWLNamedIndividual(instanceIRI);
-
-        return ontology.getClassAssertionAxioms(owlInstance).stream()
-                .anyMatch(axiom -> axiom.getClassExpression()
-                    .asOWLClass()
-                    .getIRI()
-                    .toString()
-                    .contentEquals(classIRI.toString()));
-    }
-
-    public boolean isInstanceOf(IRI classIRI, IRI instanceIRI) {
-        OWLClass type = dataFactory.getOWLClass(classIRI);
-        OWLNamedIndividual individual = dataFactory.getOWLNamedIndividual(instanceIRI);
-
-        return getTypes(individual).contains(type);
-    }
-
+    
     public void createClass(IRI classIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
 
@@ -207,15 +161,15 @@ public final class PatternApplier {
         modelManager.applyChange(addAxiom);
     }
 
-    public void createRelation(IRI propertyIRI, IRI subjectIRI, IRI objectIRI) {
+    public void assertObjectProperty(IRI propertyIRI, IRI subjectIRI, IRI objectIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
 
-        OWLObjectProperty relation = dataFactory.getOWLObjectProperty(propertyIRI);
+        OWLObjectProperty property = dataFactory.getOWLObjectProperty(propertyIRI);
         OWLNamedIndividual subject = dataFactory.getOWLNamedIndividual(subjectIRI);
         OWLNamedIndividual object = dataFactory.getOWLNamedIndividual(objectIRI);
 
         OWLAxiom assertionAxiom =
-            dataFactory.getOWLObjectPropertyAssertionAxiom(relation, subject, object);
+            dataFactory.getOWLObjectPropertyAssertionAxiom(property, subject, object);
         AddAxiom addAxiom = new AddAxiom(ontology, assertionAxiom);
         modelManager.applyChange(addAxiom);
     }
@@ -242,21 +196,7 @@ public final class PatternApplier {
         AddAxiom addAxiom = new AddAxiom(ontology, assertionAxiom);
         modelManager.applyChange(addAxiom);
     }
-
-    public boolean isSubDataPropertyOf(IRI propertyIRI, IRI subPropertyIRI) {
-        OWLOntology ontology = modelManager.getActiveOntology();
-
-        OWLDataProperty property = dataFactory.getOWLDataProperty(propertyIRI);
-        OWLDataProperty subProperty = dataFactory.getOWLDataProperty(subPropertyIRI);
-
-        return ontology.getDataSubPropertyAxiomsForSubProperty(subProperty).stream()
-                .anyMatch(axiom -> axiom.getSuperProperty()
-                    .asOWLDataProperty()
-                    .getIRI()
-                    .toString()
-                    .contentEquals(propertyIRI.toString()));
-    }
-
+    
     public void setDataPropertyDomain(IRI propertyIRI, IRI domainIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
 
@@ -298,5 +238,87 @@ public final class PatternApplier {
         OWLAxiom rangeAxiom = dataFactory.getOWLObjectPropertyRangeAxiom(property, range);
         AddAxiom addAxiom = new AddAxiom(ontology, rangeAxiom);
         modelManager.applyChange(addAxiom);
+    }
+    
+    public boolean isPublicGufoClass(IRI classIRI) {
+        return GufoIris.publicClasses.contains(classIRI);
+    }
+
+    public boolean isDirectSubClassOf(IRI classIRI, IRI subClassIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+
+        OWLClass child = dataFactory.getOWLClass(subClassIRI);
+
+        return ontology.getSubClassAxiomsForSubClass(child).stream()
+                .map(axiom -> axiom.getSuperClass())
+                .filter(classExpression -> classExpression.isNamed())
+                .anyMatch(classExpression -> classExpression.asOWLClass()
+                    .getIRI()
+                    .toString()
+                    .contentEquals(classIRI.toString()));
+    }
+
+    public boolean isSubClassOf(IRI classIRI, IRI subClassIRI) {
+        OWLClass superClass = dataFactory.getOWLClass(classIRI);
+        OWLClass subClass = dataFactory.getOWLClass(subClassIRI);
+
+        return getSuperClasses(subClass).contains(superClass);
+    }
+
+    public boolean isDirectInstanceOf(IRI classIRI, IRI instanceIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+
+        OWLNamedIndividual owlInstance = dataFactory.getOWLNamedIndividual(instanceIRI);
+
+        return ontology.getClassAssertionAxioms(owlInstance).stream()
+                .anyMatch(axiom -> axiom.getClassExpression()
+                    .asOWLClass()
+                    .getIRI()
+                    .toString()
+                    .contentEquals(classIRI.toString()));
+    }
+
+    public boolean isInstanceOf(IRI classIRI, IRI instanceIRI) {
+        OWLClass type = dataFactory.getOWLClass(classIRI);
+        OWLNamedIndividual individual = dataFactory.getOWLNamedIndividual(instanceIRI);
+
+        return getTypes(individual).contains(type);
+    }
+
+    public boolean isSubDataPropertyOf(IRI propertyIRI, IRI subPropertyIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+
+        OWLDataProperty subProperty = dataFactory.getOWLDataProperty(subPropertyIRI);
+
+        return ontology.getDataSubPropertyAxiomsForSubProperty(subProperty).stream()
+                .anyMatch(axiom -> axiom.getSuperProperty()
+                    .asOWLDataProperty()
+                    .getIRI()
+                    .toString()
+                    .contentEquals(propertyIRI.toString()));
+    }
+    
+    public boolean hasSharedSuperClasses(IRI classIRI, IRI subClassIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+
+        OWLClass parent = dataFactory.getOWLClass(classIRI);
+        OWLClass child = dataFactory.getOWLClass(subClassIRI);
+
+        return getSuperClasses(parent).stream()
+            .map(owlClass -> owlClass.getIRI())
+            .anyMatch(superClassIRI -> {
+                return ontology.getSubClassAxiomsForSubClass(child).stream()
+                    .filter(axiom -> axiom.getSuperClass().isNamed())
+                    .anyMatch(axiom ->
+                            axiom.getSuperClass().asOWLClass()
+                                .getIRI()
+                                .toString()
+                                .contentEquals(superClassIRI.toString()));
+            });
+    }
+    
+    public boolean isDifferentFrom(IRI classIRI, IRI anotherClassIRI) {
+        return ! classIRI.toString()
+            .contentEquals(anotherClassIRI.toString());
     }
 }

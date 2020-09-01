@@ -7,12 +7,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.relations;
 
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.SubQuantityOfPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -41,31 +41,25 @@ public class SubQuantityOfCommand extends PatternCommand {
     @Override
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
-        applier.createRelation(subQuantityOfRelation, subquantity, quantity);
+        applier.assertObjectProperty(subQuantityOfRelation, subquantity, quantity);
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(),
-                    "Input: \"<subQuantity: Quantity> <Quantity>\"." + System.lineSeparator()
-                    + "Example: \"AlcoholInCupOfWine CupOfWine\".")
-                .trim();
-        String[] names = input.split(" ");
-        subquantity = IRI.create(getOntologyPrefix(), names[0]);
-        quantity = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Quantity, subquantity) &&
-                applier.isInstanceOf(GufoIris.Quantity, quantity)) {
-                runCommand();
-            } else {
-                showMessage("Only quantities can be subquantity of another quantities.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(SubQuantityOfCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> quantityIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Quantity)
+                .entities();
+        
+        IRI firstQuantity = quantityIRIs.isEmpty() ? null : quantityIRIs.get(0);
+        List<IRI> subquantityIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Quantity)
+                .isDifferentFrom(firstQuantity)
+                .entities();
+        
+        SubQuantityOfPatternFrame frame = new SubQuantityOfPatternFrame(this);
+        frame.setQuantityIRIs(quantityIRIs);
+        frame.setSubQuantityIRIs(subquantityIRIs);
+        frame.display();
     }
 
     @Override

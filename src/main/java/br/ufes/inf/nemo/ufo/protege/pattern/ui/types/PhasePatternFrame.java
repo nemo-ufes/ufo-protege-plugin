@@ -6,7 +6,7 @@
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.types.SubKindCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.types.PhaseCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,42 +23,42 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-public class SubKindPatternFrame extends JFrame implements ActionListener {
+public class PhasePatternFrame extends JFrame implements ActionListener {
     
-    private final SubKindCommand command;
+    private final PhaseCommand command;
     
-    private JComboBox rigidSortalSelection;
-    private JTextField subkindName;
+    private JComboBox sortalSelection;
+    private JTextField phaseName;
     
-    private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to specialize: ");
-    private final JLabel subkindLabel = new JLabel("SubKind name: ");
+    private final JLabel sortalLabel = new JLabel("Sortal to specialize: ");
+    private final JLabel phaseLabel = new JLabel("Phase name: ");
     
-    private List<IRI> rigidSortalIRIs;
+    private List<IRI> sortalIRIs;
     
-    private final JPanel rigidSortalPanel = new JPanel();
-    private final JPanel subkindPanel = new JPanel();
+    private final JPanel sortalPanel = new JPanel();
+    private final JPanel phasePanel = new JPanel();
     private final JPanel okPanel = new JPanel();
     
-    public SubKindPatternFrame(SubKindCommand command) {
+    public PhasePatternFrame(PhaseCommand command) {
         
         this.command = command;
         
-        this.setTitle("Add subkind");
+        this.setTitle("Add phase");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
     
-    public void setRigidSortalIRIs(List<IRI> IRIs) {
-        rigidSortalIRIs = IRIs;
+    public void setSortalIRIs(List<IRI> IRIs) {
+        sortalIRIs = IRIs;
     }
     
     public void display() {
-        Object[] boxList = rigidSortalIRIs.stream()
+        Object[] boxList = sortalIRIs.stream()
             .map(iri -> iri.getShortForm())
             .toArray();
-        this.rigidSortalSelection = new JComboBox(boxList);
+        this.sortalSelection = new JComboBox(boxList);
         
-        subkindName = new JTextField(30);
+        phaseName = new JTextField(30);
         
         JButton ok = new JButton("OK");
         JButton cancel = new JButton("Cancel");
@@ -66,15 +66,15 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         ok.addActionListener(this);
         cancel.addActionListener(this);
         
-        rigidSortalPanel.add(rigidSortalLabel);
-        rigidSortalPanel.add(rigidSortalSelection);
-        subkindPanel.add(subkindLabel);
-        subkindPanel.add(subkindName);
+        sortalPanel.add(sortalLabel);
+        sortalPanel.add(sortalSelection);
+        phasePanel.add(phaseLabel);
+        phasePanel.add(phaseName);
         okPanel.add(ok);
         okPanel.add(cancel);
         
-        this.add(rigidSortalPanel);
-        this.add(subkindPanel);
+        this.add(sortalPanel);
+        this.add(phasePanel);
         this.add(okPanel);
         
         this.pack();
@@ -87,20 +87,20 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         
         try {
             if(action.equals("OK")) {
-                int index = rigidSortalSelection.getSelectedIndex();
+                int index = sortalSelection.getSelectedIndex();
 
-                IRI rigidSortal = rigidSortalIRIs.get(index);
+                IRI sortal = sortalIRIs.get(index);
 
-                String subkindStr = subkindName.getText();
-                if(subkindStr.trim().isEmpty()) {
+                String phaseStr = phaseName.getText();
+                if(phaseStr.trim().isEmpty()) {
                     setVisible(false);
                     command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
                     return;
                 }
-                IRI subkind = IRI.create(command.getOntologyPrefix(), subkindStr);
+                IRI phase = IRI.create(command.getOntologyPrefix(), phaseStr);
 
-                command.setRigidSortal(rigidSortal);
-                command.setSubKind(subkind);
+                command.setSortal(sortal);
+                command.setPhase(phase);
                 command.runCommand();
                 setVisible(false);
             } else {

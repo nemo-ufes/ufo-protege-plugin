@@ -8,12 +8,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.AddToMixinPatternFrame;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
@@ -43,36 +43,29 @@ public class AddToMixinCommand extends PatternCommand {
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         
+        // From EntityFilter we can take that sharedEndurantClasses isn't empty for granted
         Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(mixin, endurantType);
-        if(!sharedEndurantClasses.isEmpty()) {
-            applier.makeSubClassOf(mixin, endurantType, sharedEndurantClasses);
-        } else {
-            showMessage("The mixin and the endurant type must share an Endurant class!");
-        }
+        applier.makeSubClassOf(mixin, endurantType, sharedEndurantClasses);
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), 
-                    "Input: \"<Mixin> <EndurantType>\". " + System.lineSeparator()
-                    + "Example: \"Sitable Chair\".")
-                .trim();
-        String[] names = input.split(" ");
-        mixin = IRI.create(getOntologyPrefix(), names[0]);
-        endurantType = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Mixin, mixin) &&
-                applier.isInstanceOf(GufoIris.EndurantType, endurantType)) {
-                runCommand();
-            } else {
-                showMessage("You must select a mixin and an endurant type!");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(AddToMixinCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> mixinIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Mixin)
+                .entities();
+        
+        IRI firstMixin = mixinIRIs.isEmpty() ? null : mixinIRIs.get(0);
+        List<IRI> endurantTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.EndurantType)
+                .hasSharedSuperClasses(firstMixin)
+                .isNotSuperClassOf(firstMixin)
+                .isDifferentFrom(firstMixin)
+                .entities();
+        
+        AddToMixinPatternFrame frame = new AddToMixinPatternFrame(this);
+        frame.setMixinIRIs(mixinIRIs);
+        frame.setEndurantTypeIRIs(endurantTypeIRIs);
+        frame.display();
     }
 
     @Override

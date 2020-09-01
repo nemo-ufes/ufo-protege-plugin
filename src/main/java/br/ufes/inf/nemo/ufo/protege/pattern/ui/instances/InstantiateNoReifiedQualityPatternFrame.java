@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateNoReifiedQualityCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -101,23 +102,33 @@ public class InstantiateNoReifiedQualityPatternFrame extends JFrame implements A
         String action = event.getActionCommand();
         int index;
         
-        if(action.equals("OK")) {
-            index = qualityTypeSelection.getSelectedIndex();
-            IRI qualityType = qualityTypeIRIs.get(index);
-            
-            index = bearerSelection.getSelectedIndex();
-            IRI bearer = concreteIndividualIRIs.get(index);
-            
-            String instance = instanceName.getText();
-            
-            command.setQualityType(qualityType);
-            command.setBearer(bearer);
-            command.setNoReifiedQuality(instance);
-            
-            command.runCommand();
+        try {
+            if(action.equals("OK")) {
+                index = qualityTypeSelection.getSelectedIndex();
+                IRI qualityType = qualityTypeIRIs.get(index);
+
+                index = bearerSelection.getSelectedIndex();
+                IRI bearer = concreteIndividualIRIs.get(index);
+
+                String instance = instanceName.getText();
+                if(instance.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+
+                command.setQualityType(qualityType);
+                command.setBearer(bearer);
+                command.setNoReifiedQuality(instance);
+
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
 }

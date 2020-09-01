@@ -56,8 +56,8 @@ public class InstantiateRelatorCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(relator);
         applier.makeInstanceOf(sortal, relator);
-        applier.createRelation(mediates, relator, mediatedA);
-        applier.createRelation(mediates, relator, mediatedB);
+        applier.assertObjectProperty(mediates, relator, mediatedA);
+        applier.assertObjectProperty(mediates, relator, mediatedB);
     }
     
     @Override

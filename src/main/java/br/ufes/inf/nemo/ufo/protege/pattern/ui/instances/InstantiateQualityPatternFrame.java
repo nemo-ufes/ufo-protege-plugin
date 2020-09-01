@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.instances;
 
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.instances.InstantiateQualityCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -107,25 +108,36 @@ public class InstantiateQualityPatternFrame extends JFrame implements ActionList
         String action = event.getActionCommand();
         int index;
         
-        if(action.equals("OK")) {
-            index = qualityTypeSelection.getSelectedIndex();
-            IRI qualityType = qualityTypeIRIs.get(index);
-            
-            index = bearerSelection.getSelectedIndex();
-            IRI bearer = concreteIndividualIRIs.get(index);
-            
-            IRI name = IRI.create(command.getOntologyPrefix(), instanceName.getText());
-            String value = instanceValue.getText();
-            
-            command.setSortal(qualityType);
-            command.setBearer(bearer);
-            command.setQuality(name);           
-            command.setQualityValue(value);
-            
-            command.runCommand();
+        try {
+            if(action.equals("OK")) {
+                index = qualityTypeSelection.getSelectedIndex();
+                IRI qualityType = qualityTypeIRIs.get(index);
+
+                index = bearerSelection.getSelectedIndex();
+                IRI bearer = concreteIndividualIRIs.get(index);
+
+                String instanceStr = instanceName.getText();
+                if(instanceStr.trim().isEmpty()) {
+                    setVisible(false);
+                    command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
+                    return;
+                }
+                IRI name = IRI.create(command.getOntologyPrefix(), instanceStr);
+                String value = instanceValue.getText();
+
+                command.setSortal(qualityType);
+                command.setBearer(bearer);
+                command.setQuality(name);           
+                command.setQualityValue(value);
+
+                command.runCommand();
+                setVisible(false);
+            } else {
+                setVisible(false);
+            }
+        } catch(IndexOutOfBoundsException e) {
             setVisible(false);
-        } else {
-            setVisible(false);
+            command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
         }
     }
 }

@@ -6,7 +6,7 @@
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.types.SubKindCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.types.PhaseMixinCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,42 +23,42 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-public class SubKindPatternFrame extends JFrame implements ActionListener {
+public class PhaseMixinPatternFrame extends JFrame implements ActionListener {
     
-    private final SubKindCommand command;
+    private final PhaseMixinCommand command;
     
-    private JComboBox rigidSortalSelection;
-    private JTextField subkindName;
+    private JComboBox nonsortalSelection;
+    private JTextField phasemixinName;
     
-    private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to specialize: ");
-    private final JLabel subkindLabel = new JLabel("SubKind name: ");
+    private final JLabel nonsortalLabel = new JLabel("Non-sortal to specialize: ");
+    private final JLabel phasemixinLabel = new JLabel("PhaseMixin name: ");
     
-    private List<IRI> rigidSortalIRIs;
+    private List<IRI> nonsortalIRIs;
     
-    private final JPanel rigidSortalPanel = new JPanel();
-    private final JPanel subkindPanel = new JPanel();
+    private final JPanel nonsortalPanel = new JPanel();
+    private final JPanel phasemixinPanel = new JPanel();
     private final JPanel okPanel = new JPanel();
     
-    public SubKindPatternFrame(SubKindCommand command) {
+    public PhaseMixinPatternFrame(PhaseMixinCommand command) {
         
         this.command = command;
         
-        this.setTitle("Add subkind");
+        this.setTitle("Add phasemixin");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
     
-    public void setRigidSortalIRIs(List<IRI> IRIs) {
-        rigidSortalIRIs = IRIs;
+    public void setNonSortalIRIs(List<IRI> IRIs) {
+        nonsortalIRIs = IRIs;
     }
     
     public void display() {
-        Object[] boxList = rigidSortalIRIs.stream()
+        Object[] boxList = nonsortalIRIs.stream()
             .map(iri -> iri.getShortForm())
             .toArray();
-        this.rigidSortalSelection = new JComboBox(boxList);
+        this.nonsortalSelection = new JComboBox(boxList);
         
-        subkindName = new JTextField(30);
+        phasemixinName = new JTextField(30);
         
         JButton ok = new JButton("OK");
         JButton cancel = new JButton("Cancel");
@@ -66,15 +66,15 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         ok.addActionListener(this);
         cancel.addActionListener(this);
         
-        rigidSortalPanel.add(rigidSortalLabel);
-        rigidSortalPanel.add(rigidSortalSelection);
-        subkindPanel.add(subkindLabel);
-        subkindPanel.add(subkindName);
+        nonsortalPanel.add(nonsortalLabel);
+        nonsortalPanel.add(nonsortalSelection);
+        phasemixinPanel.add(phasemixinLabel);
+        phasemixinPanel.add(phasemixinName);
         okPanel.add(ok);
         okPanel.add(cancel);
         
-        this.add(rigidSortalPanel);
-        this.add(subkindPanel);
+        this.add(nonsortalPanel);
+        this.add(phasemixinPanel);
         this.add(okPanel);
         
         this.pack();
@@ -87,20 +87,20 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         
         try {
             if(action.equals("OK")) {
-                int index = rigidSortalSelection.getSelectedIndex();
+                int index = nonsortalSelection.getSelectedIndex();
 
-                IRI rigidSortal = rigidSortalIRIs.get(index);
+                IRI nonsortal = nonsortalIRIs.get(index);
 
-                String subkindStr = subkindName.getText();
-                if(subkindStr.trim().isEmpty()) {
+                String phasemixinStr = phasemixinName.getText();
+                if(phasemixinStr.trim().isEmpty()) {
                     setVisible(false);
                     command.showMessage(PatternCommand.NOT_ALL_FIELDS_FILLED);
                     return;
                 }
-                IRI subkind = IRI.create(command.getOntologyPrefix(), subkindStr);
+                IRI phasemixin = IRI.create(command.getOntologyPrefix(), phasemixinStr);
 
-                command.setRigidSortal(rigidSortal);
-                command.setSubKind(subkind);
+                command.setNonSortal(nonsortal);
+                command.setPhaseMixin(phasemixin);
                 command.runCommand();
                 setVisible(false);
             } else {

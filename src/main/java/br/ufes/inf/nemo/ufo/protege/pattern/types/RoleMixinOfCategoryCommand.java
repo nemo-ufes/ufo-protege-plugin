@@ -8,8 +8,12 @@ package br.ufes.inf.nemo.ufo.protege.pattern.types;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.PhaseMixinPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.RoleMixinOfCategoryPatternFrame;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -48,25 +52,13 @@ public class RoleMixinOfCategoryCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), 
-                    "Input: \"<Category> <RoleMixin>\". " + System.lineSeparator()
-                    + "Example: \"LegalAgent Customer\".")
-                .trim();
-        String[] names = input.split(" ");
-        category = IRI.create(getOntologyPrefix(), names[0]);
-        rolemixin = IRI.create(getOntologyPrefix(), names[1]);
-
-        try {
-            PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Category, category)) {
-                runCommand();
-            } else {
-                showMessage("You must select a category to be specialized in a rolemixin!");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(RoleMixinOfCategoryCommand.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<IRI> categoryIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.Category)
+                .entities();
+        
+        RoleMixinOfCategoryPatternFrame frame = new RoleMixinOfCategoryPatternFrame(this);
+        frame.setCategoryIRIs(categoryIRIs);
+        frame.display();
     }
 
     @Override
