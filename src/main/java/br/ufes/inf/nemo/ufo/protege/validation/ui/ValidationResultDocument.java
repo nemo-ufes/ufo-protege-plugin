@@ -145,6 +145,7 @@ public class ValidationResultDocument implements Singleton.Initializable {
         IRI iri = hasIRI.getIRI();
         StringBuilder str = new StringBuilder();
         str.append("<p><a href=\"");
+        str.append("https://iri.local/iri?");
         str.append(iri.toString());
         str.append("\">");
         str.append(iri.getShortForm());

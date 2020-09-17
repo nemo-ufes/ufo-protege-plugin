@@ -70,12 +70,11 @@ public class ValidationResultTextView extends AbstractOWLViewComponent
             final OWLWorkspace workspace = getOWLWorkspace();
             final OWLSelectionModel selection = workspace.getOWLSelectionModel();
             final URL url = he.getURL();
-            final IRI selectingIRI = IRI.create(url);
+            final IRI selectingIRI = IRI.create(url.getQuery());
             final OWLClass entity = modelManager
                     .getOWLDataFactory()
                     .getOWLEntity(EntityType.CLASS, selectingIRI);
             selection.setSelectedEntity(entity);
         }
-
     }
 }
