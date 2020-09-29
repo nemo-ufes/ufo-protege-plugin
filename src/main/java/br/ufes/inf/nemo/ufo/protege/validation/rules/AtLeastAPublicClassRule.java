@@ -14,7 +14,7 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Missing a public UFO supertype or type",
+        label="Types without a \"public\" UFO supertype or type",
         description="Every class which is not an instance of NonSortal should "
                 + "inherit from a public UFO supertype."
 )

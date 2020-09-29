@@ -13,7 +13,10 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Endurant specialization not instantiating EndurantType"
+        label="Endurant specializations not instantiating EndurantType",
+        description =
+            "Every Endurant specialization should instantiate EndurantType"
+//      "from a29: EndurantType(t) ↔ Type(t) ∧ ◻(∀x(x::t → Endurant(x)))"
 )
 public class EndurantSubclassRule  extends ClassRule {
 

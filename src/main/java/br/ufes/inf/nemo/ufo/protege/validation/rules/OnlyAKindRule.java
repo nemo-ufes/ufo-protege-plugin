@@ -13,17 +13,28 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-        label = "Every sortal type must be a kind type or specialize exactly one kind type"
+    label = "Sortals not specializing exactly one kind",
+    description = "Every sortal must be a kind or specialize exactly one kind"
+//    formalSpecification:
+//        t13: Sortal(x) → ∃k (Kind(k) ∧ x ⊑ k)
+//        t14: ¬∃x,y,z (Kind(y) ∧ Kind(z) ∧ y ≠ z ∧ x ⊑ y ∧ x ⊑ z)
+//    }
 )
 public class OnlyAKindRule extends ClassRule {
 
     @Override
     public void validate() {
+        // Every sortal type...
         when(classNode().isInstanceOf(Sortal))
-        .and(!classNode().isInstanceOf(Kind))
-        .and(classNode().ancestors()
+        .and(!(
+            // ...must be a kind type...
+            classNode().isInstanceOf(Kind)
+            || // ...or...
+            // specialize exactly one kind type
+            classNode().properAncestors()
                 .filter(node -> node.isInstanceOf(Kind))
-                .count() != 1)
+                .count() == 1
+        ))
         .registerViolation();
     }
 }

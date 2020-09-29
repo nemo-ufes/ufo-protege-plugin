@@ -13,7 +13,9 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-        label="No rigid type specializing anti-rigid type"
+    label="Rigid types specializing anti-rigid ones",
+    description="Rigid types cannot specialize anti-rigid ones"
+    // "t8: ¬∃x,y (Rigid(x) ∧ AntiRigid(y) ∧ x ⊑ y)"
 )
 public class RigidityRule extends ClassRule {
 
