@@ -34,7 +34,7 @@ public class ComparativeRelationshipTypePatternFrame extends JFrame implements A
     private JTextField relationshipTypeName;
     
     private final JLabel qualityTypeLabel = new JLabel("Quality type to be compared: ");
-    private final JLabel domainAndRangeLabel = new JLabel("Concrete individual class to be the domain and range: ");
+    private final JLabel domainAndRangeLabel = new JLabel("Class of concrete individuals to be compared: ");
     private final JLabel relationshipTypeLabel = new JLabel("Relationship type name: ");
     
     private List<IRI> qualityTypeIRIs;

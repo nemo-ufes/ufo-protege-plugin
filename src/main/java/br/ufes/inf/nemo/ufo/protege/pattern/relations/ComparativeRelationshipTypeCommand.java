@@ -58,6 +58,7 @@ public class ComparativeRelationshipTypeCommand extends PatternCommand {
     public void actionPerformed(ActionEvent ae) {
         List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
                 .addSuperClass(GufoIris.Quality)
+                .addType(GufoIris.Sortal)
                 .entities();
         
         IRI firstQualityType = qualityTypeIRIs.isEmpty() ? null : qualityTypeIRIs.get(0);

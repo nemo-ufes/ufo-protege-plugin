@@ -57,7 +57,7 @@ public class AddToMixinCommand extends PatternCommand {
         IRI firstMixin = mixinIRIs.isEmpty() ? null : mixinIRIs.get(0);
         List<IRI> endurantTypeIRIs = new EntityFilter(getOWLModelManager())
                 .addType(GufoIris.EndurantType)
-                .hasSharedSuperClasses(firstMixin)
+                .hasSamePublicSuperClass(firstMixin)
                 .isNotSuperClassOf(firstMixin)
                 .isDifferentFrom(firstMixin)
                 .entities();

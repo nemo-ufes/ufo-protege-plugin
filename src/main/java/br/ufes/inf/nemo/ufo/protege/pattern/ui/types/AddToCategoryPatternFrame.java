@@ -124,7 +124,7 @@ public class AddToCategoryPatternFrame extends JFrame implements ActionListener 
 
                         this.rigidTypeIRIs = new EntityFilter(command.getOWLModelManager())
                                 .addType(GufoIris.RigidType)
-                                .hasSharedSuperClasses(category)
+                                .hasSamePublicSuperClass(category)
                                 .isNotSuperClassOf(category)
                                 .isDifferentFrom(category)
                                 .entities();

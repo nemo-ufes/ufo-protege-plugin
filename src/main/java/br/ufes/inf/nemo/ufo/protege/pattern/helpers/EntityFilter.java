@@ -57,6 +57,11 @@ public class EntityFilter {
         return this;
     }
     
+    public EntityFilter addSuperObjectProperty(IRI superObjectProperty) {
+        entities = entities.filter(entity -> applier.isSubObjectPropertyOf(superObjectProperty, entity));
+        return this;
+    }
+    
     public EntityFilter addSuperDataProperty(IRI superDataProperty) {
         entities = entities.filter(entity -> applier.isSubDataPropertyOf(superDataProperty, entity));
         return this;
@@ -67,9 +72,9 @@ public class EntityFilter {
         return this;
     }
     
-    public EntityFilter hasSharedSuperClasses(IRI classIRI) {
+    public EntityFilter hasSamePublicSuperClass(IRI classIRI) {
         if(classIRI != null) {
-            entities = entities.filter(entity -> applier.hasSharedSuperClasses(classIRI, entity));
+            entities = entities.filter(entity -> applier.hasSamePublicSuperClass(classIRI, entity));
         } else {
             entities = entities.limit(0);
         }
@@ -84,7 +89,20 @@ public class EntityFilter {
     }
     
     public EntityFilter isNotSuperClassOf(IRI classIRI) {
-        entities = entities.filter(entity -> ! applier.isSubClassOf(entity, classIRI));
+        if(classIRI != null) {
+            entities = entities.filter(entity -> ! applier.isSubClassOf(entity, classIRI));
+        } else {
+            entities = entities.limit(0);
+        }
+        return this;
+    }
+    
+    public EntityFilter isNotSubClassOf(IRI classIRI) {
+        if(classIRI != null) {
+            entities = entities.filter(entity -> ! applier.isSubClassOf(classIRI, entity));
+        } else {
+            entities = entities.limit(0);
+        }
         return this;
     }
     

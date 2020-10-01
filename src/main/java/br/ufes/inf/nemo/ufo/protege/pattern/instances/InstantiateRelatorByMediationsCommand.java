@@ -10,7 +10,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateRelatorPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.instances.InstantiateRelatorByMediationsPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
@@ -20,20 +20,25 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "menuItemInstantiateRelator",
+        id = "menuItemInstantiateRelatorByMediations",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
-        name = "New instance of Relator"
+        name = "New instance of relator by mediations"
 )
-public class InstantiateRelatorCommand extends PatternCommand {
+public class InstantiateRelatorByMediationsCommand extends PatternCommand {
 
     private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
-    private IRI sortal;
+    private IRI mediationType;
+    private IRI relatorType;
     private IRI relator;
     private IRI mediatedA;
     private IRI mediatedB;
 
-    public void setSortal(IRI sortal) {
-        this.sortal = sortal;
+    public void setMediationType(IRI mediationType) {
+        this.mediationType = mediationType;
+    }
+    
+    public void setRelatorType(IRI relatorType) {
+        this.relatorType = relatorType;
     }
 
     public void setRelator(IRI relator) {
@@ -52,25 +57,32 @@ public class InstantiateRelatorCommand extends PatternCommand {
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         applier.createNamedIndividual(relator);
-        applier.makeInstanceOf(sortal, relator);
-        applier.assertObjectProperty(mediates, relator, mediatedA);
-        applier.assertObjectProperty(mediates, relator, mediatedB);
+        applier.makeInstanceOf(relatorType, relator);
+        applier.assertObjectProperty(mediationType, relator, mediatedA);
+        applier.assertObjectProperty(mediationType, relator, mediatedB);
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        List<IRI> relatorIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Relator)
-                .addType(GufoIris.Sortal)
+        List<IRI> mediationTypeIRIs = new EntityFilter(getOWLModelManager())
+                .addSuperObjectProperty(mediates)
                 .entities();
         
-        List<IRI> mediatedIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Endurant)
-                .entities();
+        IRI firstMediationType = mediationTypeIRIs.isEmpty() ? null : mediationTypeIRIs.get(0);
+        PatternApplier applier = new PatternApplier(getOWLModelManager());
+        List<IRI> mediatedIRIs;
+        if(firstMediationType == null) {
+            mediatedIRIs = mediationTypeIRIs;
+        } else {
+            IRI mediatedType = applier.getObjectPropertyRange(firstMediationType);
+            mediatedIRIs = new EntityFilter(getOWLModelManager())
+                    .addType(mediatedType)
+                    .entities();
+        }
         
-        InstantiateRelatorPatternFrame frame = new InstantiateRelatorPatternFrame(this);
-        frame.setRelatorTypeIRIs(relatorIRIs);
-        frame.setEndurantIRIs(mediatedIRIs);
+        InstantiateRelatorByMediationsPatternFrame frame = new InstantiateRelatorByMediationsPatternFrame(this);
+        frame.setMediationTypeIRIs(mediationTypeIRIs);
+        frame.setMediatedIRIs(mediatedIRIs);
         frame.display();
     }
 

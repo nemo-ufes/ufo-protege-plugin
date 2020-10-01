@@ -52,8 +52,11 @@ public class AddRoleToRoleMixinCommand extends PatternCommand {
                 .addType(GufoIris.RoleMixin)
                 .entities();
         
+        IRI firstRoleMixin = rolemixinIRIs.isEmpty() ? null : rolemixinIRIs.get(0);
         List<IRI> roleIRIs = new EntityFilter(getOWLModelManager())
                 .addType(GufoIris.Role)
+                .hasSamePublicSuperClass(firstRoleMixin)
+                .isNotSubClassOf(firstRoleMixin)
                 .entities();
         
         AddRoleToRoleMixinPatternFrame frame = new AddRoleToRoleMixinPatternFrame(this);

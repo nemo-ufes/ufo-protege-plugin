@@ -5,6 +5,8 @@
  */
 package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
+import br.ufes.inf.nemo.ufo.protege.GufoIris;
+import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.AddRoleToRoleMixinCommand;
 import java.awt.GridLayout;
@@ -63,6 +65,8 @@ public class AddRoleToRoleMixinPatternFrame extends JFrame implements ActionList
             .map(iri -> iri.getShortForm())
             .toArray();
         this.rolemixinSelection = new JComboBox(boxList);
+        this.rolemixinSelection.setActionCommand("RoleMixin selected");
+        this.rolemixinSelection.addActionListener(this);
         
         boxList = roleIRIs.stream()
             .map(iri -> iri.getShortForm())
@@ -94,21 +98,45 @@ public class AddRoleToRoleMixinPatternFrame extends JFrame implements ActionList
     public void actionPerformed(ActionEvent event) {
         String action = event.getActionCommand();
         int index;
+        IRI rolemixin, role;
         
         try {
             switch (action) {
                 case "OK":
                     index = rolemixinSelection.getSelectedIndex();
-                    IRI rolemixin = rolemixinIRIs.get(index);
+                    rolemixin = rolemixinIRIs.get(index);
 
                     index = roleSelection.getSelectedIndex();
-                    IRI role = roleIRIs.get(index);
+                    role = roleIRIs.get(index);
 
                     command.setRoleMixin(rolemixin);
                     command.setRole(role);
 
                     command.runCommand();
                     setVisible(false);
+                    break;
+                case "RoleMixin selected":
+                    index = rolemixinSelection.getSelectedIndex();
+                    rolemixin = rolemixinIRIs.get(index);
+                    
+                    rolePanel.remove(roleSelection);
+                    
+                    this.roleIRIs = new EntityFilter(command.getOWLModelManager())
+                            .addType(GufoIris.Role)
+                            .hasSamePublicSuperClass(rolemixin)
+                            .isNotSubClassOf(rolemixin)
+                            .entities();
+
+                    Object[] boxList = roleIRIs.stream()
+                            .map(iri -> iri.getShortForm())
+                            .toArray();
+
+                        this.roleSelection = new JComboBox(boxList);
+                    
+                    rolePanel.add(roleSelection);
+                    
+                    this.pack();
+                    this.repaint();
                     break;
                 default:
                     setVisible(false);

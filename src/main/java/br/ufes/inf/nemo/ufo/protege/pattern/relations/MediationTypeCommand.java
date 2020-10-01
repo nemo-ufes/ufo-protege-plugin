@@ -10,7 +10,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.MaterialRelationshipTypePatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.relations.MediationTypePatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
@@ -20,43 +20,35 @@ import org.semanticweb.owlapi.model.IRI;
  * @author jeferson
  */
 @EditorKitMenuAction(
-        id = "menuItemMaterialRelationshipType",
+        id = "menuItemMediationType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
-        name = "New type of material relationship"
+        name = "New type of mediation"
 )
-public class MaterialRelationshipTypeCommand extends PatternCommand {
+public class MediationTypeCommand extends PatternCommand {
 
-    private final IRI isDerivedFrom = IRI.create(GufoIris.GUFO, "isDerivedFrom");
+    private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
+    private IRI mediationType;
     private IRI relatorType;
-    private IRI relationshipType;
-    private IRI domain;
-    private IRI range;
+    private IRI mediatedType;
     
     @Override
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
-        applier.createNamedIndividual(relationshipType);
-        applier.makeInstanceOf(GufoIris.MaterialRelationshipType, relationshipType);
-        applier.assertObjectProperty(isDerivedFrom, relationshipType, relatorType);
-        applier.createObjectProperty(relationshipType);
-        applier.setObjectPropertyDomain(relationshipType, domain);
-        applier.setObjectPropertyRange(relationshipType, range);
+        applier.createSubObjectProperty(mediates, mediationType);
+        applier.setObjectPropertyDomain(mediationType, relatorType);
+        applier.setObjectPropertyRange(mediationType, mediatedType);
+    }
+
+    public void setMediationType(IRI mediationType) {
+        this.mediationType = mediationType;
     }
 
     public void setRelatorType(IRI relatorType) {
         this.relatorType = relatorType;
     }
 
-    public void setRelationshipType(IRI relationshipType) {
-        this.relationshipType = relationshipType;
-    }
-
-    public void setDomain(IRI domain) {
-        this.domain = domain;
-    }
-
-    public void setRange(IRI range) {
-        this.range = range;
+    public void setMediatedType(IRI mediatedType) {
+        this.mediatedType = mediatedType;
     }
     
     @Override
@@ -72,7 +64,7 @@ public class MaterialRelationshipTypeCommand extends PatternCommand {
                 .isDifferentFrom(firstRelatorType)
                 .entities();
         
-        MaterialRelationshipTypePatternFrame frame = new MaterialRelationshipTypePatternFrame(this);
+        MediationTypePatternFrame frame = new MediationTypePatternFrame(this);
         frame.setRelatorTypeIRIs(relatorTypeIRIs);
         frame.setEndurantClassIRIs(endurantClassIRIs);
         frame.display();

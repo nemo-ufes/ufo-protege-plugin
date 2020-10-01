@@ -57,7 +57,7 @@ public class AddToCategoryCommand extends PatternCommand {
         IRI firstCategory = categoryIRIs.isEmpty() ? null : categoryIRIs.get(0);
         List<IRI> rigidTypeIRIs = new EntityFilter(getOWLModelManager())
                 .addType(GufoIris.RigidType)
-                .hasSharedSuperClasses(firstCategory)
+                .hasSamePublicSuperClass(firstCategory)
                 .isNotSuperClassOf(firstCategory)
                 .isDifferentFrom(firstCategory)
                 .entities();
