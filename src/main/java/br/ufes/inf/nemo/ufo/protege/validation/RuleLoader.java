@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Helper class to deal with of loading rule classes.
@@ -44,7 +45,8 @@ final class RuleLoader {
     }
 
     private void logError(String message, Throwable ex) {
-        log.error(String.format(message, ruleClassName), ex);
+        message = MessageFormatter.format(message, ruleClassName).getMessage();
+        log.error(message, ex);
     }
 
     private void quit(String message, Object... args) {
@@ -99,7 +101,7 @@ final class RuleLoader {
             if (quitException != ex) {
                 logError("Unexpected error on loading rule class '%s'", ex);
             }
-            log.error("Not adding rule class '%s' due to previous errors.", ruleClassName);
+            log.error("Not adding rule class '{}' due to previous errors.", ruleClassName);
         }
     }
 
