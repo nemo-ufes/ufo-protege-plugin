@@ -13,7 +13,10 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-        label="No non-sortal type specializing sortal type"
+    label="Nonsortals specializing sortals",
+    description="Nonsortal cannot specialize sortals. Every class that "
+            + "specializes a sortal inherit from it its identity principle, "
+            + "thus becoming sortal too."
 )
 public class SortalityRule extends ClassRule {
 
@@ -23,5 +26,5 @@ public class SortalityRule extends ClassRule {
                 .and(classNode().ancestors()
                 .anyMatch(node -> node.isInstanceOf(Sortal)))
         .registerViolation();
-    }   
+    }
 }

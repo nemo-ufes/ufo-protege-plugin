@@ -14,7 +14,7 @@ import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
  * @author luciano
  */
 @RuleInfo(
-        label="Not instantiable NonSortal",
+        label="Not instantiable nonsortals",
         description="Every NonSortal must be specialized by a Sortal or "
                 + "specialize a NonSortal which is specialized by a Sortal"
 )

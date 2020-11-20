@@ -13,7 +13,9 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Extending internal UFO type"
+        label="Classes extending internal UFO types",
+        description="Some UFO types are not meant to be specialized by "
+                + "domain ontologies."
 )
 public class OnlyPublicClassRule extends ClassRule {
 
