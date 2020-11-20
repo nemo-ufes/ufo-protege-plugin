@@ -20,11 +20,17 @@ public class OnlyAKindRule extends ClassRule {
 
     @Override
     public void validate() {
+        // Every sortal type...
         when(classNode().isInstanceOf(Sortal))
-        .and(!classNode().isInstanceOf(Kind))
-        .and(classNode().ancestors()
+        .and(!(
+            // ...must be a kind type...
+            classNode().isInstanceOf(Kind)
+            || // ...or...
+            // specialize exactly one kind type
+            classNode().properAncestors()
                 .filter(node -> node.isInstanceOf(Kind))
-                .count() != 1)
+                .count() == 1
+        ))
         .registerViolation();
     }
 }
