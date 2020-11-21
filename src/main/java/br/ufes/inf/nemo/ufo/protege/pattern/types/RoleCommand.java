@@ -29,7 +29,9 @@ public class RoleCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<Sortal> <Role>\". " + System.lineSeparator()
+                    + "Example: \"Woman Wife\".")
                 .trim();
         String[] names = input.split(" ");
         IRI sortal = IRI.create(getOntologyPrefix(), names[0]);

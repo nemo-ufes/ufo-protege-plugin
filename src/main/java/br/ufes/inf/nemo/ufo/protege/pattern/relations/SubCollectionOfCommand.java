@@ -29,7 +29,9 @@ public class SubCollectionOfCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<subCollection: Collection> <Collection>\"." + System.lineSeparator()
+                    + "Example: \"SpadeCards Deck\".")
                 .trim();
         String[] names = input.split(" ");
         IRI subcollection = IRI.create(getOntologyPrefix(), names[0]);

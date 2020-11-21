@@ -29,7 +29,9 @@ public class ComparativeRelationshipTypeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type three names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<derivation: Quality> <RelationshipType> <domainAndRange: ConcreteIndividualClass>\"." + System.lineSeparator()
+                    + "Example: \"Weight heavierThan PhysicalObject\".")
                 .trim();
         String[] names = input.split(" ");
         IRI isDerivedFrom = IRI.create(GufoIris.GUFO, "isDerivedFrom");

@@ -130,6 +130,10 @@ public class ValidationResultDocument implements Singleton.Initializable {
                 return 1;
             });
             document.insertBeforeEnd(body, "<h1>" + rule.getLabel() + "</h1>");
+            final String description = rule.getDescription();
+            if (!"".equals(description)) {
+                document.insertBeforeEnd(body, "<p><i>" + description+ "</i></p>");
+            }
             for (Violation violation : violations) {
                 OWLObject subject = violation.getSubject();
                 if (subject instanceof HasIRI) {
@@ -145,6 +149,7 @@ public class ValidationResultDocument implements Singleton.Initializable {
         IRI iri = hasIRI.getIRI();
         StringBuilder str = new StringBuilder();
         str.append("<p><a href=\"");
+        str.append("https://iri.local/iri?");
         str.append(iri.toString());
         str.append("\">");
         str.append(iri.getShortForm());

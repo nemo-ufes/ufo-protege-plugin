@@ -29,7 +29,10 @@ public class NoReifiedQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two name: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<domain: ConcreteIndividualClass> <qualityType: DataProperty>\". "
+                    + System.lineSeparator()
+                    + "Example: \"Planet hasMass\".")
                 .trim();
         String[] names = input.split(" ");
         IRI domain = IRI.create(getOntologyPrefix(), names[0]);

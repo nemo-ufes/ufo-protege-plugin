@@ -61,9 +61,8 @@ public class ObjectGraphNode {
         return node -> node.owlObject.equals(objectOrIRI);
     }
 
-    @SuppressWarnings("unchecked")
     private static Predicate<ObjectGraphNode> isIn(Set<IRI> iris) {
-        return node -> iris.contains((IRI)node.owlObject);
+        return node -> iris.contains(node.getIRI());
     }
 
     private Set<ObjectGraphNode> getSet(int index) {

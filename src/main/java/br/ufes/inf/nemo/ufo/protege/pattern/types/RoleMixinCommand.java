@@ -29,7 +29,9 @@ public class RoleMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<EndurantClass> <RoleMixin>\". " + System.lineSeparator()
+                    + "Example: \"FunctionalComplex Provider\".")
                 .trim();
         String[] names = input.split(" ");
         IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);

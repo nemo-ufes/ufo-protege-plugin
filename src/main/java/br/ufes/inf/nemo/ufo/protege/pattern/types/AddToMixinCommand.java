@@ -31,7 +31,9 @@ public class AddToMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<Mixin> <EndurantType>\". " + System.lineSeparator()
+                    + "Example: \"Sitable Chair\".")
                 .trim();
         String[] names = input.split(" ");
         IRI mixin = IRI.create(getOntologyPrefix(), names[0]);

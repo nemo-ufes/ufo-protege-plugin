@@ -12,18 +12,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Helper class to deal with of loading rule classes.
  * <p>
- * This class is instantiated only once during initialization of a
- * {@link Validator} object. Its method {@link loadRules(List) loadRules}
- * loads class names from 'rules.list' text file resource and creates an
- * instance for each one of the classes.
- * <p>
- * The 'rules.list' resource is automatically generated during build time by
- * maven-antrun-plugin. It makes a scan over the source code folder of
- * package br.ufes.inf.nemo.ufo.protege.validation
+ * This class holds the boilerplate code involved in loading {@link Rule }
+ * subclasses and instantiating them, while generating sensible log messages.
  *
  * @author luciano
  */
@@ -50,7 +45,8 @@ final class RuleLoader {
     }
 
     private void logError(String message, Throwable ex) {
-        log.error(String.format(message, ruleClassName), ex);
+        message = MessageFormatter.format(message, ruleClassName).getMessage();
+        log.error(message, ex);
     }
 
     private void quit(String message, Object... args) {
@@ -105,7 +101,7 @@ final class RuleLoader {
             if (quitException != ex) {
                 logError("Unexpected error on loading rule class '%s'", ex);
             }
-            log.error("Not adding rule class '%s' due to previous errors.", ruleClassName);
+            log.error("Not adding rule class '{}' due to previous errors.", ruleClassName);
         }
     }
 

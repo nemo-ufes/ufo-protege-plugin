@@ -15,7 +15,8 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label = "An instance of Kind cannot specialize an instance of Sortal"
+        label = "Kinds  specializing sortals",
+        description = "A kind cannot specialize a sortal"
 )
 public class KindCannotSubclassSortalRule extends ClassRule {
 

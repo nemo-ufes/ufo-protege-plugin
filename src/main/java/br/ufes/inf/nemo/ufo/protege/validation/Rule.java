@@ -137,6 +137,15 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
         }
     }
 
+    public String getDescription() {
+        RuleInfo annotation = getClass().getAnnotation(RuleInfo.class);
+        if (annotation != null) {
+            return annotation.description();
+        } else {
+            return "";
+        }
+    }
+
     public <T> T get(Class<T> helperClass) {
         return validation.get(helperClass);
     }

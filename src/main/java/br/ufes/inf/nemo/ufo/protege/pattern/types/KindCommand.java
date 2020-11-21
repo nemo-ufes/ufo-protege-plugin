@@ -29,7 +29,9 @@ public class KindCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<EndurantClass> <Kind>\". " + System.lineSeparator()
+                    + "Example: \"Quality Age\".")
                 .trim();
         String[] names = input.split(" ");
         IRI endurantClass = IRI.create(GufoIris.GUFO, names[0]);

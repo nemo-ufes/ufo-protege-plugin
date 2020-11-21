@@ -13,7 +13,8 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-        label="No semi-rigid type specializing anti-rigid type"
+    label = "Semi-rigid types specializing anti-rigid ones",
+    description = "Semi-rigid types cannot specialize anti-rigid ones"
 )
 public class SemiRigidityRule extends ClassRule {
 
