@@ -29,7 +29,9 @@ public class AddRoleToRoleMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<RoleMixin> <Role>\". " + System.lineSeparator()
+                    + "Example: \"Customer CorporateCustomer\".")
                 .trim();
         String[] names = input.split(" ");
         IRI rolemixin = IRI.create(getOntologyPrefix(), names[0]);

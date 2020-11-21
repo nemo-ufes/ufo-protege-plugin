@@ -29,20 +29,22 @@ public class SubKindCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<RigidSortal> <SubKind>\". " + System.lineSeparator()
+                    + "Example: \"Person Man\".")
                 .trim();
         String[] names = input.split(" ");
-        IRI parent = IRI.create(getOntologyPrefix(), names[0]);
-        IRI child = IRI.create(getOntologyPrefix(), names[1]);
+        IRI rigidSortal = IRI.create(getOntologyPrefix(), names[0]);
+        IRI subkind = IRI.create(getOntologyPrefix(), names[1]);
 
         try {
             PatternApplier applier = new PatternApplier(getOWLModelManager());
-            if (applier.isInstanceOf(GufoIris.Kind, parent)  ||
-                applier.isInstanceOf(GufoIris.SubKind, parent)) {
-                applier.createNamedIndividual(child);
-                applier.makeInstanceOf(GufoIris.SubKind, child);
-                applier.createClass(child);
-                applier.addSubClassTo(parent, child);
+            if (applier.isInstanceOf(GufoIris.Kind, rigidSortal)  ||
+                applier.isInstanceOf(GufoIris.SubKind, rigidSortal)) {
+                applier.createNamedIndividual(subkind);
+                applier.makeInstanceOf(GufoIris.SubKind, subkind);
+                applier.createClass(subkind);
+                applier.addSubClassTo(rigidSortal, subkind);
             } else {
                 showMessage("There are only subkinds of kinds or other subkinds!");
             }

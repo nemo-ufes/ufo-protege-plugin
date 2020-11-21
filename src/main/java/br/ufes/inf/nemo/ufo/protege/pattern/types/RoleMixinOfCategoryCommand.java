@@ -29,7 +29,9 @@ public class RoleMixinOfCategoryCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(), 
+                    "Input: \"<Category> <RoleMixin>\". " + System.lineSeparator()
+                    + "Example: \"LegalAgent Customer\".")
                 .trim();
         String[] names = input.split(" ");
         IRI category = IRI.create(getOntologyPrefix(), names[0]);

@@ -29,7 +29,9 @@ public class SubQuantityOfCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         String input =
-                JOptionPane.showInputDialog(getOWLWorkspace(), "Type two names: ")
+                JOptionPane.showInputDialog(getOWLWorkspace(),
+                    "Input: \"<subQuantity: Quantity> <Quantity>\"." + System.lineSeparator()
+                    + "Example: \"AlcoholInCupOfWine CupOfWine\".")
                 .trim();
         String[] names = input.split(" ");
         IRI subquantity = IRI.create(getOntologyPrefix(), names[0]);
