@@ -15,14 +15,21 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 @RuleInfo(
         label="Endurant specializations not instantiating EndurantType",
         description =
-            "Every Endurant specialization should instantiate EndurantType"
+            "An endurant type such as {} should instantiate either "
+                    + "{publicEndurantTypes: or }."
 )
 public class EndurantSubclassRule  extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isSubclassOf(Endurant);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isSubclassOf(Endurant))
-        .and(!classNode().isInstanceOf(EndurantType))
-        .registerViolation();
+        if (!classNode().isInstanceOf(EndurantType)) {
+            setField("publicEndurantTypes", publicEndurantTypes);
+            newViolation();
+        }
     }
 }

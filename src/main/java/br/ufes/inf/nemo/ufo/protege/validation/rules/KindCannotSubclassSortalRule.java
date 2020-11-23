@@ -15,16 +15,18 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label = "Kinds  specializing sortals",
-        description = "A kind cannot specialize a sortal"
+        label = "Kinds cannot specialize sortals",
+        description = "As a kind, {} cannot specialize a sortal ({sortals})"
 )
 public class KindCannotSubclassSortalRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(Kind);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isInstanceOf(Kind))
-        .and(classNode().properAncestors()
-                .anyMatch(node -> node.isInstanceOf(Sortal)))
-        .registerViolation();
+        forbidAncestors(Sortal, "sortals");
     }
 }

@@ -77,6 +77,7 @@ public class Validation {
     private OWLObject currentTarget;
     private Rule currentRule;
     private Violation currentViolation;
+    private HashMap<String, Object> currentArguments;
 
     public Validation(OWLModelManager modelManager) {
         this.modelManager = modelManager;
@@ -151,18 +152,18 @@ public class Validation {
         return new Result(targetOntology, allOntologies, violations);
     }
 
-    public Violation newViolation(OWLObject... arguments) {
+    public Violation registerViolation() {
         if (currentViolation != null) {
             throw new RuntimeException(String.format(
                 "Unexpected error. A violation has already been created by this rule for this target. Rule class: %s; Target: %s",
-                currentTarget.getClass().getName(),
+                currentRule.getClass().getName(),
                 (currentTarget instanceof HasIRI) ?
                         ((HasIRI)currentTarget).getIRI().toString() :
                         currentTarget.toString()
                 ));
 
         }
-        currentViolation = new Violation(currentRule, arguments);
+        currentViolation = new Violation(currentRule, currentArguments);
         violations.add(currentViolation);
         return currentViolation;
     }
@@ -174,6 +175,8 @@ public class Validation {
             .forEach(rule -> {
                 currentRule = rule;
                 currentViolation = null;
+                currentArguments = new HashMap<String, Object>();
+                currentArguments.put("", currentTarget);
                 rule.validate(subject);
             })
             ;
@@ -181,6 +184,21 @@ public class Validation {
 
     public OWLObject getCurrentTarget() {
         return currentTarget;
+    }
+
+    void setField(String name, Object value) {
+        Object old = currentArguments.put(name, value);
+        if (old != null) {
+            throw new RuntimeException(String.format(
+                "Unexpected error. A value has already been registered by this "
+                + "rule for field '%s'. Rule class: '%s'; Target: '%s'",
+                name,
+                currentRule.getClass().getName(),
+                (currentTarget instanceof HasIRI) ?
+                        ((HasIRI)currentTarget).getIRI().toString() :
+                        currentTarget.toString()
+                ));
+        }
     }
 
     public interface Initializable {

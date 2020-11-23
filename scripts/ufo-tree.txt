@@ -38,14 +38,14 @@
     + gufo:Relator
     + gufo:ExtrinsicMode
 
-- gufo:AbstractIndividual
++ gufo:AbstractIndividual
     + gufo:QualityValue
     + time:Instant
 
 + gufo:Event
     + gufo:Participation
 
-- gufo:Situation
++ gufo:Situation
     + gufo:QualityValueAttributionSituation
     + gufo:TemporaryConstitutionSituation
     + gufo:TemporaryInstantiationSituation

@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
+import static br.ufes.inf.nemo.ufo.protege.GufoIris.NonSortal;
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
 
@@ -13,18 +14,18 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-    label="Nonsortals specializing sortals",
-    description="Nonsortal cannot specialize sortals. Every class that "
-            + "specializes a sortal inherit from it its identity principle, "
-            + "thus becoming sortal too."
+    label="Nonsortals cannot specialize sortals",
+    description="As a non-sortal, {} cannot specialize a sortal ({sortals})"
 )
 public class SortalityRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(NonSortal);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isInstanceOf(NonSortal))
-                .and(classNode().ancestors()
-                .anyMatch(node -> node.isInstanceOf(Sortal)))
-        .registerViolation();
+        forbidAncestors(Sortal, "sortals");
     }
 }

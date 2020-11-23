@@ -7,8 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.validation;
 
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import java.lang.reflect.ParameterizedType;
-import java.util.function.Supplier;
-import org.semanticweb.owlapi.model.HasIRI;
+import java.util.Map;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -126,6 +125,16 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
     public abstract void validate();
 
     /**
+     * Set field value for validation reporting.
+     *
+     * @param name Name of the field used in message
+     * @param value Object referenced by the name
+     */
+    protected void setField(String name, Object value) {
+        this.validation.setField(name, value);
+    }
+
+    /**
      * @return Label of this rule
      */
     public String getLabel() {
@@ -150,11 +159,7 @@ public abstract class Rule<T extends OWLObject> extends GufoIris {
         return validation.get(helperClass);
     }
 
-    protected Violation newViolation(OWLObject... arguments) {
-        return validation.newViolation(arguments);
-    }
-
-    protected ResultBuilder when(boolean b) {
-        return new ResultBuilder(b, this);
+    protected Violation newViolation() {
+        return validation.registerViolation();
     }
 }

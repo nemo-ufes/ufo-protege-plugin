@@ -14,15 +14,18 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  */
 @RuleInfo(
     label = "Semi-rigid types specializing anti-rigid ones",
-    description = "Semi-rigid types cannot specialize anti-rigid ones"
+    description = "{} is a semi-rigid type and, hence, cannot specialize any "
+            + "anti-rigid type ({antirigid})"
 )
 public class SemiRigidityRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(SemiRigidType);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isInstanceOf(SemiRigidType))
-                .and(classNode().ancestors()
-                .anyMatch(node -> node.isInstanceOf(AntiRigidType)))
-        .registerViolation();
+        forbidAncestors(AntiRigidType, "antirigid");
     }
 }
