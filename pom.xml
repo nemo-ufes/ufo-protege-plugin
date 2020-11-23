@@ -4,7 +4,7 @@
 
     <groupId>br.ufes.inf.nemo</groupId>
     <artifactId>ufo-protege-plugin</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
     <packaging>bundle</packaging>
 
     <name>UFO Protégé Plugin</name>

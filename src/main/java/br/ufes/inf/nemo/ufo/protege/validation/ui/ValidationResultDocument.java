@@ -8,7 +8,6 @@ package br.ufes.inf.nemo.ufo.protege.validation.ui;
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import br.ufes.inf.nemo.ufo.protege.Util;
 import br.ufes.inf.nemo.ufo.protege.validation.Result;
-import br.ufes.inf.nemo.ufo.protege.validation.Rule;
 import br.ufes.inf.nemo.ufo.protege.validation.Violation;
 import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
 import java.io.IOException;

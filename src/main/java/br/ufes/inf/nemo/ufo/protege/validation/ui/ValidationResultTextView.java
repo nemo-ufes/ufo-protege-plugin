@@ -14,6 +14,8 @@ import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import static javax.swing.event.HyperlinkEvent.EventType.ACTIVATED;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.FormSubmitEvent;
+import javax.swing.text.html.HTMLEditorKit;
 import org.apache.log4j.Logger;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.model.OWLWorkspace;
@@ -52,6 +54,8 @@ public class ValidationResultTextView extends AbstractOWLViewComponent
         JTextPane resultTextPane = new JTextPane();
         resultTextPane.setEditable(false);
         resultTextPane.setContentType("text/html");
+        HTMLEditorKit kit = (HTMLEditorKit) resultTextPane.getEditorKit();
+        kit.setAutoFormSubmission(false);
         resultTextPane.setDocument(resultDocument.getDocument());
 
         JScrollPane resultTextScrollPane = new JScrollPane(resultTextPane);
@@ -65,7 +69,17 @@ public class ValidationResultTextView extends AbstractOWLViewComponent
 
     @Override
     public void hyperlinkUpdate(HyperlinkEvent he) {
-        if (ACTIVATED == he.getEventType()) {
+        if (he instanceof FormSubmitEvent) {
+            final URL url = he.getURL();
+            if ("gufo.command".equals(url.getHost())) {
+                final OWLModelManager modelManager = getOWLModelManager();
+                switch (url.getPath()) {
+                    case "/validate":
+                        ValidateCommand.run(modelManager);
+                        break;
+                }
+            }
+        } else if (ACTIVATED == he.getEventType()) {
             final OWLModelManager modelManager = getOWLModelManager();
             final OWLWorkspace workspace = getOWLWorkspace();
             final OWLSelectionModel selection = workspace.getOWLSelectionModel();
