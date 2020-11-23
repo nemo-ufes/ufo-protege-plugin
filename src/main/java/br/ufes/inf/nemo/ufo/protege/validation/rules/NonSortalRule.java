@@ -15,8 +15,9 @@ import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
  */
 @RuleInfo(
         label="Not instantiable nonsortals",
-        description="Every NonSortal must be specialized by a Sortal or "
-                + "specialize a NonSortal which is specialized by a Sortal"
+        description="As a non-sortal, {} should be specialized by a "
+                + "sortal (or specialize another non-sortal which is "
+                + "in its turn specialized by a sortal)."
 )
 public class NonSortalRule extends ClassRule {
 
@@ -29,9 +30,14 @@ public class NonSortalRule extends ClassRule {
     }
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(NonSortal);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isInstanceOf(NonSortal))
-        .and(!classNode().ancestors().anyMatch(this::isSubclassedBySortal))
-        .registerViolation();
+        if (!classNode().ancestors().anyMatch(this::isSubclassedBySortal)) {
+            newViolation();
+        }
     }
 }

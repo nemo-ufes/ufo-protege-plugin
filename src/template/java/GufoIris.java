@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.semanticweb.owlapi.model.IRI;
@@ -22,6 +23,7 @@ public class GufoIris {
     // foreach void {
     // Making Netbeans happy. These lines will not be present in the final file
     final static IRI ParentClassName = null;
+    final static IRI EndurantType = null;
     final static int INDEX = 0;
     // }
 
@@ -64,6 +66,22 @@ public class GufoIris {
         // foreach notInTreeClassName
         set.add(ClassName);
         nonPublicClasses = Collections.unmodifiableSet(set);
+    }
+
+    // List of public EndurantType subclasses
+    public static final Set<IRI> publicEndurantTypes;
+    static {
+        Set<IRI> set = new HashSet<>();
+        new Consumer<IRI>() {
+            @Override
+            public void accept(IRI iri) {
+                if (publicClasses.contains(iri)) {
+                    set.add(iri);
+                }
+                tree.get(iri).getChildren().forEach(this);
+            }
+        }.accept(EndurantType);
+        publicEndurantTypes = Collections.unmodifiableSet(set);
     }
 
     public static boolean isPublicUFOClass(OWLClass owlClass) {

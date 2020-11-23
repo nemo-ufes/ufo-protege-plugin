@@ -5,6 +5,7 @@
  */
 package br.ufes.inf.nemo.ufo.protege.validation;
 
+import java.util.Map;
 import org.semanticweb.owlapi.model.OWLObject;
 
 /**
@@ -14,12 +15,12 @@ import org.semanticweb.owlapi.model.OWLObject;
  */
 public class Violation<T extends OWLObject> {
 
-    private final OWLObject[] arguments;
+    private final Map<String, Object> arguments;
     private final Rule<T> rule;
 
-    protected Violation(final Rule<T> rule, OWLObject... arguments) {
+    protected Violation(final Rule<T> rule, Map<String, Object> arguments) {
         this.rule = rule;
-        assert arguments[0] == rule.getTarget();
+        assert arguments.get("") == rule.getTarget();
         this.arguments = arguments;
     }
 
@@ -27,11 +28,11 @@ public class Violation<T extends OWLObject> {
         return (Rule<T>) rule;
     }
 
-    public OWLObject[] getArguments() {
+    public Map<String, Object> getArguments() {
         return arguments;
     }
 
     public T getSubject() {
-        return (T) arguments[0];
+        return (T) arguments.get("");
     }
 }

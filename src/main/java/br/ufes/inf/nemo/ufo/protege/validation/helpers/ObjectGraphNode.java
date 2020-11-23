@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.semanticweb.owlapi.model.HasIRI;
 import org.semanticweb.owlapi.model.IRI;
@@ -198,12 +199,51 @@ public class ObjectGraphNode {
         return properAncestors().anyMatch(is(iri));
     }
 
+    public boolean isProperSubclassOfAny(Set<IRI> iris) {
+        return properAncestors().anyMatch(isIn(iris));
+    }
+
     public boolean isInstanceOf(OWLClass owlClass) {
         return types().anyMatch(node -> node.isSubclassOf(owlClass));
     }
 
     public boolean isInstanceOf(IRI iri) {
         return types().anyMatch(node -> node.isSubclassOf(iri));
+    }
+
+    public static ObjectGraphNode topmostAncestor(
+            Set<ObjectGraphNode> ancestorSet) {
+        // Try to find the topmost node in topology
+        if (ancestorSet.size() > 1) {
+            Set<IRI> iris = ancestorSet
+                    .stream()
+                    .map(node -> node.getIRI())
+                    .collect(Collectors.toSet())
+                    ;
+            ancestorSet = ancestorSet
+                    .stream()
+                    .filter(node -> node.isProperSubclassOfAny(iris))
+                    .collect(Collectors.toSet())
+                    ;
+        }
+        return ancestorSet.stream().findAny().get();
+    }
+
+    public static Set<ObjectGraphNode> closestAncestors(
+            Set<ObjectGraphNode> ancestorSet) {
+        // Try to find the highest node in topology
+        if (ancestorSet.size() > 1) {
+            Set<ObjectGraphNode> removalSet = ancestorSet
+                    .stream()
+                    .flatMap(ObjectGraphNode::properAncestors)
+                    .collect(Collectors.toSet())
+                    ;
+            Set<ObjectGraphNode> result = new HashSet<>(ancestorSet);
+            result.removeAll(removalSet);
+            return result;
+        } else {
+            return ancestorSet;
+        }
     }
 
     void addParent(ObjectGraphNode parent) {

@@ -13,16 +13,19 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author jeferson
  */
 @RuleInfo(
-    label="Rigid types specializing anti-rigid ones",
-    description="Rigid types cannot specialize anti-rigid ones"
+    label="Rigids cannot specialize anti-rigids",
+    description="{} is a rigid type and, hence, cannot specialize any "
+            + "anti-rigid type ({antirigids})"
 )
 public class RigidityRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(RigidType);
+    }
+
+    @Override
     public void validate() {
-        when(classNode().isInstanceOf(RigidType))
-                .and(classNode().ancestors()
-                .anyMatch(node -> node.isInstanceOf(AntiRigidType)))
-        .registerViolation();
+        forbidAncestors(AntiRigidType, "antirigids");
     }
 }

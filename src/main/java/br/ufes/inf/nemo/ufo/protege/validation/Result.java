@@ -45,7 +45,7 @@ public class Result {
             .map(violation ->
                 Stream.concat(
                     Stream.of(violation.getRule().getClass().getSimpleName()),
-                    violation.getArguments()[0]
+                    violation.getSubject()
                         .getSignature().stream()
                         .map(entity -> entity.getIRI().getShortForm())
                 )

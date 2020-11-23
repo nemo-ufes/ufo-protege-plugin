@@ -59,7 +59,7 @@
     rdfs:subClassOf
              :Kind1,
              :Kind2 ;
-    :violates "OnlyAKindRule"
+    :violates "MultipleKindAncestorRule"
 .
 
 # Rigid subclass (Category instance) specializing anti rigid parent (Phase)

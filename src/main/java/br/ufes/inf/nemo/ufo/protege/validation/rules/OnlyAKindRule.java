@@ -7,30 +7,36 @@ package br.ufes.inf.nemo.ufo.protege.validation.rules;
 
 import br.ufes.inf.nemo.ufo.protege.validation.ClassRule;
 import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
+import br.ufes.inf.nemo.ufo.protege.validation.helpers.ObjectGraphNode;
+import java.util.Optional;
 
 /**
  *
  * @author jeferson
  */
 @RuleInfo(
-    label = "Sortals not specializing exactly one kind",
-    description = "Every sortal must be a kind or specialize exactly one kind"
+    label = "Sortals must specialize one kind",
+    description = "As a sortal, the {sortalType:lc} {} must specialize one kind."
+        // SINGLE KIND
 )
 public class OnlyAKindRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return classNode().isInstanceOf(Sortal)
+            && !classNode().isInstanceOf(Kind);
+    }
+
+    @Override
     public void validate() {
-        // Every sortal type...
-        when(classNode().isInstanceOf(Sortal))
-        .and(!(
-            // ...must be a kind type...
-            classNode().isInstanceOf(Kind)
-            || // ...or...
-            // specialize exactly one kind type
-            classNode().properAncestors()
-                .filter(node -> node.isInstanceOf(Kind))
-                .count() == 1
-        ))
-        .registerViolation();
+        if (!classNode().properAncestors().anyMatch(
+                node -> node.isInstanceOf(Kind))) {
+            Optional<ObjectGraphNode> sortalType = classNode()
+                    .types()
+                    .filter(type -> type.isSubclassOf(Sortal))
+                    .findFirst();
+            setField("sortalType", sortalType.get());
+            newViolation();
+        }
     }
 }

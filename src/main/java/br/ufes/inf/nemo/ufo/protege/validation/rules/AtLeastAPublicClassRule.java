@@ -14,16 +14,24 @@ import br.ufes.inf.nemo.ufo.protege.validation.RuleInfo;
  * @author luciano
  */
 @RuleInfo(
-        label="Missing a public UFO supertype or type",
-        description="Every class which is not an instance of NonSortal should "
-                + "inherit from a public UFO supertype."
+        label="Every user class should specialize a gUFO class",
+        description="{} should specialize a gUFO class"
 )
 public class AtLeastAPublicClassRule extends ClassRule {
 
     @Override
+    public boolean isAppliable() {
+        return !classNode().isInstanceOf(NonSortal);
+    }
+
+    @Override
     public void validate() {
-        when(!classNode().isInstanceOf(NonSortal))
-        .and(!classNode().isSubclassOfAny(publicClasses))
-        .registerViolation();
+        if (
+                !classNode().isSubclassOfAny(publicClasses) &&
+                // Extending internal classes is to be catched by another rule
+                !classNode().isSubclassOfAny(nonPublicClasses)
+        ) {
+            newViolation();
+        }
     }
 }
