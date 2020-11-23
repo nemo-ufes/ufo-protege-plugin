@@ -9,9 +9,9 @@ import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.Singleton;
 import br.ufes.inf.nemo.ufo.protege.sandbox.LogDocument;
 import br.ufes.inf.nemo.ufo.protege.validation.Result;
-import br.ufes.inf.nemo.ufo.protege.validation.Validation;
 import br.ufes.inf.nemo.ufo.protege.validation.Validator;
 import java.awt.event.ActionEvent;
+import org.protege.editor.owl.model.OWLModelManager;
 import org.protege.editor.owl.ui.action.ProtegeOWLAction;
 import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
 
@@ -21,25 +21,27 @@ import org.protege.editor.owl.ui.view.cls.ToldOWLClassHierarchyViewComponent;
  */
 @EditorKitMenuAction(
         id = "ufopp.validate.menuItem",
-        path = "org.protege.editor.core.application.menu.FileMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotB-A",
         name = "Validate GUFO rules"
 )
 public class ValidateCommand extends ProtegeOWLAction {
 
     ToldOWLClassHierarchyViewComponent test;
 
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-        Validator validator = Validator.get(getOWLModelManager());
-        LogDocument logDocument = Singleton.get(
-                getOWLModelManager(), LogDocument.class);
+    public static void run(final OWLModelManager owlModelManager) {
+        Validator validator = Validator.get(owlModelManager);
+        LogDocument logDocument = Singleton.get(owlModelManager, LogDocument.class);
         Result result = validator.validate();
         logDocument.append(result.toString());
         logDocument.append("\n");
 
-        ValidationResultDocument resultDocument = Singleton.get(
-                getOWLModelManager(), ValidationResultDocument.class);
+        ValidationResultDocument resultDocument = Singleton.get(owlModelManager, ValidationResultDocument.class);
         resultDocument.setResult(result);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        run(getOWLModelManager());
     }
 
     @Override
