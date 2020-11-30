@@ -1,10 +1,16 @@
-# ufo-protege-plugin: A Protégé plugin for gUFO-based ontologies
+# A Protégé plugin for gUFO-based ontologies
+
+This Protégé plugin extends the tool with functionality for gUFO-based ontologies. In particular, it verifies a number of rules that a gUFO-based ontology should satisfy (based on [4]), supporting a user in checking the quality of the ontology implementation. Experimental support for gUFO patterns is also available, with wizards to enable the instantiation of a number of patterns.
 
 To install, check <https://github.com/nemo-ufes/ufo-protege-plugin/releases>, download the latest jar file and add that to the plugins folder in your Protégé installation.
 
-The plugin will add a "File->Validate GUFO rules" menu item to Protégé. Results are displayed in a specialized tab that is available under "Window->Tabs->UFO Validation Tab".
+The plugin will add a "File->Validate GUFO rules" menu item to Protégé. Results are displayed in a specialized tab that is available under "Window->Tabs->UFO Validation Tab". Experimental patterns support are available under the "GUFO Patterns" menu item.
 
-Experimental patterns support is also available in a "GUFO Patterns" menu item.
+Contributors:
+
+* Luciano Coutinho Barcellos
+* Jeferson de Oliveira Batista
+* João Paulo A. Almeida
 
 See <http://purl.org/nemo/doc/gufo> for usage guide and complete documentation of gUFO.
 
