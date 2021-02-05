@@ -8,6 +8,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.helpers;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JOptionPane;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.model.AddAxiom;
 import org.semanticweb.owlapi.model.IRI;
@@ -89,6 +90,47 @@ public final class PatternApplier {
                 .filter(superClass -> isPublicGufoClass(superClass))
                 .findFirst()
                 .get();
+    }
+    
+    public IRI getKindOfSortal(IRI classIRI) {
+        if(isInstanceOf(GufoIris.Sortal, classIRI)) {
+            if(isInstanceOf(GufoIris.Kind, classIRI)) {
+                return classIRI;
+            } else {
+                OWLClass sortal = dataFactory.getOWLClass(classIRI);
+                return getSuperClasses(sortal).stream()
+                    .filter(OWLClass::isNamed)
+                    .map(OWLClass::getIRI)
+                    .filter(parent -> isInstanceOf(GufoIris.Kind, parent))
+                    .findFirst()
+                    .get();
+            }
+        } 
+        
+        // If the class isn't a sortal, there is no kind for it
+        else {
+            return null;
+        }
+    }
+    
+    public boolean haveDifferentKinds(IRI classIRI, IRI anotherClassIRI) {
+        // If at least one of the classes isn't a sortal, return false
+        if(!isInstanceOf(GufoIris.Sortal, classIRI)) {
+            return false;
+        } else if(!isInstanceOf(GufoIris.Sortal, anotherClassIRI)) {
+            return false;
+        } else {
+            new JOptionPane(classIRI + ": " + getKindOfSortal(classIRI))
+                    .setVisible(true);
+            new JOptionPane(anotherClassIRI + ": " + getKindOfSortal(anotherClassIRI))
+                    .setVisible(true);
+            return ! getKindOfSortal(classIRI)
+                .toString()
+                .contentEquals(
+                    getKindOfSortal(anotherClassIRI)
+                        .toString()
+                );
+        }
     }
     
     public Set<OWLSubClassOfAxiom> sharedSuperClassAxioms(IRI classIRI, IRI subClassIRI) {

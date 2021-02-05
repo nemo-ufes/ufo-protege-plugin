@@ -10,13 +10,9 @@ import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.PhaseMixinPatternFrame;
 import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.RoleMixinOfCategoryPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -25,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemRoleMixinOfCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-11",
         name = "Add rolemixin of category"
 )
 public class RoleMixinOfCategoryCommand extends PatternCommand {

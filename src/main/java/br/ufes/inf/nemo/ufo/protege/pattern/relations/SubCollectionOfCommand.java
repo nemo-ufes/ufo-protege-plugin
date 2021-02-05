@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemSubCollectionOf",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotA-02",
         name = "New subcollection-of relation"
 )
 public class SubCollectionOfCommand extends PatternCommand {

@@ -13,7 +13,9 @@ import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.CategoryPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Set;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 /**
  *
@@ -21,13 +23,15 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-05",
         name = "New category"
 )
 public class CategoryCommand extends PatternCommand {
 
     private IRI endurantClass;
     private IRI category;
+    private IRI firstRigidSortal;
+    private IRI secondRigidSortal;
 
     public void setEndurantClass(IRI endurantClass) {
         this.endurantClass = endurantClass;
@@ -35,6 +39,14 @@ public class CategoryCommand extends PatternCommand {
 
     public void setCategory(IRI category) {
         this.category = category;
+    }
+
+    public void setFirstRigidSortal(IRI firstRigidSortal) {
+        this.firstRigidSortal = firstRigidSortal;
+    }
+
+    public void setSecondRigidSortal(IRI secondRigidSortal) {
+        this.secondRigidSortal = secondRigidSortal;
     }
     
     @Override
@@ -44,6 +56,15 @@ public class CategoryCommand extends PatternCommand {
         applier.makeInstanceOf(GufoIris.Category, category);
         applier.createClass(category);
         applier.addSubClassTo(endurantClass, category);
+        
+        /**
+         * From EntityFilter we can take that the category and the rigid sortal
+         * have the same public superclass for granted
+         */
+        Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(category, firstRigidSortal);
+        applier.makeSubClassOf(category, firstRigidSortal, sharedEndurantClasses);
+        sharedEndurantClasses = applier.sharedSuperClassAxioms(category, secondRigidSortal);
+        applier.makeSubClassOf(category, secondRigidSortal, sharedEndurantClasses);
     }
     
     @Override
@@ -53,8 +74,25 @@ public class CategoryCommand extends PatternCommand {
                 .isPublicGufoClass()
                 .entities();
         
+        IRI firstEndurantClass = endurantClassIRIs.isEmpty() ? null : endurantClassIRIs.get(0);
+        List<IRI> firstRigidSortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.RigidType)
+                .addType(GufoIris.Sortal)
+                .addSuperClass(firstEndurantClass)
+                .entities();
+        
+        IRI firstFirstRigidSortal = firstRigidSortalIRIs.isEmpty() ? null : firstRigidSortalIRIs.get(0);
+        List<IRI> secondRigidSortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.RigidType)
+                .addType(GufoIris.Sortal)
+                .addSuperClass(firstEndurantClass)
+                .hasDifferentKindOf(firstFirstRigidSortal)
+                .entities();
+        
         CategoryPatternFrame frame = new CategoryPatternFrame(this);
         frame.setEndurantClassIRIs(endurantClassIRIs);
+        frame.setFirstRigidSortalIRIs(firstRigidSortalIRIs);
+        frame.setSecondRigidSortalIRIs(secondRigidSortalIRIs);
         frame.display();
     }
 

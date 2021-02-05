@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemMaterialRelation",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-08",
         name = "New material relation"
 )
 public class MaterialRelationCommand extends PatternCommand {

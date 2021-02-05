@@ -31,7 +31,7 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
     private JTextField subkindName;
     
     private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to specialize: ");
-    private final JLabel subkindLabel = new JLabel("SubKind name: ");
+    private final JLabel subkindLabel = new JLabel("gufo:SubKind short name: ");
     
     private List<IRI> rigidSortalIRIs;
     
@@ -43,7 +43,7 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("Add subkind");
+        this.setTitle("Add a gufo:SubKind to a rigid sortal");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemMediationType",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-09",
         name = "New type of mediation"
 )
 public class MediationTypeCommand extends PatternCommand {

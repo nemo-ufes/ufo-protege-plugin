@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  */
 @EditorKitMenuAction(
         id = "menuItemAddToCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-06",
         name = "Add to category"
 )
 public class AddToCategoryCommand extends PatternCommand {
@@ -43,7 +43,10 @@ public class AddToCategoryCommand extends PatternCommand {
     public void runCommand() {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         
-        // From EntityFilter we can take that sharedEndurantClasses isn't empty for granted
+        /**
+         * From EntityFilter we can take that the category and the rigid type
+         * have the same public superclass for granted
+         */
         Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(category, rigidType);
         applier.makeSubClassOf(category, rigidType, sharedEndurantClasses);
     }

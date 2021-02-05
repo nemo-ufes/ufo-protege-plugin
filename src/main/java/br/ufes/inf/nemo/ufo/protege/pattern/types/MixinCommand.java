@@ -13,7 +13,9 @@ import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.MixinPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Set;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
 /**
  *
@@ -21,13 +23,15 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotD-07",
         name = "New mixin"
 )
 public class MixinCommand extends PatternCommand {
 
     private IRI endurantClass;
     private IRI mixin;
+    private IRI rigidSortal;
+    private IRI antiRigidSortal;
 
     public void setEndurantClass(IRI endurantClass) {
         this.endurantClass = endurantClass;
@@ -35,6 +39,14 @@ public class MixinCommand extends PatternCommand {
 
     public void setMixin(IRI mixin) {
         this.mixin = mixin;
+    }
+
+    public void setRigidSortal(IRI rigidSortal) {
+        this.rigidSortal = rigidSortal;
+    }
+
+    public void setAntiRigidSortal(IRI antiRigidSortal) {
+        this.antiRigidSortal = antiRigidSortal;
     }
     
     @Override
@@ -44,6 +56,12 @@ public class MixinCommand extends PatternCommand {
         applier.makeInstanceOf(GufoIris.Mixin, mixin);
         applier.createClass(mixin);
         applier.addSubClassTo(endurantClass, mixin);
+        
+        // From EntityFilter we can take that sharedEndurantClasses isn't empty for granted
+        Set<OWLSubClassOfAxiom> sharedEndurantClasses = applier.sharedSuperClassAxioms(mixin, rigidSortal);
+        applier.makeSubClassOf(mixin, rigidSortal, sharedEndurantClasses);
+        sharedEndurantClasses = applier.sharedSuperClassAxioms(mixin, antiRigidSortal);
+        applier.makeSubClassOf(mixin, antiRigidSortal, sharedEndurantClasses);
     }
     
     @Override
@@ -53,8 +71,25 @@ public class MixinCommand extends PatternCommand {
                 .isPublicGufoClass()
                 .entities();
         
+        IRI firstEndurantClass = endurantClassIRIs.isEmpty() ? null : endurantClassIRIs.get(0);
+        List<IRI> rigidSortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.RigidType)
+                .addType(GufoIris.Sortal)
+                .addSuperClass(firstEndurantClass)
+                .entities();
+        
+        IRI firstRigidSortal = rigidSortalIRIs.isEmpty() ? null : rigidSortalIRIs.get(0);
+        List<IRI> antiRigidSortalIRIs = new EntityFilter(getOWLModelManager())
+                .addType(GufoIris.AntiRigidType)
+                .addType(GufoIris.Sortal)
+                .addSuperClass(firstEndurantClass)
+                .hasDifferentKindOf(firstRigidSortal)
+                .entities();
+        
         MixinPatternFrame frame = new MixinPatternFrame(this);
         frame.setEndurantClassIRIs(endurantClassIRIs);
+        frame.setRigidSortalIRIs(rigidSortalIRIs);
+        frame.setAntiRigidSortalIRIs(antiRigidSortalIRIs);
         frame.display();
     }
 

@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemInstantiateNoReifiedQuality",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotB-3",
         name = "New instance of no reified Quality"
 )
 public class InstantiateNoReifiedQualityCommand extends PatternCommand {

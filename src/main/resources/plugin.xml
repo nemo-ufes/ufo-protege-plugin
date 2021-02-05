@@ -78,21 +78,42 @@
                point="org.protege.editor.core.application.EditorKitMenuAction">
         <name value="For Types"/>
         <toolTip value="Apply patterns for gUFO types"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-B"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="NewKindMenu"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="New gufo:Kind"/>
+        <toolTip value="Create a new gufo:Kind"/>
         <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="NewObjectKindMenu"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="Of gufo:Object"/>
+        <toolTip value="Create a new gufo:Kind of gufo:Object"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.NewKindMenu/SlotA-A"/>
+        <editorKitId value="OWLEditorKit"/>
+    </extension>
+    <extension id="NewAspectKindMenu"
+               point="org.protege.editor.core.application.EditorKitMenuAction">
+        <name value="Of gufo:Aspect"/>
+        <toolTip value="Create a new gufo:Kind of gufo:Aspect"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.NewKindMenu/SlotA-B"/>
         <editorKitId value="OWLEditorKit"/>
     </extension>
     <extension id="ForInstancesMenu"
                point="org.protege.editor.core.application.EditorKitMenuAction">
         <name value="For Instances"/>
         <toolTip value="Apply patterns for gUFO instances"/>
-        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-C"/>
         <editorKitId value="OWLEditorKit"/>
     </extension>
     <extension id="ForRelationsMenu"
                point="org.protege.editor.core.application.EditorKitMenuAction">
         <name value="For Relations"/>
         <toolTip value="Apply patterns for gUFO relations"/>
-        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-A"/>
+        <path value="br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotG-D"/>
         <editorKitId value="OWLEditorKit"/>
     </extension>
 </plugin>

@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemInstantiateRelator",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-6",
         name = "New instance of Relator"
 )
 public class InstantiateRelatorCommand extends PatternCommand {

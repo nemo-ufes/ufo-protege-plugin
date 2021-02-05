@@ -13,9 +13,6 @@ import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.AddRoleToRoleMixinPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
@@ -24,8 +21,8 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemAddRoleToRoleMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
-        name = "Add role to rolemixin"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-13",
+        name = "Add a gufo:Role to a gufo:Rolemixin"
 )
 public class AddRoleToRoleMixinCommand extends PatternCommand {
 

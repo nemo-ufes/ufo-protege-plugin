@@ -21,8 +21,8 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemSubKind",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
-        name = "Add subkind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotA-02",
+        name = "Add a gufo:SubKind to a rigid sortal"
 )
 public class SubKindCommand extends PatternCommand {
     

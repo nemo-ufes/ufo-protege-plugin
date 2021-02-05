@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-/* @EditorKitMenuAction(
+@EditorKitMenuAction(
         id = "menuItemRoleMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-10",
         name = "New rolemixin"
-) */
+)
 public class RoleMixinCommand extends PatternCommand {
 
     private IRI endurantClass;

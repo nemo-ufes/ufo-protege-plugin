@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemInstantiateIntrinsicMode",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-4",
         name = "New instance of IntrinsicMode"
 )
 public class InstantiateIntrinsicModeCommand extends PatternCommand {

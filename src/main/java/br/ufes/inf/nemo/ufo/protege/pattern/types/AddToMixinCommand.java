@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  */
 @EditorKitMenuAction(
         id = "menuItemAddToMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotD-08",
         name = "Add to mixin"
 )
 public class AddToMixinCommand extends PatternCommand {

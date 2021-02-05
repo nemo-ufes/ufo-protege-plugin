@@ -21,7 +21,7 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemInstantiateQuality",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotAA-Z",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotB-2",
         name = "New instance of Quality"
 )
 public class InstantiateQualityCommand extends PatternCommand {

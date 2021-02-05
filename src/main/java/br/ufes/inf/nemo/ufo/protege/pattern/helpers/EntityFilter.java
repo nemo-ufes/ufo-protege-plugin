@@ -106,6 +106,15 @@ public class EntityFilter {
         return this;
     }
     
+    public EntityFilter hasDifferentKindOf(IRI classIRI) {
+        if(classIRI != null) {
+            entities = entities.filter(entity -> applier.haveDifferentKinds(classIRI, entity));
+        } else {
+            entities = entities.limit(0);
+        }
+        return this;
+    }
+    
     public List<IRI> entities() {
         return entities
                 .sorted((IRI iri1, IRI iri2) -> iri1.getShortForm()

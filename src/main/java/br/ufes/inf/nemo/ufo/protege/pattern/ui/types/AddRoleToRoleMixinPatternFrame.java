@@ -31,8 +31,8 @@ public class AddRoleToRoleMixinPatternFrame extends JFrame implements ActionList
     private JComboBox rolemixinSelection;
     private JComboBox roleSelection;
     
-    private final JLabel rolemixinLabel = new JLabel("RoleMixin: ");
-    private final JLabel roleLabel = new JLabel("Role to be added: ");
+    private final JLabel rolemixinLabel = new JLabel("gufo:RoleMixin: ");
+    private final JLabel roleLabel = new JLabel("Short name of gufo:Role to be added: ");
     
     private List<IRI> rolemixinIRIs;
     private List<IRI> roleIRIs;
@@ -45,7 +45,7 @@ public class AddRoleToRoleMixinPatternFrame extends JFrame implements ActionList
         
         this.command = command;
         
-        this.setTitle("Add role to rolemixin");
+        this.setTitle("Add a gufo:Role to a gufo:Rolemixin");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

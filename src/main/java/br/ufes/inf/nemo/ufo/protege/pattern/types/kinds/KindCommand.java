@@ -3,36 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.ufes.inf.nemo.ufo.protege.pattern.types;
+package br.ufes.inf.nemo.ufo.protege.pattern.types.kinds;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
-import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
 import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.KindPatternFrame;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import org.semanticweb.owlapi.model.IRI;
 
 /**
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
-        id = "menuItemKind",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotAA-Z",
-        name = "New kind"
-)
-public class KindCommand extends PatternCommand {
+public abstract class KindCommand extends PatternCommand {
 
-    private IRI endurantClass;
+    protected IRI endurantClass;
+    protected String endurantClassName;
     private IRI kind;
 
-    public void setEndurantClass(IRI endurantClass) {
-        this.endurantClass = endurantClass;
-    }
+    public abstract void defineEndurantClass();
 
+    public String getEndurantClassName() {
+        return endurantClassName;
+    }
+    
     public void setKind(IRI kind) {
         this.kind = kind;
     }
@@ -48,13 +43,8 @@ public class KindCommand extends PatternCommand {
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
-                .isPublicGufoClass()
-                .entities();
-        
+        defineEndurantClass();
         KindPatternFrame frame = new KindPatternFrame(this);
-        frame.setEndurantClassIRIs(endurantClassIRIs);
         frame.display();
     }
 
