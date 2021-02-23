@@ -33,7 +33,7 @@ public class InstantiateIntrinsicModePatternFrame extends JFrame implements Acti
     
     private final JLabel intrinsicModeTypeLabel = new JLabel("Intrinsic mode type: ");
     private final JLabel bearerLabel = new JLabel("Concrete individual to be the bearer: ");
-    private final JLabel instanceLabel = new JLabel("Instance name: ");
+    private final JLabel instanceLabel = new JLabel("New gufo:IntrinsicMode short name: ");
     
     private List<IRI> intrinsicModeTypeIRIs;
     private List<IRI> concreteIndividualIRIs;
@@ -46,7 +46,7 @@ public class InstantiateIntrinsicModePatternFrame extends JFrame implements Acti
     public InstantiateIntrinsicModePatternFrame(InstantiateIntrinsicModeCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of IntrinsicMode");
+        this.setTitle("New instance of gufo:IntrinsicMode");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

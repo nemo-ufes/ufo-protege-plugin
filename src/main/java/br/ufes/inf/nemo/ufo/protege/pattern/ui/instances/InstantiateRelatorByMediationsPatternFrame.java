@@ -39,7 +39,7 @@ public class InstantiateRelatorByMediationsPatternFrame extends JFrame implement
     private JLabel relatorTypeSelected;
     private final JLabel mediatedALabel = new JLabel("First mediated endurant: ");
     private final JLabel mediatedBLabel = new JLabel("Second mediated endurant: ");
-    private final JLabel relatorLabel = new JLabel("Relator name: ");
+    private final JLabel relatorLabel = new JLabel("New gufo:Relator short name: ");
     
     private List<IRI> mediationTypeIRIs;
     private List<IRI> mediatedIRIs;
@@ -54,7 +54,7 @@ public class InstantiateRelatorByMediationsPatternFrame extends JFrame implement
     public InstantiateRelatorByMediationsPatternFrame(InstantiateRelatorByMediationsCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of relator by mediations");
+        this.setTitle("New instance of gufo:Relator by mediations");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

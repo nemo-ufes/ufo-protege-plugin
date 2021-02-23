@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemComponentOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotB-03",
-        name = "New component-of relation"
+        name = "New gufo:isComponentOf relation"
 )
 public class ComponentOfCommand extends PatternCommand {
 

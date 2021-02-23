@@ -37,7 +37,7 @@ public class MaterialRelationshipTypePatternFrame extends JFrame implements Acti
     private final JLabel relatorTypeLabel = new JLabel("Relator type to be derived: ");
     private final JLabel domainLabel = new JLabel("Endurant class to be the domain: ");
     private final JLabel rangeLabel = new JLabel("Endurant class to be the range: ");
-    private final JLabel relationshipTypeLabel = new JLabel("Relationship type name: ");
+    private final JLabel relationshipTypeLabel = new JLabel("New gufo:MaterialRelationshipType short name: ");
     
     private List<IRI> relatorTypeIRIs;
     private List<IRI> endurantClassIRIs;
@@ -53,7 +53,7 @@ public class MaterialRelationshipTypePatternFrame extends JFrame implements Acti
         
         this.command = command;
         
-        this.setTitle("New type of material relationship");
+        this.setTitle("New gufo:MaterialRelationshipType");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

@@ -31,7 +31,7 @@ public class InstantiateObjectPatternFrame extends JFrame implements ActionListe
     private JTextField instanceName;
     
     private final JLabel sortalLabel = new JLabel("Sortal: ");
-    private final JLabel instanceLabel = new JLabel("Instance name: ");
+    private final JLabel instanceLabel = new JLabel("New gufo:Object short name: ");
     
     private List<IRI> sortalIRIs;
     
@@ -42,7 +42,7 @@ public class InstantiateObjectPatternFrame extends JFrame implements ActionListe
     public InstantiateObjectPatternFrame(InstantiateObjectCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of Object");
+        this.setTitle("New instance of gufo:Object");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

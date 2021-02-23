@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemInstantiateExtrinsicMode",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-5",
-        name = "New instance of ExtrinsicMode"
+        name = "New instance of gufo:ExtrinsicMode"
 )
 public class InstantiateExtrinsicModeCommand extends PatternCommand {
 

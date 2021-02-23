@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemInstantiateObject",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotA-1",
-        name = "New instance of Object"
+        name = "New instance of gufo:Object"
 )
 public class InstantiateObjectCommand extends PatternCommand {
 

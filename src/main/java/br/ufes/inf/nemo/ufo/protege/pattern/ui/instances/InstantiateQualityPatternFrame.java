@@ -34,8 +34,8 @@ public class InstantiateQualityPatternFrame extends JFrame implements ActionList
     
     private final JLabel qualityTypeLabel = new JLabel("Quality type: ");
     private final JLabel bearerLabel = new JLabel("Concrete individual to be the bearer: ");
-    private final JLabel nameLabel = new JLabel("Instance name: ");
-    private final JLabel valueLabel = new JLabel("Instance value: ");
+    private final JLabel nameLabel = new JLabel("New gufo:Quality short name: ");
+    private final JLabel valueLabel = new JLabel("New gufo:Quality value: ");
     
     private List<IRI> qualityTypeIRIs;
     private List<IRI> concreteIndividualIRIs;
@@ -49,7 +49,7 @@ public class InstantiateQualityPatternFrame extends JFrame implements ActionList
     public InstantiateQualityPatternFrame(InstantiateQualityCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of Quality");
+        this.setTitle("New instance of gufo:Quality");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

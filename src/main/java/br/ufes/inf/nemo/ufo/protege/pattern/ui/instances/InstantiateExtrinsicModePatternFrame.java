@@ -37,7 +37,7 @@ public class InstantiateExtrinsicModePatternFrame extends JFrame implements Acti
     private final JLabel extrinsicModeTypeLabel = new JLabel("Extrinsic mode type: ");
     private final JLabel bearerLabel = new JLabel("Concrete individual to be the bearer: ");
     private final JLabel externalDependenceLabel = new JLabel("Endurant to be the external dependence: ");
-    private final JLabel instanceLabel = new JLabel("Instance name: ");
+    private final JLabel instanceLabel = new JLabel("New gufo:ExtrinsicMode short name: ");
     
     private List<IRI> extrinsicModeTypeIRIs;
     private List<IRI> concreteIndividualIRIs;
@@ -52,7 +52,7 @@ public class InstantiateExtrinsicModePatternFrame extends JFrame implements Acti
     public InstantiateExtrinsicModePatternFrame(InstantiateExtrinsicModeCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of ExtrinsicMode");
+        this.setTitle("New instance of gufo:ExtrinsicMode");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

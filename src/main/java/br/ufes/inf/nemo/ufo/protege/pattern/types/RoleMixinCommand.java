@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemRoleMixin",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-10",
-        name = "New rolemixin"
+        name = "New gufo:RoleMixin"
 )
 public class RoleMixinCommand extends PatternCommand {
 

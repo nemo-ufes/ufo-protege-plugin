@@ -31,8 +31,8 @@ public class SubQuantityOfPatternFrame extends JFrame implements ActionListener 
     private JComboBox quantitySelection;
     private JComboBox subquantitySelection;
     
-    private final JLabel quantityLabel = new JLabel("Quantity: ");
-    private final JLabel subquantityLabel = new JLabel("Subquantity: ");
+    private final JLabel quantityLabel = new JLabel("Some gufo:Quantity: ");
+    private final JLabel subquantityLabel = new JLabel("A gufo:Quantity to be subquantity: ");
     
     private List<IRI> quantityIRIs;
     private List<IRI> subquantityIRIs;
@@ -45,7 +45,7 @@ public class SubQuantityOfPatternFrame extends JFrame implements ActionListener 
         
         this.command = command;
         
-        this.setTitle("New subquantity-of relation");
+        this.setTitle("New gufo:isSubQuantityOf relation");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

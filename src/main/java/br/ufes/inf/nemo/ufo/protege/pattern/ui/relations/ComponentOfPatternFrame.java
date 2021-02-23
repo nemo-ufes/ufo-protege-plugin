@@ -31,8 +31,8 @@ public class ComponentOfPatternFrame extends JFrame implements ActionListener {
     private JComboBox functionalComplexSelection;
     private JComboBox objectSelection;
     
-    private final JLabel functionalComplexLabel = new JLabel("Functional Complex: ");
-    private final JLabel objectLabel = new JLabel("Object to be a component: ");
+    private final JLabel functionalComplexLabel = new JLabel("gufo:FunctionalComplex: ");
+    private final JLabel objectLabel = new JLabel("gufo:Object to be a component: ");
     
     private List<IRI> functionalComplexIRIs;
     private List<IRI> objectIRIs;
@@ -45,7 +45,7 @@ public class ComponentOfPatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("New component-of relation");
+        this.setTitle("New gufo:isComponentOf relation");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

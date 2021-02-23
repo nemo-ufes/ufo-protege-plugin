@@ -31,7 +31,7 @@ public class RoleMixinPatternFrame extends JFrame implements ActionListener {
     private JTextField rolemixinName;
     
     private final JLabel endurantClassLabel = new JLabel("Endurant class to specialize: ");
-    private final JLabel rolemixinLabel = new JLabel("RoleMixin name: ");
+    private final JLabel rolemixinLabel = new JLabel("gufo:RoleMixin short name: ");
     
     private List<IRI> endurantClassIRIs;
     
@@ -43,7 +43,7 @@ public class RoleMixinPatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("New rolemixin");
+        this.setTitle("New gufo:Rolemixin");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

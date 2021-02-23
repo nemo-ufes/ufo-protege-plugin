@@ -31,8 +31,8 @@ public class SubCollectionOfPatternFrame extends JFrame implements ActionListene
     private JComboBox collectionSelection;
     private JComboBox subcollectionSelection;
     
-    private final JLabel collectionLabel = new JLabel("Collection: ");
-    private final JLabel subcollectionLabel = new JLabel("Subcollection: ");
+    private final JLabel collectionLabel = new JLabel("Some gufo:Collection: ");
+    private final JLabel subcollectionLabel = new JLabel("A gufo:Collection to be subcollection: ");
     
     private List<IRI> collectionIRIs;
     private List<IRI> subcollectionIRIs;
@@ -45,7 +45,7 @@ public class SubCollectionOfPatternFrame extends JFrame implements ActionListene
         
         this.command = command;
         
-        this.setTitle("New subcollection-of relation");
+        this.setTitle("New gufo:isSubCollectionOf relation");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

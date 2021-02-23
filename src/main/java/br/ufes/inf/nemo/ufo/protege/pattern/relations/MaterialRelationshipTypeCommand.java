@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemMaterialRelationshipType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-07",
-        name = "New type of material relationship"
+        name = "New gufo:MaterialRelationshipType"
 )
 public class MaterialRelationshipTypeCommand extends PatternCommand {
 

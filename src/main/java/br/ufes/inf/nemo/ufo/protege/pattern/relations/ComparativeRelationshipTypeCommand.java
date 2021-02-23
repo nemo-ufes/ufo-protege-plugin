@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemComparativeRelationshipType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotD-05",
-        name = "New type of comparative relationship"
+        name = "New gufo:ComparativeRelationshipType"
 )
 public class ComparativeRelationshipTypeCommand extends PatternCommand {
 

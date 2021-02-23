@@ -35,7 +35,7 @@ public class InstantiateRelatorPatternFrame extends JFrame implements ActionList
     private final JLabel relatorTypeLabel = new JLabel("Relator type: ");
     private final JLabel mediatedALabel = new JLabel("First mediated endurant: ");
     private final JLabel mediatedBLabel = new JLabel("Second mediated endurant: ");
-    private final JLabel instanceLabel = new JLabel("Instance name: ");
+    private final JLabel instanceLabel = new JLabel("New gufo:Relator short name: ");
     
     private List<IRI> relatorTypeIRIs;
     private List<IRI> endurantIRIs;
@@ -49,7 +49,7 @@ public class InstantiateRelatorPatternFrame extends JFrame implements ActionList
     public InstantiateRelatorPatternFrame(InstantiateRelatorCommand command) {
         this.command = command;
         
-        this.setTitle("New instance of Relator");
+        this.setTitle("New instance of gufo:Relator");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

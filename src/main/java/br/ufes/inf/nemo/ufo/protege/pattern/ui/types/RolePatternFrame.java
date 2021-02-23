@@ -31,7 +31,7 @@ public class RolePatternFrame extends JFrame implements ActionListener {
     private JTextField roleName;
     
     private final JLabel sortalLabel = new JLabel("Sortal to specialize: ");
-    private final JLabel roleLabel = new JLabel("Role name: ");
+    private final JLabel roleLabel = new JLabel("gufo:Role short name: ");
     
     private List<IRI> sortalIRIs;
     
@@ -43,7 +43,7 @@ public class RolePatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("Add role");
+        this.setTitle("Add a gufo:Role to a sortal");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

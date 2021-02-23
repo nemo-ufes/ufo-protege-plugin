@@ -31,8 +31,8 @@ public class MemberOfPatternFrame extends JFrame implements ActionListener {
     private JComboBox collectionSelection;
     private JComboBox objectSelection;
     
-    private final JLabel collectionLabel = new JLabel("Collection: ");
-    private final JLabel objectLabel = new JLabel("Object to be a member: ");
+    private final JLabel collectionLabel = new JLabel("gufo:Collection: ");
+    private final JLabel objectLabel = new JLabel("gufo:Object to be a member: ");
     
     private List<IRI> collectionIRIs;
     private List<IRI> objectIRIs;
@@ -45,7 +45,7 @@ public class MemberOfPatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("New member-of relation");
+        this.setTitle("New gufo:isCollectionMemberOf relation");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }

@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemInstantiateRelatorByMediations",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-7",
-        name = "New instance of relator by mediations"
+        name = "New instance of gufo:Relator by mediations"
 )
 public class InstantiateRelatorByMediationsCommand extends PatternCommand {
 

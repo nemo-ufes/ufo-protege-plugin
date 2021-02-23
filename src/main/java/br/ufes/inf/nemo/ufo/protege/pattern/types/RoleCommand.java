@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.IRI;
 @EditorKitMenuAction(
         id = "menuItemRole",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotB-03",
-        name = "Add role"
+        name = "Add a gufo:Role to a sortal"
 )
 public class RoleCommand extends PatternCommand {
 

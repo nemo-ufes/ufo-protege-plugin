@@ -35,7 +35,7 @@ public class ComparativeRelationshipTypePatternFrame extends JFrame implements A
     
     private final JLabel qualityTypeLabel = new JLabel("Quality type to be compared: ");
     private final JLabel domainAndRangeLabel = new JLabel("Class of concrete individuals to be compared: ");
-    private final JLabel relationshipTypeLabel = new JLabel("Relationship type name: ");
+    private final JLabel relationshipTypeLabel = new JLabel("New gufo:ComparativeRelationshipType short name: ");
     
     private List<IRI> qualityTypeIRIs;
     private List<IRI> concreteIndividualClassIRIs;
@@ -50,7 +50,7 @@ public class ComparativeRelationshipTypePatternFrame extends JFrame implements A
         
         this.command = command;
         
-        this.setTitle("New type of comparative relationship");
+        this.setTitle("New gufo:ComparativeRelationshipType");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
