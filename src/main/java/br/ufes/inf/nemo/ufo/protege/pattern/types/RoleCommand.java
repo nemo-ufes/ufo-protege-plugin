@@ -21,8 +21,8 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemRole",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotB-03",
-        name = "Add a gufo:Role to a sortal"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotA-04",
+        name = "Create gufo:Role specializing a sortal"
 )
 public class RoleCommand extends PatternCommand {
 
@@ -49,7 +49,7 @@ public class RoleCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> sortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Sortal)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         RolePatternFrame frame = new RolePatternFrame(this);

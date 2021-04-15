@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemRelator",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewAspectKindMenu/SlotA-08",
-        name = "New gufo:Relator kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateAspectKindMenu/SlotA-04",
+        name = "Create gufo:Kind specializing gufo:Relator"
 )
 public class RelatorCommand extends KindCommand {
     

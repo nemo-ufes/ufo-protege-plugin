@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemMemberOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotA-01",
         name = "New gufo:isCollectionMemberOf relation"
-)
+) */
 public class MemberOfCommand extends PatternCommand {
 
     private final IRI memberOfRelation = IRI.create(GufoIris.GUFO, "isCollectionMemberOf");
@@ -47,12 +47,12 @@ public class MemberOfCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> collectionIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Collection)
+                .isOfType(GufoIris.Collection)
                 .entities();
         
         IRI firstCollection = collectionIRIs.isEmpty() ? null : collectionIRIs.get(0);
         List<IRI> memberIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Object)
+                .isOfType(GufoIris.Object)
                 .isDifferentFrom(firstCollection)
                 .entities();
         

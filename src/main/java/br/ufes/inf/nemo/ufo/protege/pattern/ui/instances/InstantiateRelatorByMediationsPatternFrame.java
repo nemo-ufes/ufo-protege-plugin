@@ -180,7 +180,7 @@ public class InstantiateRelatorByMediationsPatternFrame extends JFrame implement
                     
                     IRI mediatedType = applier.getObjectPropertyRange(mediationType);
                     mediatedIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(mediatedType)
+                            .isOfType(mediatedType)
                             .entities();
                     
                     Object[] mediatedList = mediatedIRIs.stream()

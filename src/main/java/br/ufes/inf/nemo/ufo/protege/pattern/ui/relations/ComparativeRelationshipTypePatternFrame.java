@@ -141,7 +141,7 @@ public class ComparativeRelationshipTypePatternFrame extends JFrame implements A
                     this.domainAndRangePanel.remove(this.domainAndRangeSelection);
                     
                     this.concreteIndividualClassIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addSuperClass(GufoIris.ConcreteIndividual)
+                            .hasSuperClass(GufoIris.ConcreteIndividual)
                             .isDifferentFrom(qualityType)
                             .entities();
                     

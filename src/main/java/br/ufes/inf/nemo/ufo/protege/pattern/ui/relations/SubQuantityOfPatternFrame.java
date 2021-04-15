@@ -121,7 +121,7 @@ public class SubQuantityOfPatternFrame extends JFrame implements ActionListener 
                         this.subquantityPanel.remove(this.subquantitySelection);
 
                         this.subquantityIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(GufoIris.Quantity)
+                                .isOfType(GufoIris.Quantity)
                                 .isDifferentFrom(quantity)
                                 .entities();
 

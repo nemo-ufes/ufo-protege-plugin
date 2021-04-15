@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateRelatorByMediations",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-7",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-07",
         name = "New instance of gufo:Relator by mediations"
-)
+) */
 public class InstantiateRelatorByMediationsCommand extends PatternCommand {
 
     private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
@@ -65,7 +65,7 @@ public class InstantiateRelatorByMediationsCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> mediationTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperObjectProperty(mediates)
+                .hasSuperObjectProperty(mediates)
                 .entities();
         
         IRI firstMediationType = mediationTypeIRIs.isEmpty() ? null : mediationTypeIRIs.get(0);
@@ -76,7 +76,7 @@ public class InstantiateRelatorByMediationsCommand extends PatternCommand {
         } else {
             IRI mediatedType = applier.getObjectPropertyRange(firstMediationType);
             mediatedIRIs = new EntityFilter(getOWLModelManager())
-                    .addType(mediatedType)
+                    .isOfType(mediatedType)
                     .entities();
         }
         

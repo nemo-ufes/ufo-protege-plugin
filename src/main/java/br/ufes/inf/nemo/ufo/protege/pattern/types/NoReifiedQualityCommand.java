@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemNoReifiedQuality",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotF-14",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotF-17",
         name = "New no reified quality type"
-)
+) */
 public class NoReifiedQualityCommand extends PatternCommand {
 
     private final IRI hasQualityValue = IRI.create(GufoIris.GUFO, "hasQualityValue");
@@ -49,7 +49,7 @@ public class NoReifiedQualityCommand extends PatternCommand {
     public void actionPerformed(ActionEvent ae) {        
         
         List<IRI> domainIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.ConcreteIndividual)
+                .hasSuperClass(GufoIris.ConcreteIndividual)
                 .entities();
         
         NoReifiedQualityPatternFrame frame = new NoReifiedQualityPatternFrame(this);

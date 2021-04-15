@@ -10,7 +10,7 @@ import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.CategoryPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.InstantiableCategoryPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +21,12 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
-        id = "menuItemCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-05",
-        name = "New category"
-)
-public class CategoryCommand extends PatternCommand {
+/* @EditorKitMenuAction(
+        id = "menuItemInstantiableCategory",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-01",
+        name = "Create instantiable gufo:Category"
+) */
+public class InstantiableCategoryCommand extends PatternCommand {
 
     private IRI endurantClass;
     private IRI category;
@@ -70,26 +70,26 @@ public class CategoryCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
+                .hasSuperClass(GufoIris.Endurant)
                 .isPublicGufoClass()
                 .entities();
         
         IRI firstEndurantClass = endurantClassIRIs.isEmpty() ? null : endurantClassIRIs.get(0);
         List<IRI> firstRigidSortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RigidType)
-                .addType(GufoIris.Sortal)
-                .addSuperClass(firstEndurantClass)
+                .isOfType(GufoIris.RigidType)
+                .isOfType(GufoIris.Sortal)
+                .hasSuperClass(firstEndurantClass)
                 .entities();
         
         IRI firstFirstRigidSortal = firstRigidSortalIRIs.isEmpty() ? null : firstRigidSortalIRIs.get(0);
         List<IRI> secondRigidSortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RigidType)
-                .addType(GufoIris.Sortal)
-                .addSuperClass(firstEndurantClass)
+                .isOfType(GufoIris.RigidType)
+                .isOfType(GufoIris.Sortal)
+                .hasSuperClass(firstEndurantClass)
                 .hasDifferentKindOf(firstFirstRigidSortal)
                 .entities();
         
-        CategoryPatternFrame frame = new CategoryPatternFrame(this);
+        InstantiableCategoryPatternFrame frame = new InstantiableCategoryPatternFrame(this);
         frame.setEndurantClassIRIs(endurantClassIRIs);
         frame.setFirstRigidSortalIRIs(firstRigidSortalIRIs);
         frame.setSecondRigidSortalIRIs(secondRigidSortalIRIs);

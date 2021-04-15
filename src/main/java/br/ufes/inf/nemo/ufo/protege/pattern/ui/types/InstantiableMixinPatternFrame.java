@@ -8,7 +8,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.types.MixinCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.types.InstantiableMixinCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +25,9 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-public class MixinPatternFrame extends JFrame implements ActionListener {
+public class InstantiableMixinPatternFrame extends JFrame implements ActionListener {
     
-    private final MixinCommand command;
+    private final InstantiableMixinCommand command;
     
     private JComboBox endurantClassSelection;
     private JComboBox rigidSortalSelection;
@@ -37,7 +37,7 @@ public class MixinPatternFrame extends JFrame implements ActionListener {
     private final JLabel endurantClassLabel = new JLabel("Endurant class to specialize: ");
     private final JLabel rigidSortalLabel = new JLabel("Rigid sortal to generalize:");
     private final JLabel antiRigidSortalLabel = new JLabel("Anti-rigid sortal to generalize: ");
-    private final JLabel mixinLabel = new JLabel("Mixin name: ");
+    private final JLabel mixinLabel = new JLabel("gufo:Mixin short name: ");
     
     private List<IRI> endurantClassIRIs;
     private List<IRI> rigidSortalIRIs;
@@ -49,11 +49,11 @@ public class MixinPatternFrame extends JFrame implements ActionListener {
     private final JPanel mixinPanel = new JPanel();
     private final JPanel okPanel = new JPanel();
     
-    public MixinPatternFrame(MixinCommand command) {
+    public InstantiableMixinPatternFrame(InstantiableMixinCommand command) {
         
         this.command = command;
         
-        this.setTitle("New mixin");
+        this.setTitle("Create instantiable gufo:Mixin");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -161,9 +161,9 @@ public class MixinPatternFrame extends JFrame implements ActionListener {
                     this.antiRigidSortalPanel.remove(this.antiRigidSortalSelection);
 
                     this.rigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.RigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.RigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .entities();
 
                     Object[] boxList = rigidSortalIRIs.stream()
@@ -175,9 +175,9 @@ public class MixinPatternFrame extends JFrame implements ActionListener {
                     
                     rigidSortal = rigidSortalIRIs.isEmpty() ? null : rigidSortalIRIs.get(0);
                     this.antiRigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.AntiRigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.AntiRigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .hasDifferentKindOf(rigidSortal)
                             .entities();
                     
@@ -202,9 +202,9 @@ public class MixinPatternFrame extends JFrame implements ActionListener {
                     this.antiRigidSortalPanel.remove(this.antiRigidSortalSelection);
                     
                     this.antiRigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.AntiRigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.AntiRigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .hasDifferentKindOf(rigidSortal)
                             .entities();
                     

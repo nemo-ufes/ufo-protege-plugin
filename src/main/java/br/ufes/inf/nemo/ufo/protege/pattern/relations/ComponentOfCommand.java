@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemComponentOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotB-03",
         name = "New gufo:isComponentOf relation"
-)
+) */
 public class ComponentOfCommand extends PatternCommand {
 
     private final IRI componentOfRelation = IRI.create(GufoIris.GUFO, "isComponentOf");
@@ -47,12 +47,12 @@ public class ComponentOfCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> functionalComplexIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.FunctionalComplex)
+                .isOfType(GufoIris.FunctionalComplex)
                 .entities();
         
         IRI firstFunctionalComplex = functionalComplexIRIs.isEmpty() ? null : functionalComplexIRIs.get(0);
         List<IRI> componentIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Object)
+                .isOfType(GufoIris.Object)
                 .isDifferentFrom(firstFunctionalComplex)
                 .entities();
         

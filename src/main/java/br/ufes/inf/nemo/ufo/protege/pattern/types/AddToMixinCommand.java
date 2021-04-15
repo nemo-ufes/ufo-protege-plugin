@@ -21,11 +21,11 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemAddToMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotD-08",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotD-10",
         name = "Add to mixin"
-)
+) */
 public class AddToMixinCommand extends PatternCommand {
     
     private IRI mixin;
@@ -51,13 +51,13 @@ public class AddToMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> mixinIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Mixin)
+                .isOfType(GufoIris.Mixin)
                 .entities();
         
         IRI firstMixin = mixinIRIs.isEmpty() ? null : mixinIRIs.get(0);
         List<IRI> endurantTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.EndurantType)
-                .hasSamePublicSuperClass(firstMixin)
+                .isOfType(GufoIris.EndurantType)
+                .isOfOntologicalNatureOf(firstMixin)
                 .isNotSuperClassOf(firstMixin)
                 .isDifferentFrom(firstMixin)
                 .entities();

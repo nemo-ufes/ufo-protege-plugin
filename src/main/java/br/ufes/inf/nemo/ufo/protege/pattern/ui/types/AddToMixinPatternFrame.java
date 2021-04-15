@@ -123,8 +123,8 @@ public class AddToMixinPatternFrame extends JFrame implements ActionListener {
                         this.endurantTypePanel.remove(this.endurantTypeSelection);
 
                         this.endurantTypeIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(GufoIris.EndurantType)
-                                .hasSamePublicSuperClass(mixin)
+                                .isOfType(GufoIris.EndurantType)
+                                .isOfOntologicalNatureOf(mixin)
                                 .isNotSuperClassOf(mixin)
                                 .isDifferentFrom(mixin)
                                 .entities();

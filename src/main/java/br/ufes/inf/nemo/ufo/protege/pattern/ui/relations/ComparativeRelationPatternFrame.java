@@ -138,7 +138,7 @@ public class ComparativeRelationPatternFrame extends JFrame implements ActionLis
                         Object[] boxList;
                         
                         this.comparedIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(applier.getObjectPropertyDomain(relationType))
+                                .isOfType(applier.getObjectPropertyDomain(relationType))
                                 .entities();
 
                         boxList = comparedIRIs.stream()

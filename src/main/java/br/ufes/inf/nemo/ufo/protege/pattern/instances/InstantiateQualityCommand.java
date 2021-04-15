@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateQuality",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotB-2",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotB-02",
         name = "New instance of gufo:Quality"
-)
+) */
 public class InstantiateQualityCommand extends PatternCommand {
 
     private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
@@ -61,12 +61,12 @@ public class InstantiateQualityCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Quality)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Quality)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.ConcreteIndividual)
+                .isOfType(GufoIris.ConcreteIndividual)
                 .entities();
         
         InstantiateQualityPatternFrame frame = new InstantiateQualityPatternFrame(this);

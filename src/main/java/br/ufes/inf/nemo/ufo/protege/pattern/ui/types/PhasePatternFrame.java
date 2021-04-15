@@ -7,6 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.PhaseCommand;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +32,7 @@ public class PhasePatternFrame extends JFrame implements ActionListener {
     private JTextField phaseName;
     
     private final JLabel sortalLabel = new JLabel("Sortal to specialize: ");
-    private final JLabel phaseLabel = new JLabel("Phase name: ");
+    private final JLabel phaseLabel = new JLabel("gufo:Phase short name: ");
     
     private List<IRI> sortalIRIs;
     
@@ -43,7 +44,7 @@ public class PhasePatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("Add phase");
+        this.setTitle("Create gufo:Phase specializing a sortal");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -77,6 +78,8 @@ public class PhasePatternFrame extends JFrame implements ActionListener {
         this.add(phasePanel);
         this.add(okPanel);
         
+        this.setPreferredSize(new Dimension(600, 130));
+        this.setResizable(false);
         this.pack();
         this.setVisible(true);
     }

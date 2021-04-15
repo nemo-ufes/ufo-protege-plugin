@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemFunctionalComplex",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewObjectKindMenu/SlotA-01",
-        name = "New gufo:FunctionalComplex kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateObjectKindMenu/SlotA-01",
+        name = "Create gufo:Kind specializing gufo:FunctionalComplex"
 )
 public class FunctionalComplexCommand extends KindCommand {
     

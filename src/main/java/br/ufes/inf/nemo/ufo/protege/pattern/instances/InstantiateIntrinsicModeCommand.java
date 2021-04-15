@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateIntrinsicMode",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-4",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-04",
         name = "New instance of gufo:IntrinsicMode"
-)
+) */
 public class InstantiateIntrinsicModeCommand extends PatternCommand {
 
     private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
@@ -54,12 +54,12 @@ public class InstantiateIntrinsicModeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> intrinsicModeTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.IntrinsicMode)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.IntrinsicMode)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.ConcreteIndividual)
+                .isOfType(GufoIris.ConcreteIndividual)
                 .entities();
         
         InstantiateIntrinsicModePatternFrame frame = new InstantiateIntrinsicModePatternFrame(this);

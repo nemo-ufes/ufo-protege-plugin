@@ -21,8 +21,8 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemSubKind",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotA-02",
-        name = "Add a gufo:SubKind to a rigid sortal"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotA-03",
+        name = "Create gufo:SubKind specializing a rigid sortal"
 )
 public class SubKindCommand extends PatternCommand {
     
@@ -50,8 +50,8 @@ public class SubKindCommand extends PatternCommand {
     public void actionPerformed(ActionEvent ae) {
         
         List<IRI> rigidSortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RigidType)
-                .addType(GufoIris.Sortal)
+                .isOfType(GufoIris.RigidType)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         SubKindPatternFrame frame = new SubKindPatternFrame(this);

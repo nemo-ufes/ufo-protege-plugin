@@ -8,7 +8,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
-import br.ufes.inf.nemo.ufo.protege.pattern.types.CategoryCommand;
+import br.ufes.inf.nemo.ufo.protege.pattern.types.InstantiableCategoryCommand;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +25,9 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-public class CategoryPatternFrame extends JFrame implements ActionListener {
+public class InstantiableCategoryPatternFrame extends JFrame implements ActionListener {
     
-    private final CategoryCommand command;
+    private final InstantiableCategoryCommand command;
     
     private JComboBox endurantClassSelection;
     private JComboBox firstRigidSortalSelection;
@@ -37,7 +37,7 @@ public class CategoryPatternFrame extends JFrame implements ActionListener {
     private final JLabel endurantClassLabel = new JLabel("Endurant class to specialize: ");
     private final JLabel firstRigidSortalLabel = new JLabel("First rigid sortal to generalize: ");
     private final JLabel secondRigidSortalLabel = new JLabel("Second rigid sortal to generalize: ");
-    private final JLabel categoryLabel = new JLabel("Category name: ");
+    private final JLabel categoryLabel = new JLabel("gufo:Category short name: ");
     
     private List<IRI> endurantClassIRIs;
     private List<IRI> firstRigidSortalIRIs;
@@ -49,11 +49,11 @@ public class CategoryPatternFrame extends JFrame implements ActionListener {
     private final JPanel categoryPanel = new JPanel();
     private final JPanel okPanel = new JPanel();
     
-    public CategoryPatternFrame(CategoryCommand command) {
+    public InstantiableCategoryPatternFrame(InstantiableCategoryCommand command) {
         
         this.command = command;
         
-        this.setTitle("New category");
+        this.setTitle("Create instantiable gufo:Category");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -161,9 +161,9 @@ public class CategoryPatternFrame extends JFrame implements ActionListener {
                     this.secondRigidSortalPanel.remove(this.secondRigidSortalSelection);
 
                     this.firstRigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.RigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.RigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .entities();
 
                     Object[] boxList = firstRigidSortalIRIs.stream()
@@ -175,9 +175,9 @@ public class CategoryPatternFrame extends JFrame implements ActionListener {
                     
                     firstRigidSortal = firstRigidSortalIRIs.isEmpty() ? null : firstRigidSortalIRIs.get(0);
                     this.secondRigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.RigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.RigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .hasDifferentKindOf(firstRigidSortal)
                             .entities();
                     
@@ -202,9 +202,9 @@ public class CategoryPatternFrame extends JFrame implements ActionListener {
                     this.secondRigidSortalPanel.remove(this.secondRigidSortalSelection);
                     
                     this.secondRigidSortalIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.RigidType)
-                            .addType(GufoIris.Sortal)
-                            .addSuperClass(endurantClass)
+                            .isOfType(GufoIris.RigidType)
+                            .isOfType(GufoIris.Sortal)
+                            .hasSuperClass(endurantClass)
                             .hasDifferentKindOf(firstRigidSortal)
                             .entities();
                     

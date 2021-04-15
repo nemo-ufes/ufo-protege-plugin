@@ -7,6 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.RoleCommand;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +44,7 @@ public class RolePatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("Add a gufo:Role to a sortal");
+        this.setTitle("Create gufo:Role specializing a sortal");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -77,6 +78,8 @@ public class RolePatternFrame extends JFrame implements ActionListener {
         this.add(rolePanel);
         this.add(okPanel);
         
+        this.setPreferredSize(new Dimension(600, 130));
+        this.setResizable(false);
         this.pack();
         this.setVisible(true);
     }

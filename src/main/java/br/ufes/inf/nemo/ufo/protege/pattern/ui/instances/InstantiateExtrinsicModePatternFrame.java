@@ -157,7 +157,7 @@ public class InstantiateExtrinsicModePatternFrame extends JFrame implements Acti
                     this.externalDependencePanel.remove(this.externalDependenceSelection);
                     
                     this.endurantIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.Endurant)
+                            .isOfType(GufoIris.Endurant)
                             .isDifferentFrom(bearer)
                             .entities();
                     

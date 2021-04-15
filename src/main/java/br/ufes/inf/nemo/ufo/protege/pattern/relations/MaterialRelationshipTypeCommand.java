@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemMaterialRelationshipType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-07",
         name = "New gufo:MaterialRelationshipType"
-)
+) */
 public class MaterialRelationshipTypeCommand extends PatternCommand {
 
     private final IRI isDerivedFrom = IRI.create(GufoIris.GUFO, "isDerivedFrom");
@@ -62,13 +62,13 @@ public class MaterialRelationshipTypeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> relatorTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Relator)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Relator)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         IRI firstRelatorType = relatorTypeIRIs.isEmpty() ? null : relatorTypeIRIs.get(0);
         List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
+                .hasSuperClass(GufoIris.Endurant)
                 .isDifferentFrom(firstRelatorType)
                 .entities();
         

@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemRoleMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-10",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-13",
         name = "New gufo:RoleMixin"
-)
+) */
 public class RoleMixinCommand extends PatternCommand {
 
     private IRI endurantClass;
@@ -49,7 +49,7 @@ public class RoleMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
+                .hasSuperClass(GufoIris.Endurant)
                 .isPublicGufoClass()
                 .entities();
         

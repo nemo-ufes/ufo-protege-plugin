@@ -153,7 +153,7 @@ public class MaterialRelationshipTypePatternFrame extends JFrame implements Acti
                     rangePanel.remove(rangeSelection);
                     
                     endurantClassIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addSuperClass(GufoIris.Endurant)
+                            .hasSuperClass(GufoIris.Endurant)
                             .isDifferentFrom(relatorType)
                             .entities();
                     

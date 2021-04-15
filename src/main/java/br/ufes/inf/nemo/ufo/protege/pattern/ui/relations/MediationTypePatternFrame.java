@@ -141,7 +141,7 @@ public class MediationTypePatternFrame extends JFrame implements ActionListener 
                     mediatedTypePanel.remove(mediatedTypeSelection);
                     
                     endurantClassIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addSuperClass(GufoIris.Endurant)
+                            .hasSuperClass(GufoIris.Endurant)
                             .isDifferentFrom(relatorType)
                             .entities();
                     

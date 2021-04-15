@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateExtrinsicMode",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-5",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotC-05",
         name = "New instance of gufo:ExtrinsicMode"
-)
+) */
 public class InstantiateExtrinsicModeCommand extends PatternCommand {
 
     private final IRI inheritance = IRI.create(GufoIris.GUFO, "inheresIn");
@@ -62,17 +62,17 @@ public class InstantiateExtrinsicModeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> extrinsicModeTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.ExtrinsicMode)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.ExtrinsicMode)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         List<IRI> bearerIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.ConcreteIndividual)
+                .isOfType(GufoIris.ConcreteIndividual)
                 .entities();
         
         IRI firstBearer = bearerIRIs.isEmpty() ? null : bearerIRIs.get(0);
         List<IRI> externalDependenceIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Endurant)
+                .isOfType(GufoIris.Endurant)
                 .isDifferentFrom(firstBearer)
                 .entities();
         

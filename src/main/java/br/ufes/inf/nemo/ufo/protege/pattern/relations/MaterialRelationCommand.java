@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemMaterialRelation",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-08",
         name = "New material relation"
-)
+) */
 public class MaterialRelationCommand extends PatternCommand {
 
     private IRI relationType;
@@ -53,7 +53,7 @@ public class MaterialRelationCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         
         List<IRI> relationTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.MaterialRelationshipType)
+                .isOfType(GufoIris.MaterialRelationshipType)
                 .entities();
         
         IRI firstRelationType = relationTypeIRIs.isEmpty() ? null : relationTypeIRIs.get(0);
@@ -65,11 +65,11 @@ public class MaterialRelationCommand extends PatternCommand {
             objectIRIs = relationTypeIRIs;
         } else {
             subjectIRIs = new EntityFilter(getOWLModelManager())
-                .addType(applier.getObjectPropertyDomain(firstRelationType))
+                .isOfType(applier.getObjectPropertyDomain(firstRelationType))
                 .entities();
             
             objectIRIs = new EntityFilter(getOWLModelManager())
-                .addType(applier.getObjectPropertyRange(firstRelationType))
+                .isOfType(applier.getObjectPropertyRange(firstRelationType))
                 .entities();
         }
         

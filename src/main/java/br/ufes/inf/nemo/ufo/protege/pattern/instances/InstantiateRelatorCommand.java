@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateRelator",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-6",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotD-06",
         name = "New instance of gufo:Relator"
-)
+) */
 public class InstantiateRelatorCommand extends PatternCommand {
 
     private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
@@ -60,12 +60,12 @@ public class InstantiateRelatorCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> relatorIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Relator)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Relator)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         List<IRI> mediatedIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Endurant)
+                .isOfType(GufoIris.Endurant)
                 .entities();
         
         InstantiateRelatorPatternFrame frame = new InstantiateRelatorPatternFrame(this);

@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemQuality",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewAspectKindMenu/SlotA-05",
-        name = "New gufo:Quality kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateAspectKindMenu/SlotA-01",
+        name = "Create gufo:Kind specializing gufo:Quality"
 )
 public class QualityCommand extends KindCommand {
     

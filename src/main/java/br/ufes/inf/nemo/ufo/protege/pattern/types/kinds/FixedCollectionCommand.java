@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemFixedCollection",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewObjectKindMenu/SlotA-02",
-        name = "New gufo:FixedCollection kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateObjectKindMenu/SlotA-02",
+        name = "Create gufo:Kind specializing gufo:FixedCollection"
 )
 public class FixedCollectionCommand extends KindCommand {
     

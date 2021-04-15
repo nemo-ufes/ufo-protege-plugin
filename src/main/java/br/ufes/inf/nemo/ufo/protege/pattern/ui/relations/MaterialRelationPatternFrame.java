@@ -147,7 +147,7 @@ public class MaterialRelationPatternFrame extends JFrame implements ActionListen
                         Object[] boxList;
                         
                         this.subjectIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(applier.getObjectPropertyDomain(relationType))
+                                .isOfType(applier.getObjectPropertyDomain(relationType))
                                 .entities();
 
                         boxList = subjectIRIs.stream()
@@ -156,7 +156,7 @@ public class MaterialRelationPatternFrame extends JFrame implements ActionListen
                         this.subjectSelection = new JComboBox(boxList);
                         
                         this.objectIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(applier.getObjectPropertyRange(relationType))
+                                .isOfType(applier.getObjectPropertyRange(relationType))
                                 .entities();
 
                         boxList = objectIRIs.stream()

@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemRoleMixinOfCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-11",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-14",
         name = "Add rolemixin of category"
-)
+) */
 public class RoleMixinOfCategoryCommand extends PatternCommand {
 
     private IRI category;
@@ -49,7 +49,7 @@ public class RoleMixinOfCategoryCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> categoryIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Category)
+                .isOfType(GufoIris.Category)
                 .entities();
         
         RoleMixinOfCategoryPatternFrame frame = new RoleMixinOfCategoryPatternFrame(this);

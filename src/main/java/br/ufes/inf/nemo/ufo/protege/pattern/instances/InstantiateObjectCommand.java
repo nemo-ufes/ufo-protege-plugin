@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemInstantiateObject",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotA-1",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForInstancesMenu/SlotA-01",
         name = "New instance of gufo:Object"
-)
+) */
 public class InstantiateObjectCommand extends PatternCommand {
 
     private IRI sortal;
@@ -47,8 +47,8 @@ public class InstantiateObjectCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> sortalIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Object)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Object)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         InstantiateObjectPatternFrame frame = new InstantiateObjectPatternFrame(this);

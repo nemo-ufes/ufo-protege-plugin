@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemQuantity",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewObjectKindMenu/SlotA-04",
-        name = "New gufo:Quantity kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateObjectKindMenu/SlotA-04",
+        name = "Create gufo:Kind specializing gufo:Quantity"
 )
 public class QuantityCommand extends KindCommand {
     

@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemMediationType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotE-09",
         name = "New type of mediation"
-)
+) */
 public class MediationTypeCommand extends PatternCommand {
 
     private final IRI mediates = IRI.create(GufoIris.GUFO, "mediates");
@@ -54,13 +54,13 @@ public class MediationTypeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> relatorTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Relator)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Relator)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         IRI firstRelatorType = relatorTypeIRIs.isEmpty() ? null : relatorTypeIRIs.get(0);
         List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
+                .hasSuperClass(GufoIris.Endurant)
                 .isDifferentFrom(firstRelatorType)
                 .entities();
         

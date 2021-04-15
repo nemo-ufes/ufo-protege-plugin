@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemSubQuantityOf",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotC-04",
         name = "New gufo:isSubQuantityOf relation"
-)
+) */
 public class SubQuantityOfCommand extends PatternCommand {
 
     private final IRI subQuantityOfRelation = IRI.create(GufoIris.GUFO, "isSubQuantityOf");
@@ -47,12 +47,12 @@ public class SubQuantityOfCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> quantityIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Quantity)
+                .isOfType(GufoIris.Quantity)
                 .entities();
         
         IRI firstQuantity = quantityIRIs.isEmpty() ? null : quantityIRIs.get(0);
         List<IRI> subquantityIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Quantity)
+                .isOfType(GufoIris.Quantity)
                 .isDifferentFrom(firstQuantity)
                 .entities();
         

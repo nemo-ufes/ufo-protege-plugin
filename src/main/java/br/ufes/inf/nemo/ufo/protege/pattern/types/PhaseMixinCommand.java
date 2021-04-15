@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemPhaseMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-09",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-12",
         name = "Add phasemixin"
-)
+) */
 public class PhaseMixinCommand extends PatternCommand {
 
     private IRI nonsortal;
@@ -49,7 +49,7 @@ public class PhaseMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> nonsortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.NonSortal)
+                .isOfType(GufoIris.NonSortal)
                 .entities();
         
         PhaseMixinPatternFrame frame = new PhaseMixinPatternFrame(this);

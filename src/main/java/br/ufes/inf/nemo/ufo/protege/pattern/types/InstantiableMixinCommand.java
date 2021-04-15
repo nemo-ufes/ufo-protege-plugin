@@ -10,7 +10,7 @@ import br.ufes.inf.nemo.protege.annotations.EditorKitMenuAction;
 import br.ufes.inf.nemo.ufo.protege.GufoIris;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.EntityFilter;
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternApplier;
-import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.MixinPatternFrame;
+import br.ufes.inf.nemo.ufo.protege.pattern.ui.types.InstantiableMixinPatternFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Set;
@@ -21,12 +21,12 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
-        id = "menuItemMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotD-07",
-        name = "New mixin"
-)
-public class MixinCommand extends PatternCommand {
+/* @EditorKitMenuAction(
+        id = "menuItemInstantiableMixin",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-02",
+        name = "Create instantiable gufo:Mixin"
+) */
+public class InstantiableMixinCommand extends PatternCommand {
 
     private IRI endurantClass;
     private IRI mixin;
@@ -67,26 +67,26 @@ public class MixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> endurantClassIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Endurant)
+                .hasSuperClass(GufoIris.Endurant)
                 .isPublicGufoClass()
                 .entities();
         
         IRI firstEndurantClass = endurantClassIRIs.isEmpty() ? null : endurantClassIRIs.get(0);
         List<IRI> rigidSortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RigidType)
-                .addType(GufoIris.Sortal)
-                .addSuperClass(firstEndurantClass)
+                .isOfType(GufoIris.RigidType)
+                .isOfType(GufoIris.Sortal)
+                .hasSuperClass(firstEndurantClass)
                 .entities();
         
         IRI firstRigidSortal = rigidSortalIRIs.isEmpty() ? null : rigidSortalIRIs.get(0);
         List<IRI> antiRigidSortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.AntiRigidType)
-                .addType(GufoIris.Sortal)
-                .addSuperClass(firstEndurantClass)
+                .isOfType(GufoIris.AntiRigidType)
+                .isOfType(GufoIris.Sortal)
+                .hasSuperClass(firstEndurantClass)
                 .hasDifferentKindOf(firstRigidSortal)
                 .entities();
         
-        MixinPatternFrame frame = new MixinPatternFrame(this);
+        InstantiableMixinPatternFrame frame = new InstantiableMixinPatternFrame(this);
         frame.setEndurantClassIRIs(endurantClassIRIs);
         frame.setRigidSortalIRIs(rigidSortalIRIs);
         frame.setAntiRigidSortalIRIs(antiRigidSortalIRIs);

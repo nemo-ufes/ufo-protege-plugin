@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemVariableCollection",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewObjectKindMenu/SlotA-03",
-        name = "New gufo:VariableCollection kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateObjectKindMenu/SlotA-03",
+        name = "Create gufo:Kind specializing gufo:VariableCollection"
 )
 public class VariableCollectionCommand extends KindCommand {
     

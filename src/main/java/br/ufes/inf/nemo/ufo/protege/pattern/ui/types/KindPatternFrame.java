@@ -7,6 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.kinds.KindCommand;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ public class KindPatternFrame extends JFrame implements ActionListener {
         this.endurantClassName = command.getEndurantClassName();
         this.kindLabel = new JLabel("New " + endurantClassName + " kind short name: ");
         
-        this.setTitle("New " + endurantClassName + " kind");
+        this.setTitle("Create gufo:Kind specializing " + endurantClassName);
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -61,6 +62,8 @@ public class KindPatternFrame extends JFrame implements ActionListener {
         this.add(kindPanel);
         this.add(okPanel);
         
+        this.setPreferredSize(new Dimension(600, 130));
+        this.setResizable(false);
         this.pack();
         this.setVisible(true);
     }

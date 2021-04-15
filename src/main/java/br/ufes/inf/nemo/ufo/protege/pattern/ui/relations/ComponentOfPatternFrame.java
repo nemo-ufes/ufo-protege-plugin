@@ -122,7 +122,7 @@ public class ComponentOfPatternFrame extends JFrame implements ActionListener {
                     this.objectPanel.remove(this.objectSelection);
                     
                     this.objectIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.Object)
+                            .isOfType(GufoIris.Object)
                             .isDifferentFrom(functionalComplex)
                             .entities();
                     

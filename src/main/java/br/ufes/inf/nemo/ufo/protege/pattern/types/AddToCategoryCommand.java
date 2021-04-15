@@ -21,11 +21,11 @@ import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemAddToCategory",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-06",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotC-07",
         name = "Add to category"
-)
+) */
 public class AddToCategoryCommand extends PatternCommand {
 
     private IRI category;
@@ -54,13 +54,13 @@ public class AddToCategoryCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> categoryIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Category)
+                .isOfType(GufoIris.Category)
                 .entities();
         
         IRI firstCategory = categoryIRIs.isEmpty() ? null : categoryIRIs.get(0);
         List<IRI> rigidTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RigidType)
-                .hasSamePublicSuperClass(firstCategory)
+                .isOfType(GufoIris.RigidType)
+                .isOfOntologicalNatureOf(firstCategory)
                 .isNotSuperClassOf(firstCategory)
                 .isDifferentFrom(firstCategory)
                 .entities();

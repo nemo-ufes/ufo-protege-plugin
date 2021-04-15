@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemComparativeRelationshipType",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotD-05",
         name = "New gufo:ComparativeRelationshipType"
-)
+) */
 public class ComparativeRelationshipTypeCommand extends PatternCommand {
 
     private final IRI isDerivedFrom = IRI.create(GufoIris.GUFO, "isDerivedFrom");
@@ -57,13 +57,13 @@ public class ComparativeRelationshipTypeCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> qualityTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.Quality)
-                .addType(GufoIris.Sortal)
+                .hasSuperClass(GufoIris.Quality)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         IRI firstQualityType = qualityTypeIRIs.isEmpty() ? null : qualityTypeIRIs.get(0);
         List<IRI> domainAndRangeIRIs = new EntityFilter(getOWLModelManager())
-                .addSuperClass(GufoIris.ConcreteIndividual)
+                .hasSuperClass(GufoIris.ConcreteIndividual)
                 .isDifferentFrom(firstQualityType)
                 .entities();
         

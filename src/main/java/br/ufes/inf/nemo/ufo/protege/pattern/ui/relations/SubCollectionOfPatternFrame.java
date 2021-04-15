@@ -121,7 +121,7 @@ public class SubCollectionOfPatternFrame extends JFrame implements ActionListene
                         this.subcollectionPanel.remove(this.subcollectionSelection);
 
                         this.subcollectionIRIs = new EntityFilter(command.getOWLModelManager())
-                                .addType(GufoIris.Collection)
+                                .isOfType(GufoIris.Collection)
                                 .isDifferentFrom(collection)
                                 .entities();
 

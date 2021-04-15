@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemComparativeRelation",
         path = "br.ufes.inf.nemo.ufo-protege-plugin.ForRelationsMenu/SlotD-06",
         name = "New comparative relation"
-)
+) */
 public class ComparativeRelationCommand extends PatternCommand {
 
     private IRI relationType;
@@ -53,7 +53,7 @@ public class ComparativeRelationCommand extends PatternCommand {
         PatternApplier applier = new PatternApplier(getOWLModelManager());
         
         List<IRI> relationTypeIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.ComparativeRelationshipType)
+                .isOfType(GufoIris.ComparativeRelationshipType)
                 .entities();
         
         IRI firstRelationType = relationTypeIRIs.isEmpty() ? null : relationTypeIRIs.get(0);
@@ -64,7 +64,7 @@ public class ComparativeRelationCommand extends PatternCommand {
             comparedIRIs = relationTypeIRIs;
         } else {
             comparedIRIs = new EntityFilter(getOWLModelManager())
-                .addType(applier.getObjectPropertyDomain(firstRelationType))
+                .isOfType(applier.getObjectPropertyDomain(firstRelationType))
                 .entities();
         }
         

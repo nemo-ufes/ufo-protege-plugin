@@ -21,8 +21,8 @@ import org.semanticweb.owlapi.model.IRI;
  */
 @EditorKitMenuAction(
         id = "menuItemPhase",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotB-04",
-        name = "Add phase"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.PatternMenu/SlotA-05",
+        name = "Create gufo:Phase specializing a sortal"
 )
 public class PhaseCommand extends PatternCommand {
     
@@ -49,7 +49,7 @@ public class PhaseCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> sortalIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Sortal)
+                .isOfType(GufoIris.Sortal)
                 .entities();
         
         PhasePatternFrame frame = new PhasePatternFrame(this);

@@ -19,11 +19,11 @@ import org.semanticweb.owlapi.model.IRI;
  *
  * @author jeferson
  */
-@EditorKitMenuAction(
+/* @EditorKitMenuAction(
         id = "menuItemAddRoleToRoleMixin",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-13",
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.ForTypesMenu/SlotE-16",
         name = "Add a gufo:Role to a gufo:Rolemixin"
-)
+) */
 public class AddRoleToRoleMixinCommand extends PatternCommand {
 
     private IRI rolemixin;
@@ -46,13 +46,13 @@ public class AddRoleToRoleMixinCommand extends PatternCommand {
     @Override
     public void actionPerformed(ActionEvent ae) {
         List<IRI> rolemixinIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.RoleMixin)
+                .isOfType(GufoIris.RoleMixin)
                 .entities();
         
         IRI firstRoleMixin = rolemixinIRIs.isEmpty() ? null : rolemixinIRIs.get(0);
         List<IRI> roleIRIs = new EntityFilter(getOWLModelManager())
-                .addType(GufoIris.Role)
-                .hasSamePublicSuperClass(firstRoleMixin)
+                .isOfType(GufoIris.Role)
+                .isOfOntologicalNatureOf(firstRoleMixin)
                 .isNotSubClassOf(firstRoleMixin)
                 .entities();
         

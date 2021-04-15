@@ -7,6 +7,7 @@ package br.ufes.inf.nemo.ufo.protege.pattern.ui.types;
 
 import br.ufes.inf.nemo.ufo.protege.pattern.helpers.PatternCommand;
 import br.ufes.inf.nemo.ufo.protege.pattern.types.SubKindCommand;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,7 +44,7 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         
         this.command = command;
         
-        this.setTitle("Add a gufo:SubKind to a rigid sortal");
+        this.setTitle("Create gufo:SubKind specializing a rigid sortal");
         this.setLayout(new GridLayout(0, 1));
         this.setVisible(false);
     }
@@ -77,6 +78,8 @@ public class SubKindPatternFrame extends JFrame implements ActionListener {
         this.add(subkindPanel);
         this.add(okPanel);
         
+        this.setPreferredSize(new Dimension(600, 130));
+        this.setResizable(false);
         this.pack();
         this.setVisible(true);
     }

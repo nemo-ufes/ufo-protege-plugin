@@ -14,8 +14,8 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
  */
 @EditorKitMenuAction(
         id = "menuItemIntrinsicMode",
-        path = "br.ufes.inf.nemo.ufo-protege-plugin.NewAspectKindMenu/SlotA-06",
-        name = "New gufo:IntrinsicMode kind"
+        path = "br.ufes.inf.nemo.ufo-protege-plugin.CreateAspectKindMenu/SlotA-02",
+        name = "Create gufo:Kind specializing gufo:IntrinsicMode"
 )
 public class IntrinsicModeCommand extends KindCommand {
     

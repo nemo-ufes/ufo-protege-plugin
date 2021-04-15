@@ -122,8 +122,8 @@ public class AddRoleToRoleMixinPatternFrame extends JFrame implements ActionList
                     rolePanel.remove(roleSelection);
                     
                     this.roleIRIs = new EntityFilter(command.getOWLModelManager())
-                            .addType(GufoIris.Role)
-                            .hasSamePublicSuperClass(rolemixin)
+                            .isOfType(GufoIris.Role)
+                            .isOfOntologicalNatureOf(rolemixin)
                             .isNotSubClassOf(rolemixin)
                             .entities();
 
