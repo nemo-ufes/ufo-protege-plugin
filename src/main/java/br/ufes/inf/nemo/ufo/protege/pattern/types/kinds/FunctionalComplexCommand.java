@@ -20,7 +20,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 public class FunctionalComplexCommand extends KindCommand {
     
     @Override
-    public void defineEndurantClass() {
+    protected void defineEndurantClass() {
         super.endurantClass = GufoIris.FunctionalComplex;
         super.endurantClassName = "gufo:FunctionalComplex";
     }

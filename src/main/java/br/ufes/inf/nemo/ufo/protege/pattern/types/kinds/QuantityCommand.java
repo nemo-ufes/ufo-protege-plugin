@@ -20,7 +20,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 public class QuantityCommand extends KindCommand {
     
     @Override
-    public void defineEndurantClass() {
+    protected void defineEndurantClass() {
         super.endurantClass = GufoIris.Quantity;
         super.endurantClassName = "gufo:Quantity";
     }

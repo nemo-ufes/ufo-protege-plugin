@@ -33,7 +33,7 @@ public class RoleMixinSpecializationPatternFrame extends JFrame implements Actio
     private JComboBox antiRigidTypeSelection;
     
     private final JLabel rolemixinLabel = new JLabel("gufo:RoleMixin to be specialized: ");
-    private final JLabel antiRigidTypeLabel = new JLabel("gufo:AntiRigidType to be generalized: ");
+    private final JLabel antiRigidTypeLabel = new JLabel("Specific gufo:AntiRigidType: ");
     
     private List<IRI> rolemixinIRIs;
     private List<IRI> antiRigidTypeIRIs;

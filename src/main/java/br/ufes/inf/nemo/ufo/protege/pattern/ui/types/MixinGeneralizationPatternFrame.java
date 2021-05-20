@@ -32,8 +32,8 @@ public class MixinGeneralizationPatternFrame extends JFrame implements ActionLis
     private JComboBox superTypeSelection;
     private JComboBox mixinSelection;
     
-    private final JLabel superTypeLabel = new JLabel("Non-anti-rigid gufo:NonSortal to specialize: ");
-    private final JLabel mixinLabel = new JLabel("gufo:Mixin to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General non-anti-rigid gufo:NonSortal: ");
+    private final JLabel mixinLabel = new JLabel("gufo:Mixin to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> mixinIRIs;

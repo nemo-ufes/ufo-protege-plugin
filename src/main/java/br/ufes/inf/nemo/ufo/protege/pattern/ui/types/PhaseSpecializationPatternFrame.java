@@ -33,7 +33,7 @@ public class PhaseSpecializationPatternFrame extends JFrame implements ActionLis
     private JComboBox antiRigidSortalSelection;
     
     private final JLabel phaseLabel = new JLabel("gufo:Phase to be specialized: ");
-    private final JLabel antiRigidSortalLabel = new JLabel("Anti-rigid gufo:Sortal to be generalized: ");
+    private final JLabel antiRigidSortalLabel = new JLabel("Specific anti-rigid gufo:Sortal: ");
     
     private List<IRI> phaseIRIs;
     private List<IRI> antiRigidSortalIRIs;

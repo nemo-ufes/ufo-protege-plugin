@@ -33,7 +33,7 @@ public class SubKindSpecializationPatternFrame extends JFrame implements ActionL
     private JComboBox nonkindSortalSelection;
     
     private final JLabel subkindLabel = new JLabel("gufo:SubKind to be specialized: ");
-    private final JLabel nonkindSortalLabel = new JLabel("Non-kind gufo:Sortal to be generalized: ");
+    private final JLabel nonkindSortalLabel = new JLabel("Specific non-kind gufo:Sortal: ");
     
     private List<IRI> subkindIRIs;
     private List<IRI> nonkindSortalIRIs;

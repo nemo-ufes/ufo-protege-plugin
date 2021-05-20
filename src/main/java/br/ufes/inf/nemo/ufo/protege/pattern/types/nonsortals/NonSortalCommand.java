@@ -24,7 +24,7 @@ public abstract class NonSortalCommand extends PatternCommand {
     private IRI nonsortal;
     private List<IRI> endurantClasses;
 
-    public abstract void defineNonSortalClass();
+    protected abstract void defineNonSortalClass();
 
     public String getNonSortalClassName() {
         return nonsortalClassName;
@@ -49,10 +49,8 @@ public abstract class NonSortalCommand extends PatternCommand {
         if(endurantClasses.size() == 1) {
             applier.addSubClassTo(endurantClasses.get(0), nonsortal);
         } else {
-            IRI superClass = IRI.create(getOntologyPrefix(), nonsortal.getShortForm() + "OntologicalNature");
-            applier.createDisjointUnionOfClasses(superClass, endurantClasses);
-            applier.addSubClassTo(GufoIris.Endurant, superClass);
-            applier.addSubClassTo(superClass, nonsortal);
+            applier.assertOntologicalNatureOf(nonsortal, endurantClasses);
+            applier.addSubClassTo(GufoIris.Endurant, nonsortal);
         }
     }
     

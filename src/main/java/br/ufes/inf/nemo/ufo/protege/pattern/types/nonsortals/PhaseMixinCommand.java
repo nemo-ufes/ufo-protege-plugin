@@ -20,7 +20,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 public class PhaseMixinCommand extends NonSortalCommand {
 
     @Override
-    public void defineNonSortalClass() {
+    protected void defineNonSortalClass() {
         super.nonsortalClass = GufoIris.PhaseMixin;
         super.nonsortalClassName = "gufo:PhaseMixin";
     }

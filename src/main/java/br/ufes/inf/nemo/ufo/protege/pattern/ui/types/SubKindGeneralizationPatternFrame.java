@@ -32,8 +32,8 @@ public class SubKindGeneralizationPatternFrame extends JFrame implements ActionL
     private JComboBox superTypeSelection;
     private JComboBox subkindSelection;
     
-    private final JLabel superTypeLabel = new JLabel("Non-anti-rigid gufo:EndurantType to specialize: ");
-    private final JLabel subkindLabel = new JLabel("gufo:SubKind to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General non-anti-rigid gufo:EndurantType: ");
+    private final JLabel subkindLabel = new JLabel("gufo:SubKind to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> subkindIRIs;

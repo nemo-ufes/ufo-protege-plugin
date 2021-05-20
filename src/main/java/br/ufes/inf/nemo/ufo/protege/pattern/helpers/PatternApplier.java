@@ -13,13 +13,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.protege.editor.owl.model.OWLModelManager;
 import org.semanticweb.owlapi.model.AddAxiom;
+import org.semanticweb.owlapi.model.ClassExpressionType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObjectCardinalityRestriction;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
@@ -116,17 +119,40 @@ public final class PatternApplier {
         return buildSuperClassSet(types);
     }
     
-    private IRI getOntologicalNature(IRI classIRI) {
+    private Set<IRI> getOntologicalNature(IRI classIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
         OWLClass owlClass = dataFactory.getOWLClass(classIRI);
         
-        return getSuperClasses(owlClass).stream()
-                .map(superClass -> superClass.getIRI())
-                .filter(superClassIRI -> isSubClassOf(GufoIris.Endurant, superClassIRI))
-                .filter(superClassIRI -> isPublicGufoClass(superClassIRI) ||
-                                      (hasMultipleOntologicalNature(superClassIRI) &&
-                                       isDirectSubClassOf(superClassIRI, classIRI)))
+        Set<IRI> ontologicalNature;
+        
+        if(ontology.getSubClassAxiomsForSubClass(owlClass).stream()
+            .map(axiom -> axiom.getSuperClass())
+            .anyMatch(superClass -> superClass.getClassExpressionType() == ClassExpressionType.OBJECT_UNION_OF)) {
+         
+            OWLClassExpression classExp = ontology.getSubClassAxiomsForSubClass(owlClass).stream()
+                .map(axiom -> axiom.getSuperClass())
+                .filter(superClass -> superClass.getClassExpressionType() == ClassExpressionType.OBJECT_UNION_OF)
                 .findFirst()
                 .get();
+        
+            ontologicalNature = classExp.asDisjunctSet().stream()
+                .map(exp -> exp.asOWLClass().getIRI())
+                .collect(Collectors.toCollection(HashSet::new));
+            
+        } else {
+            IRI superEndurantClass = getSuperClasses(owlClass).stream()
+                .map(superClass -> superClass.getIRI())
+                .filter(superClassIRI -> isSubClassOf(GufoIris.Endurant, superClassIRI))
+                .filter(superClassIRI -> isPublicGufoClass(superClassIRI))
+                .findFirst()
+                .get();
+
+            ontologicalNature = new HashSet<IRI>();
+            ontologicalNature.add(superEndurantClass);
+        }
+        
+        return ontologicalNature;
     }
     
     public Set<IRI> getSuperClassesOfSomeType(IRI type, IRI subClassIRI) {
@@ -247,17 +273,19 @@ public final class PatternApplier {
         modelManager.applyChange(addAxiom);
     }
     
-    public void createDisjointUnionOfClasses(IRI unionOfClasses, List<IRI> IRIs) {
+    public void assertOntologicalNatureOf(IRI classIRI, List<IRI> IRIs) {
         OWLOntology ontology = modelManager.getActiveOntology();
         
-        OWLClass newClass = dataFactory.getOWLClass(unionOfClasses);
+        OWLClass owlClass = dataFactory.getOWLClass(classIRI);
         
         Set<OWLClass> classSet = IRIs.stream()
             .map(iri -> dataFactory.getOWLClass(iri))
             .collect(Collectors.toCollection(HashSet::new));
+        
+        OWLClassExpression ontologicalNature = dataFactory.getOWLObjectUnionOf(classSet);
 
-        OWLAxiom unionOfAxiom = dataFactory.getOWLDisjointUnionAxiom(newClass, classSet);
-        AddAxiom addAxiom = new AddAxiom(ontology, unionOfAxiom);
+        OWLAxiom axiom = dataFactory.getOWLSubClassOfAxiom(owlClass, ontologicalNature);
+        AddAxiom addAxiom = new AddAxiom(ontology, axiom);
         modelManager.applyChange(addAxiom);
     }
 
@@ -265,7 +293,7 @@ public final class PatternApplier {
         OWLOntology ontology = modelManager.getActiveOntology();
 
         OWLNamedIndividual newIndividual = dataFactory.getOWLNamedIndividual(individualIRI);
-
+        
         OWLAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(newIndividual);
         AddAxiom addAxiom = new AddAxiom(ontology, declarationAxiom);
         modelManager.applyChange(addAxiom);
@@ -370,6 +398,37 @@ public final class PatternApplier {
         AddAxiom addAxiom = new AddAxiom(ontology, domainAxiom);
         modelManager.applyChange(addAxiom);
     }
+    
+    public void addObjectPropertyCardinalityRestriction(IRI domainIRI, IRI propertyIRI, int minCard, int maxCard, IRI rangeIRI) {
+        OWLOntology ontology = modelManager.getActiveOntology();
+        
+        OWLClass domain = dataFactory.getOWLClass(domainIRI);
+        OWLClass range = dataFactory.getOWLClass(rangeIRI);
+        OWLObjectProperty property = dataFactory.getOWLObjectProperty(propertyIRI);
+        
+        OWLObjectCardinalityRestriction restriction;
+        OWLAxiom axiom; AddAxiom addAxiom;
+        if(minCard == maxCard) {
+            restriction = dataFactory.getOWLObjectExactCardinality(minCard, property, range);
+            axiom = dataFactory.getOWLSubClassOfAxiom(domain, restriction);
+            addAxiom = new AddAxiom(ontology, axiom);
+            modelManager.applyChange(addAxiom);
+        } else {
+            if(minCard > 0) {
+                restriction = dataFactory.getOWLObjectMinCardinality(minCard, property, range);
+                axiom = dataFactory.getOWLSubClassOfAxiom(domain, restriction);
+                addAxiom = new AddAxiom(ontology, axiom);
+                modelManager.applyChange(addAxiom);
+            }
+            
+            if(maxCard > 0) {
+                restriction = dataFactory.getOWLObjectMaxCardinality(maxCard, property, range);
+                axiom = dataFactory.getOWLSubClassOfAxiom(domain, restriction);
+                addAxiom = new AddAxiom(ontology, axiom);
+                modelManager.applyChange(addAxiom);
+            }
+        }
+    }
 
     public void setObjectPropertyRange(IRI propertyIRI, IRI rangeIRI) {
         OWLOntology ontology = modelManager.getActiveOntology();
@@ -408,17 +467,6 @@ public final class PatternApplier {
         return ! classIRI.toString()
                 .contentEquals(GufoIris.Object.toString())
         && GufoIris.publicClasses.contains(classIRI);
-    }
-    
-    public boolean hasMultipleOntologicalNature(IRI classIRI) {
-        OWLOntology ontology = modelManager.getActiveOntology();
-        
-        OWLClass owlClass = dataFactory.getOWLClass(classIRI);
-        
-        return ontology.getDisjointUnionAxioms(owlClass).stream()
-                .anyMatch(axiom -> axiom.getClassExpressions().stream()
-                    .map(exp -> exp.asOWLClass().getIRI())
-                    .allMatch(iri -> isPublicGufoClass(iri)));
     } 
 
     public boolean isDirectSubClassOf(IRI classIRI, IRI subClassIRI) {
@@ -488,42 +536,11 @@ public final class PatternApplier {
                     .contentEquals(propertyIRI.toString()));
     }
     
-    public boolean isOfOntologicalNatureOf(IRI classIRI, IRI subClassIRI) {
-        IRI endurantIRI = getOntologicalNature(classIRI);
-        IRI endurantIRIOfSubClass = getOntologicalNature(subClassIRI);
+    public boolean isOfOntologicalNatureOf(IRI superClassIRI, IRI subClassIRI) {
+        Set<IRI> superClassOntologicalNature = getOntologicalNature(superClassIRI);
+        Set<IRI> subClassOntologicalNature = getOntologicalNature(subClassIRI);
         
-        OWLOntology ontology = modelManager.getActiveOntology();
-        
-        if(hasMultipleOntologicalNature(endurantIRI)) {
-            List<IRI> subClassOntologicalNature = new ArrayList<>();
-            
-            if(hasMultipleOntologicalNature(endurantIRIOfSubClass)) {
-                OWLClass endurantClassOfSubClass = dataFactory.getOWLClass(endurantIRIOfSubClass);
-                
-                ontology.getDisjointUnionAxioms(endurantClassOfSubClass).stream()
-                        .limit(1)
-                        .forEach(axiom -> axiom.getClassExpressions().stream()
-                            .map(exp -> exp.asOWLClass().getIRI())
-                            .forEach(iri -> subClassOntologicalNature.add(iri)));
-            } else {
-                subClassOntologicalNature.add(endurantIRIOfSubClass);
-            }
-        
-            OWLClass endurantClass = dataFactory.getOWLClass(endurantIRI);
-            OWLDisjointUnionAxiom axiom = ontology.getDisjointUnionAxioms(endurantClass).stream()
-                    .limit(1)
-                    .findFirst()
-                    .get();
-            
-            return subClassOntologicalNature.stream()
-                    .allMatch(subIri -> axiom.getClassExpressions().stream()
-                        .map(exp -> exp.asOWLClass().getIRI())
-                        .anyMatch(iri -> iri.toString()
-                            .contentEquals(subIri.toString())));
-        } else {
-            return endurantIRI.toString()
-                .contentEquals(endurantIRIOfSubClass.toString());
-        }
+        return superClassOntologicalNature.containsAll(subClassOntologicalNature);
     }
     
     /* public boolean hasSharedSuperClasses(IRI classIRI, IRI subClassIRI) {

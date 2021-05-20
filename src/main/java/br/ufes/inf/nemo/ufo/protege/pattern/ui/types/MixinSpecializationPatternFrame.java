@@ -33,7 +33,7 @@ public class MixinSpecializationPatternFrame extends JFrame implements ActionLis
     private JComboBox endurantTypeSelection;
     
     private final JLabel mixinLabel = new JLabel("gufo:Mixin to be specialized: ");
-    private final JLabel endurantTypeLabel = new JLabel("gufo:EndurantType to be generalized: ");
+    private final JLabel endurantTypeLabel = new JLabel("Specific gufo:EndurantType: ");
     
     private List<IRI> mixinIRIs;
     private List<IRI> endurantTypeIRIs;

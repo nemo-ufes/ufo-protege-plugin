@@ -33,7 +33,7 @@ public class RoleSpecializationPatternFrame extends JFrame implements ActionList
     private JComboBox antiRigidSortalSelection;
     
     private final JLabel roleLabel = new JLabel("gufo:Role to be specialized: ");
-    private final JLabel antiRigidSortalLabel = new JLabel("Anti-rigid gufo:Sortal to be generalized: ");
+    private final JLabel antiRigidSortalLabel = new JLabel("Specific anti-rigid gufo:Sortal: ");
     
     private List<IRI> roleIRIs;
     private List<IRI> antiRigidSortalIRIs;

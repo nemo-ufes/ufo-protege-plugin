@@ -32,8 +32,8 @@ public class KindGeneralizationPatternFrame extends JFrame implements ActionList
     private JComboBox superTypeSelection;
     private JComboBox kindSelection;
     
-    private final JLabel superTypeLabel = new JLabel("Non-anti-rigid gufo:NonSortal to specialize: ");
-    private final JLabel kindLabel = new JLabel("gufo:Kind to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General non-anti-rigid gufo:NonSortal: ");
+    private final JLabel kindLabel = new JLabel("gufo:Kind to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> kindIRIs;

@@ -20,7 +20,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 public class IntrinsicModeCommand extends KindCommand {
     
     @Override
-    public void defineEndurantClass() {
+    protected void defineEndurantClass() {
         super.endurantClass = GufoIris.IntrinsicMode;
         super.endurantClassName = "gufo:IntrinsicMode";
     }

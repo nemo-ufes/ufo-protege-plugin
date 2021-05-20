@@ -32,8 +32,8 @@ public class PhaseMixinGeneralizationPatternFrame extends JFrame implements Acti
     private JComboBox superTypeSelection;
     private JComboBox phasemixinSelection;
     
-    private final JLabel superTypeLabel = new JLabel("gufo:NonSortal to specialize: ");
-    private final JLabel phasemixinLabel = new JLabel("gufo:PhaseMixin to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General gufo:NonSortal: ");
+    private final JLabel phasemixinLabel = new JLabel("gufo:PhaseMixin to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> phasemixinIRIs;

@@ -32,8 +32,8 @@ public class RoleMixinGeneralizationPatternFrame extends JFrame implements Actio
     private JComboBox superTypeSelection;
     private JComboBox rolemixinSelection;
     
-    private final JLabel superTypeLabel = new JLabel("gufo:NonSortal to specialize: ");
-    private final JLabel rolemixinLabel = new JLabel("gufo:RoleMixin to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General gufo:NonSortal: ");
+    private final JLabel rolemixinLabel = new JLabel("gufo:RoleMixin to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> rolemixinIRIs;

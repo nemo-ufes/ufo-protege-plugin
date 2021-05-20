@@ -32,8 +32,8 @@ public class PhaseGeneralizationPatternFrame extends JFrame implements ActionLis
     private JComboBox superTypeSelection;
     private JComboBox phaseSelection;
     
-    private final JLabel superTypeLabel = new JLabel("gufo:EndurantType to specialize: ");
-    private final JLabel phaseLabel = new JLabel("gufo:Phase to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General gufo:EndurantType: ");
+    private final JLabel phaseLabel = new JLabel("gufo:Phase to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> phaseIRIs;

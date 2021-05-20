@@ -32,8 +32,8 @@ public class CategoryGeneralizationPatternFrame extends JFrame implements Action
     private JComboBox superTypeSelection;
     private JComboBox categorySelection;
     
-    private final JLabel superTypeLabel = new JLabel("Non-anti-rigid gufo:NonSortal to specialize: ");
-    private final JLabel categoryLabel = new JLabel("gufo:Category to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General non-anti-rigid gufo:NonSortal: ");
+    private final JLabel categoryLabel = new JLabel("gufo:Category to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> categoryIRIs;

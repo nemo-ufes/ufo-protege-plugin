@@ -22,7 +22,7 @@ public abstract class KindCommand extends PatternCommand {
     protected String endurantClassName;
     private IRI kind;
 
-    public abstract void defineEndurantClass();
+    protected abstract void defineEndurantClass();
 
     public String getEndurantClassName() {
         return endurantClassName;

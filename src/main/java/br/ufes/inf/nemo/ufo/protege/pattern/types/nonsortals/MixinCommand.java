@@ -20,7 +20,7 @@ import br.ufes.inf.nemo.ufo.protege.GufoIris;
 public class MixinCommand extends NonSortalCommand {
 
     @Override
-    public void defineNonSortalClass() {
+    protected void defineNonSortalClass() {
         super.nonsortalClass = GufoIris.Mixin;
         super.nonsortalClassName = "gufo:Mixin";
     }

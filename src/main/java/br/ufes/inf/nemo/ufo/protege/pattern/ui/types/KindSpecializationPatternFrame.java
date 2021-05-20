@@ -33,7 +33,7 @@ public class KindSpecializationPatternFrame extends JFrame implements ActionList
     private JComboBox sortalSelection;
     
     private final JLabel kindLabel = new JLabel("gufo:Kind to be specialized: ");
-    private final JLabel sortalLabel = new JLabel("gufo:Sortal to be generalized: ");
+    private final JLabel sortalLabel = new JLabel("Specific gufo:Sortal: ");
     
     private List<IRI> kindIRIs;
     private List<IRI> sortalIRIs;

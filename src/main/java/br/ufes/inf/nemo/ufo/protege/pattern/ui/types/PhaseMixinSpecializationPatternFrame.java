@@ -33,7 +33,7 @@ public class PhaseMixinSpecializationPatternFrame extends JFrame implements Acti
     private JComboBox antiRigidTypeSelection;
     
     private final JLabel phasemixinLabel = new JLabel("gufo:PhaseMixin to be specialized: ");
-    private final JLabel antiRigidTypeLabel = new JLabel("gufo:AntiRigidType to be generalized: ");
+    private final JLabel antiRigidTypeLabel = new JLabel("Specific gufo:AntiRigidType: ");
     
     private List<IRI> phasemixinIRIs;
     private List<IRI> antiRigidTypeIRIs;

@@ -32,8 +32,8 @@ public class RoleGeneralizationPatternFrame extends JFrame implements ActionList
     private JComboBox superTypeSelection;
     private JComboBox roleSelection;
     
-    private final JLabel superTypeLabel = new JLabel("gufo:EndurantType to specialize: ");
-    private final JLabel roleLabel = new JLabel("gufo:Role to generalize: ");
+    private final JLabel superTypeLabel = new JLabel("General gufo:EndurantType: ");
+    private final JLabel roleLabel = new JLabel("gufo:Role to be generalized: ");
     
     private List<IRI> superTypeIRIs;
     private List<IRI> roleIRIs;

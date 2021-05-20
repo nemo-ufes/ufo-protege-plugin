@@ -33,7 +33,7 @@ public class CategorySpecializationPatternFrame extends JFrame implements Action
     private JComboBox endurantTypeSelection;
     
     private final JLabel categoryLabel = new JLabel("gufo:Category to be specialized: ");
-    private final JLabel endurantTypeLabel = new JLabel("gufo:EndurantType to be generalized: ");
+    private final JLabel endurantTypeLabel = new JLabel("Specific gufo:EndurantType: ");
     
     private List<IRI> categoryIRIs;
     private List<IRI> endurantTypeIRIs;
